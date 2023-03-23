@@ -1,0 +1,32 @@
+body{
+ background-color: black;
+ color: white;
+ font-family: sans-serif;
+ overflow: hidden;
+}
+.one {
+ display: flex;
+}
+.two {
+ flex:1;
+ border: 1px solid white;
+ overflow-x:hidden;
+ overflow-y:scroll;
+}
+iframe {
+ transform: scale(0.4946);
+ transform-origin: 0 0;
+ position: fixed;
+ top: calc(100% - 547px);
+ border: 3px solid white;
+}
+li.selected{
+ background-color: rgba(56, 68, 93, 0.703);
+}
+div.songcontainer {
+ height: calc(100vh - 556px)
+}
+div.lyriccontainer {
+ height: calc(100vh - 20px);
+ margin-left: -1px
+}
