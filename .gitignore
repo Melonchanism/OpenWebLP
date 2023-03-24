@@ -24,8 +24,11 @@ dist-ssr
 *.sln
 *.sw?
 
-#firebase hosting
+# Firebase hosting
 firebase.json
 database.rules.json
 .firebaserc
 .firebase
+
+# Tests
+test.html
