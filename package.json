@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "licence": "GPL-3.0",
+  "readme": "readme.md",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
