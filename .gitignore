@@ -6,6 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+firebase-debug.log*
 
 node_modules
 dist
@@ -25,7 +26,6 @@ dist-ssr
 
 #firebase hosting
 firebase.json
-firebase-debug.log
 database.rules.json
 .firebaserc
 .firebase
