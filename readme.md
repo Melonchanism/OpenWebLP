@@ -7,4 +7,5 @@ Live demo at [webLP](https://weblp1.web.app/)<br>
 `F`: If focused on display, fullscreens it<br>
 `L/R arrow keys`: next/previous song<br>
 `U/D arrow keys`: nex/previous lyric<br>
+<hr>
 Still not complete yet, but it's usable.<br>
