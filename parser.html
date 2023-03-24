@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html style="background-color: black;">
+ <textarea id="input" style="background-color: rgb(30, 30, 30); color:white; margin: 0px; height: calc(100vh - 25px); width: calc(100vw - 25px);border:none"></textarea>
+ <script>
+const input = document.getElementById("input");
+alert("Paste your lyrics here, Then check your console for the result")
+input.addEventListener("input", () => {
+ let parsing = input.value;
+ parsing = parsing.split(/\r?\n\n/g).map(item => {
+  return item.replace(/\r?\n/g, "|");
+ });
+ let result = {
+  name: "Song Name",
+  lyrics: parsing,
+ }
+ console.log(JSON.stringify(result));
+});
+ </script>
+</html>
