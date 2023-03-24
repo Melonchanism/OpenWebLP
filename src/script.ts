@@ -97,11 +97,13 @@ addEventListener("load", () => {
     if (browser() === "firefox") {
      editor.addEventListener("load", () => {
       editor.document.head.innerHTML = config.editor;
-      editor.alert("Not implemented yet! (Sorry!)")
+      editor.alert("Not implemented yet! (Sorry!)");
+      editor.close();
      });
     } else if (browser() === "chromium" || browser() === "webkit") {
      editor.document.head.innerHTML = config.editor;
      editor.alert("Not implemented yet! (Sorry!)")
+     editor.close();
    }} else handleKey(event);
  })});
  render();
