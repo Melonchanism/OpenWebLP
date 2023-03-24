@@ -9,7 +9,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "tsc && vite build && firebase deploy"
+    "deploy": "tsc && vite build && firebase deploy",
+    "d": "tsc && vite build && firebase deploy"
   },
   "devDependencies": {
     "typescript": "^4.9.3",

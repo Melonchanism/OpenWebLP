@@ -20,6 +20,13 @@ iframe {
  top: calc(100% - 547px);
  border: 3px solid white;
 }
+li {
+ user-select: none;
+ cursor: pointer;
+}
+li:hover {
+ background-color: rgba(56, 93, 57, 0.703) !important;
+}
 li.selected{
  background-color: rgba(56, 68, 93, 0.703);
 }
@@ -29,4 +36,9 @@ div.songcontainer {
 div.lyriccontainer {
  height: calc(100vh - 20px);
  margin-left: -1px
+}
+li.lyriclistitem::first-line {
+ font-size: large;
+ font-weight: 700 !important;
+ color:green;
 }

@@ -11,7 +11,7 @@ let display: Window | null,
  songs: Songs[] = JSON.parse(`[{"name":"Rediscover You","lyrics":["[Verse 1]|I need to just admit my faith is paper thin|I'm feeling so burned out on religion|I say an empty prayer, I sing a tired song|I need to just admit that the passion's gone|And I want to get it back","[Chorus]|You told me look for You and I will find|So I'm here like I'm searching for the first time|Revive me, Jesus, make this cold heart start to move|Help me rediscover You","[Verse 2]|I want to learn to pray the way that David prayed|I want my soul to burn when I hear Your name|I want to feel like new, I want to hunger for You|Bring me back to life like only You can do|'Cause I don't want to stay the same","[Chorus]|You told me look for You and I will find|So I'm here like I'm searching for the first time|Revive me, Jesus, make this cold heart start to move|Help me rediscover You","[Chorus 2]|You told me look for You and I will find|So I'm here like I'm searching for the first time|Revive me, Jesus, make this cold heart start to move|I want to burn for You|Bring me back to life|Jesus, help me rediscover You"]}, {"name":"Another In The Fire","lyrics":["VERSE 1|There's a grace when the heart is under fire|Another way when the walls are closing in|And when I look at the space between|Where I used to be and this reckoning|I know I will never be alone","CHORUS|There was another in the fire|Standing next to me|There was another in the waters|Holding back the seas|And should I ever need reminding|Of how I've been set free|There is a cross that bears the burden|Where another died for me","TAG|There is another in the fire","VERSE 2|All my debt left for dead beneath the waters|I'm no longer a slave to my sin anymore|And should I fall in the space between|What remains of me and this reckoning|Either way I won't bow|To the things of this world|And I know I will never be alone","CHORUS 2|There is another in the fire|Standing next to me|There is another in the waters|Holding back the seas|And should I ever need reminding|What power set me free|There is a grave that holds no body|And now that power lives in me","BRIDGE|And I can see the light in the darkness|As the darkness bows to Him|I can hear the roar in the heavens|As the space between wears thin|I can feel the ground shake beneath us|As the prison walls cave in|Nothing stands between us|Nothing stands between us","VERSE 3|There is no other name|But the Name that is Jesus|He who was and still is|And will be through it all|So come what may in the space between|All the things unseen and this reckoning|I know I will never be alone","CHORUS 3|There'll be another in the fire|Standing next to me|There'll be another in the waters|Holding back the seas|And should I ever need reminding|How good You've been to me|I'll count the joy come every battle|'Cause I know that's where You'll be"]}]`);
 
 const config = {
- display: `<title>WebLP Display</title><style>body{background-color:black;color:white;font-family:sans-serif;overflow:hidden;margin:0px;width:100vw;height:100vh;}h1{font-size:80px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;white-space:nowrap;}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
+ display: `<title>WebLP Display</title><style>body{background-color:black;color:white;font-family:sans-serif;overflow:hidden;margin:0px;width:100vw;height:100vh;}h1{font-size:70px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;white-space:nowrap;user-select:none;}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
  editor: `<title>WebLP Editor</title><style>body{background-color:black;color:white;font-family:sans-serif;}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
 };
 
@@ -42,6 +42,14 @@ function render() {
  const songListItems = document.querySelectorAll<HTMLLIElement>("li.songlistitem");
  songListItems.forEach(item => item.classList.remove("selected"));
  songListItems.item(song).classList.add("selected");
+ songListItems.forEach(item => {
+  item.addEventListener("click", () => {
+   const index = Array.from(songListItems).indexOf(item);
+   song = index;
+   lyric = 0;
+   render();
+  });
+ })
  songlist.querySelector("li.selected").scrollIntoView({ behavior: "smooth", block: "center" });
  songs[song].lyrics.forEach(item => {
   lyriclistHTML += `<li class="lyriclistitem">${item.replaceAll("|", "<br>")}</li><hr>`;
@@ -50,6 +58,13 @@ function render() {
  const lyricListItems = document.querySelectorAll<HTMLLIElement>("li.lyriclistitem")
  lyricListItems.forEach(item => item.classList.remove("selected"));
  lyricListItems.item(lyric).classList.add("selected");
+ lyricListItems.forEach(item => { 
+  item.addEventListener("click", () => {
+   const index = Array.from(lyricListItems).indexOf(item);
+   lyric = index;
+   render();
+  });
+ });
  lyriclist.querySelector("li.selected").scrollIntoView({ behavior: "smooth", block: "center" });
  if (display && display?.closed === false) display.document.body.innerHTML = `<h1>${displayText}</h1>`;
  preview.contentDocument.body.innerHTML = `<h1>${displayText}</h1>`;
