@@ -1,4 +1,4 @@
 # WebLP
 An open source web-based OpenLP clone.<br>
 Uses the same license as OpenLP.<br>
-Live demo at (Coming soon)<!--[webLP](https://weblp.supabase.com/)--><br>
+Live demo at [webLP](https://weblp1.web.app/)<br>
