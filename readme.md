@@ -10,5 +10,5 @@ Live demo at [webLP](https://weblp1.web.app/)<br>
 `U/D arrow keys`: nex/previous lyric<br>
 `1-0 number keys`: select lyric for those of you who don't like having duplicates<br>
 `F1 - F12`: select song<br>
-<hr>
+## Other
 Still not complete yet, but it's usable.<br>
