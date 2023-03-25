@@ -42,3 +42,8 @@ li.lyriclistitem::first-line {
  font-weight: 700 !important;
  color:green;
 }
+li.songlistitem {
+ font-size: large;
+ font-weight: 700 !important;
+ color: green;
+}
