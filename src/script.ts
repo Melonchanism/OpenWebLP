@@ -26,7 +26,7 @@ function handleKey(event: KeyboardEvent) {
  } else if (key === "ArrowRight" && songs[song + 1]) {
   song++;
   lyric = 0;
- } else if (key === "f" && display && display?.closed === false) display.document.body.requestFullscreen();
+ } else if (key === "f" && display && display?.closed === false && browser() !== "webkit") display.document.body.requestFullscreen();
  render();
 };
 
