@@ -23,8 +23,8 @@ iframe {
 li {
  user-select: none;
  cursor: pointer;
- padding-top: 5px;
- padding-bottom: 5px;
+ padding-top: 7.5px;
+ padding-bottom: 7.5px;
 }
 li:hover {
  background-color: rgba(56, 93, 57, 0.703) !important;
