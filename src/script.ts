@@ -38,6 +38,43 @@ function handleKey(event: KeyboardEvent) {
  else if (key === "8" && songs[song].lyrics[7]) lyric = 7;
  else if (key === "9" && songs[song].lyrics[8]) lyric = 8;
  else if (key === "0" && songs[song].lyrics[9]) lyric = 9;
+ else if (key === "F1") {
+  song = 0;
+  lyric = 0;
+ } else if (key === "F2") {
+  song = 1;
+  lyric = 0;
+ } else if (key === "F3") {
+  song = 2;
+  lyric = 0;
+ } else if (key === "F4") {
+  song = 3;
+  lyric = 0;
+ } else if (key === "F5") {
+  song = 4;
+  lyric = 0;
+ } else if (key === "F6") {
+  song = 5;
+  lyric = 0;
+ } else if (key === "F7") {
+  song = 6;
+  lyric = 0;
+ } else if (key === "F8") {
+  song = 7;
+  lyric = 0;
+ } else if (key === "F9") {
+  song = 8;
+  lyric = 0;
+ } else if (key === "F10") {
+  song = 9;
+  lyric = 0;
+ } else if (key === "F11") {
+  song = 10;
+  lyric = 0;
+ } else if (key === "F12") {
+  song = 11;
+  lyric = 0;
+ }
  render();
 };
 
