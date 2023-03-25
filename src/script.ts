@@ -17,6 +17,7 @@ const config = {
 
 function handleKey(event: KeyboardEvent) {
  const key = event.key;
+ if (key === "ArrowDown" || key === "ArrowUp" || key === "ArrowLeft" || key === "ArrowRight") event.preventDefault();
  if (key === "ArrowDown" && songs[song].lyrics[lyric + 1]) lyric++;
  else if (key === "ArrowUp" && songs[song].lyrics[lyric - 1]) lyric--;
  else if (key === "ArrowLeft" && songs[song - 1]) {
@@ -55,7 +56,7 @@ function render() {
   lyriclistHTML += `<li class="lyriclistitem">${item.replaceAll("|", "<br>")}</li><hr>`;
  });
  lyriclist.innerHTML = lyriclistHTML.slice(0, -4);
- const lyricListItems = document.querySelectorAll<HTMLLIElement>("li.lyriclistitem")
+ const lyricListItems = document.querySelectorAll<HTMLLIElement>("li.lyriclistitem");
  lyricListItems.forEach(item => item.classList.remove("selected"));
  lyricListItems.item(lyric).classList.add("selected");
  lyricListItems.forEach(item => { 

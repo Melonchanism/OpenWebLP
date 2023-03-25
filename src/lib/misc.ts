@@ -15,5 +15,5 @@ export function parseHTML(input: string|string[]) {
  } else { 
   input.replace(">", "&gt;").replace("<", "&lt;").replace("&", "&amp;").replace('"', "&quot;").replace("'", "&apos;");
  };
- return input
+ return input;
 };
