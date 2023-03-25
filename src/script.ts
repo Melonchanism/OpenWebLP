@@ -16,65 +16,36 @@ let display: Window | null,
 
 function handleKey(event: KeyboardEvent) {
  const key = event.key;
- if (key === "ArrowDown" || key === "ArrowUp" || key === "ArrowLeft" || key === "ArrowRight") event.preventDefault();
- if (key === "ArrowDown" && songs[song].lyrics[lyric + 1]) lyric++;
- else if (key === "ArrowUp" && songs[song].lyrics[lyric - 1]) lyric--;
- else if (key === "ArrowLeft" && songs[song - 1]) {
-  song--;
-  lyric = 0;
- } else if (key === "ArrowRight" && songs[song + 1]) {
-  song++;
-  lyric = 0;
- } else if (key === "f" && display && display?.closed === false && browser !== "webkit") display.document.body.requestFullscreen();
+ if (key === "ArrowDown" || "ArrowUp" || "ArrowLeft" || "ArrowRight" || "F3" || "F11" || "F12") event.preventDefault();
+ if (key === "ArrowDown") setLyric(lyric + 1);
+ else if (key === "ArrowUp") setLyric(lyric - 1);
+ else if (key === "ArrowLeft") setSong(song - 1);
+ else if (key === "ArrowRight") setSong(song + 1);
+ else if (key === "f" && display && display?.closed === false && browser !== "webkit") display.document.body.requestFullscreen();
  ///@ts-ignore
  else if (key === "f" && display && display?.closed === false && browser === "webkit") document.body.webkitRequestFullscreen();
- else if (key === "1" && songs[song].lyrics[0]) lyric = 0;
- else if (key === "2" && songs[song].lyrics[1]) lyric = 1;
- else if (key === "3" && songs[song].lyrics[2]) lyric = 2;
- else if (key === "4" && songs[song].lyrics[3]) lyric = 3;
- else if (key === "5" && songs[song].lyrics[4]) lyric = 4;
- else if (key === "6" && songs[song].lyrics[5]) lyric = 5;
- else if (key === "7" && songs[song].lyrics[6]) lyric = 6;
- else if (key === "8" && songs[song].lyrics[7]) lyric = 7;
- else if (key === "9" && songs[song].lyrics[8]) lyric = 8;
- else if (key === "0" && songs[song].lyrics[9]) lyric = 9;
- else if (key === "F1") {
-  song = 0;
-  lyric = 0;
- } else if (key === "F2") {
-  song = 1;
-  lyric = 0;
- } else if (key === "F3") {
-  song = 2;
-  lyric = 0;
- } else if (key === "F4") {
-  song = 3;
-  lyric = 0;
- } else if (key === "F5") {
-  song = 4;
-  lyric = 0;
- } else if (key === "F6") {
-  song = 5;
-  lyric = 0;
- } else if (key === "F7") {
-  song = 6;
-  lyric = 0;
- } else if (key === "F8") {
-  song = 7;
-  lyric = 0;
- } else if (key === "F9") {
-  song = 8;
-  lyric = 0;
- } else if (key === "F10") {
-  song = 9;
-  lyric = 0;
- } else if (key === "F11") {
-  song = 10;
-  lyric = 0;
- } else if (key === "F12") {
-  song = 11;
-  lyric = 0;
- }
+ else if (key === "1") setLyric(0);
+ else if (key === "2") setLyric(1);
+ else if (key === "3") setLyric(2);
+ else if (key === "4") setLyric(3);
+ else if (key === "5") setLyric(4);
+ else if (key === "6") setLyric(5);
+ else if (key === "7") setLyric(6);
+ else if (key === "8") setLyric(7);
+ else if (key === "9") setLyric(8);
+ else if (key === "0") setLyric(9);
+ else if (key === "F1") setSong(0);
+ else if (key === "F2") setSong(1);
+ else if (key === "F3") setSong(2);
+ else if (key === "F4") setSong(3);
+ else if (key === "F5") setSong(4);
+ else if (key === "F6") setSong(5);
+ else if (key === "F7") setSong(6);
+ else if (key === "F8") setSong(7);
+ else if (key === "F9") setSong(8);
+ else if (key === "F10") setSong(9);
+ else if (key === "F11") setSong(10);
+ else if (key === "F12") setSong(11);
  render();
 };
 
@@ -118,6 +89,17 @@ function render() {
  if (display && display?.closed === false) display.document.body.innerHTML = `<div><h1>${displayText}</h1></div>`;
  preview.contentDocument.body.innerHTML = `<div><h1>${displayText}</h1></div>`;
 };
+
+function setSong(number: number) {
+ if (songs[number]) {
+  song = number;
+  lyric = 0;
+ };
+};
+
+function setLyric(number: number) { 
+ if (songs[song].lyrics[number]) lyric = number;
+}
 
 addEventListener("load", () => {
  preview.contentDocument.head.innerHTML = config.display;
