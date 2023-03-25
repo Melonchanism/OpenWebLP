@@ -26,8 +26,18 @@ function handleKey(event: KeyboardEvent) {
   song++;
   lyric = 0;
  } else if (key === "f" && display && display?.closed === false && browser !== "webkit") display.document.body.requestFullscreen();
-  ///@ts-ignore
+ ///@ts-ignore
  else if (key === "f" && display && display?.closed === false && browser === "webkit") document.body.webkitRequestFullscreen();
+ else if (key === "1" && songs[song].lyrics[0]) lyric = 0;
+ else if (key === "2" && songs[song].lyrics[1]) lyric = 1;
+ else if (key === "3" && songs[song].lyrics[2]) lyric = 2;
+ else if (key === "4" && songs[song].lyrics[3]) lyric = 3;
+ else if (key === "5" && songs[song].lyrics[4]) lyric = 4;
+ else if (key === "6" && songs[song].lyrics[5]) lyric = 5;
+ else if (key === "7" && songs[song].lyrics[6]) lyric = 6;
+ else if (key === "8" && songs[song].lyrics[7]) lyric = 7;
+ else if (key === "9" && songs[song].lyrics[8]) lyric = 8;
+ else if (key === "0" && songs[song].lyrics[9]) lyric = 9;
  render();
 };
 
