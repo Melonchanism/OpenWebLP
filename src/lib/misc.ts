@@ -1,3 +1,23 @@
+import type { Songs } from "./types";
+
+export const browser: "firefox" | "chromium" | "webkit" | "unknown" = (() => {
+ ///@ts-ignore
+ if (typeof window.InstallTrigger === "object") return "firefox";
+ ///@ts-ignore
+ else if (typeof window.chrome === "object") return "chromium";
+ ///@ts-ignore
+ else if (document.webkitExitFullscreen) return "webkit";
+ else return "unknown";
+})();
+
+export function decodeSongs(input:Songs[]) {
+ let a = "";
+ input.forEach((item:Songs) => {
+  a += (item.name + "\n" + item.lyrics.join("\n\n").replaceAll("|", "\n") + "\n\n\n");
+ });
+ return a.slice(0, -3);
+};
+
 export function parseHTML(input: string | string[]) {
  if (typeof input === "object") {
   input.forEach(item => {
@@ -8,15 +28,3 @@ export function parseHTML(input: string | string[]) {
  };
  return input;
 };
-
-function getBrowser(): "firefox" | "chromium" | "webkit" | "unknown" {
- ///@ts-ignore
- if (typeof window.InstallTrigger === "object") return "firefox";
- ///@ts-ignore
- else if (typeof window.chrome === "object") return "chromium";
- ///@ts-ignore
- else if (document.webkitExitFullscreen) return "webkit";
- else return "unknown";
-};
-
-export const browser = getBrowser();
