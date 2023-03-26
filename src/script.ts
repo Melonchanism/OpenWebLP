@@ -1,5 +1,5 @@
 import "./style.css";
-import { browser, parseHTML } from "./lib/misc";
+import { browser, parseHTML, decodeSongs } from "./lib/misc";
 import type { Songs } from "./lib/types";
 let display: Window | null,
  editor: Window | null,
@@ -97,9 +97,11 @@ function displayInit() {
 };
 
 function editorInit() {
+ editor.alert("still in development, will not work at all")
  editor.document.head.innerHTML = config.editor;
  editor.document.body.innerHTML = `<textarea style="background-color:rgb(30,30,30);color:white;margin:0px;height:calc(100vh - 25px);width:calc(100vw - 25px);border:none"></textarea>`;
- const input = editor.document.querySelector<HTMLTextAreaElement>("textarea").innerText;
+ const input = editor.document.querySelector<HTMLTextAreaElement>("textarea");
+ input.value = decodeSongs(songs);
 };
 
 function setSong(number: number) {
@@ -109,7 +111,7 @@ function setSong(number: number) {
  };
 };
 
-function setLyric(number: number) { 
+function setLyric(number: number) {
  if (songs[song].lyrics[number]) lyric = number;
 }
 

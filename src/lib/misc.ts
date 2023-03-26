@@ -15,6 +15,7 @@ export function decodeSongs(input:Songs[]) {
  input.forEach((item:Songs) => {
   a += (item.name + "\n" + item.lyrics.join("\n\n").replaceAll("|", "\n") + "\n\n\n");
  });
+ console.log(a.slice(0, -3));
  return a.slice(0, -3);
 };
 
