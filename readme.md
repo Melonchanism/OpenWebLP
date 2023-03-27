@@ -15,7 +15,7 @@
 - `CTRL + Enter`: if in editor, update and rerender<br>
 
 ## Other:
-- Uses yarn, vite, and node<br>
+- Made with Typescript, Vite, and Faith<br>
 - Still not complete yet, but it's usable.<br>
 
 ## Bugs:
