@@ -23,7 +23,7 @@ function handleKey(event: KeyboardEvent) {
  else if (key === "ArrowRight") setSong(song + 1);
  else if (key === "f" && display && display?.closed === false && browser !== "webkit") display.document.body.requestFullscreen();
  ///@ts-ignore
- else if (key === "f" && display && display?.closed === false && browser === "webkit") document.body.webkitRequestFullscreen();
+ else if (key === "f" && display && display?.closed === false && browser === "webkit") display.document.body.webkitRequestFullscreen();
  else if (key === "1") setLyric(0);
  else if (key === "2") setLyric(1);
  else if (key === "3") setLyric(2);
