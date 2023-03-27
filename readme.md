@@ -23,3 +23,4 @@
 
 ## To-Do:
 - Add some themes<br>
+- Add auto display ratio<br>
