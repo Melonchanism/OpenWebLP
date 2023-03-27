@@ -16,7 +16,7 @@ let display: Window | null,
 
 function handleKey(event: KeyboardEvent) {
  const key = event.key;
- if (key === "ArrowDown" || key === "ArrowUp" || key === "ArrowLeft" || key === "ArrowRight" || key === "F3" || key === "F11") event.preventDefault();
+ if (key === "ArrowDown" || key === "ArrowUp" || key === "ArrowLeft" || key === "ArrowRight" || key === "F3" || key === "F1" || key === "F11") event.preventDefault();
  if (key === "ArrowDown") setLyric(lyric + 1);
  else if (key === "ArrowUp") setLyric(lyric - 1);
  else if (key === "ArrowLeft") setSong(song - 1);
