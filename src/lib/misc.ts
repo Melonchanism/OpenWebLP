@@ -10,13 +10,22 @@ export const browser: "firefox" | "chromium" | "webkit" | "unknown" = (() => {
  else return "unknown";
 })();
 
-export function decodeSongs(input:Songs[]) {
- let a = "";
+export function decodeSongs(input:Songs[]):string {
+ let mapping = "";
  input.forEach((item:Songs) => {
-  a += (item.name + "\n" + item.lyrics.join("\n\n").replaceAll("|", "\n") + "\n\n\n");
+  mapping += (item.name + "\n" + item.lyrics.join("\n\n").replaceAll("|", "\n") + "\n\n\n");
  });
- console.log(a.slice(0, -3));
- return a.slice(0, -3);
+ return mapping.slice(0, -3);
+};
+
+export function encodeSongs(input: string):Songs[] { 
+ let newSongs: Songs[] = [];
+ input.split("\n\n\n").forEach((item:string) => {
+  let name = item.split("\n", 1)[0];
+  let lyrics: string[] = item.slice(name.length + 1).split("\n\n").map(item => item.replaceAll("\n", "|"));
+  newSongs.push({ name, lyrics })
+ });
+ return newSongs;
 };
 
 export function parseHTML(input: string | string[]) {

@@ -1,5 +1,5 @@
 import "./style.css";
-import { browser, parseHTML, decodeSongs } from "./lib/misc";
+import { browser, parseHTML, decodeSongs, encodeSongs } from "./lib/misc";
 import type { Songs } from "./lib/types";
 let display: Window | null,
  editor: Window | null,
@@ -16,7 +16,7 @@ let display: Window | null,
 
 function handleKey(event: KeyboardEvent) {
  const key = event.key;
- if (key === "ArrowDown" || "ArrowUp" || "ArrowLeft" || "ArrowRight" || "F3" || "F11" || "F12") event.preventDefault();
+ if (key === "ArrowDown" || key === "ArrowUp" || key === "ArrowLeft" || key === "ArrowRight" || key === "F3" || key === "F11") event.preventDefault();
  if (key === "ArrowDown") setLyric(lyric + 1);
  else if (key === "ArrowUp") setLyric(lyric - 1);
  else if (key === "ArrowLeft") setSong(song - 1);
@@ -45,7 +45,6 @@ function handleKey(event: KeyboardEvent) {
  else if (key === "F9") setSong(8);
  else if (key === "F10") setSong(9);
  else if (key === "F11") setSong(10);
- else if (key === "F12") setSong(11);
  render();
 };
 
@@ -97,11 +96,17 @@ function displayInit() {
 };
 
 function editorInit() {
- editor.alert("still in development, will not work at all")
  editor.document.head.innerHTML = config.editor;
  editor.document.body.innerHTML = `<textarea style="background-color:rgb(30,30,30);color:white;margin:0px;height:calc(100vh - 25px);width:calc(100vw - 25px);border:none"></textarea>`;
  const input = editor.document.querySelector<HTMLTextAreaElement>("textarea");
  input.value = decodeSongs(songs);
+ input.addEventListener("keydown", (event: KeyboardEvent) => { 
+  if (event.key === "Enter" && event.ctrlKey) { 
+   songs = encodeSongs(input.value);
+   render();
+   editor.alert("Updated");
+  };
+ });
 };
 
 function setSong(number: number) {
