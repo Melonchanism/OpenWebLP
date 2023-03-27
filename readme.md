@@ -19,7 +19,7 @@
 - Still not complete yet, but it's usable.<br>
 
 ## Bugs:
-- on chromium, opening the editor will cause the display to exit fullscreen<br>
+- on chromium, opening the editor will cause the display to exit fullscreen<br>*Temporary Solution: use F11*
 
 ## To-Do:
 - Add some themes<br>
