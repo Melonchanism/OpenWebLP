@@ -11,7 +11,7 @@
 - `L/R arrow keys`: next/previous song<br>
 - `U/D arrow keys`: nex/previous lyric<br>
 - `1-0 number keys`: select lyric for those of you who don't like having duplicates<br>
-- `F1 - F11`: select song<br>
+- `F1 - F10`: select song<br>
 - `CTRL + Enter`: if in editor, update and rerender<br>
 
 ## Other:
