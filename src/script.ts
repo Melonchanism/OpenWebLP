@@ -114,11 +114,12 @@ function setSong(number: number) {
  if (songs[number]) {
   song = number;
   lyric = 0;
- };
+ } else throw new Error("Invalid song");
 };
 
 function setLyric(number: number) {
  if (songs[song].lyrics[number]) lyric = number;
+ else throw new Error("Invalid lyric");
 }
 
 addEventListener("load", () => {
