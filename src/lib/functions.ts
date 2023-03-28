@@ -2,7 +2,7 @@ import type { Songs } from "./types";
 
 export const browser: "firefox" | "chromium" | "webkit" | "unknown" = (() => {
  ///@ts-ignore
- if (typeof window.InstallTrigger === "object") return "firefox";
+ if (typeof mozRTCPeerConnection === "function") return "firefox";
  ///@ts-ignore
  else if (typeof window.chrome === "object") return "chromium";
  ///@ts-ignore
@@ -11,11 +11,11 @@ export const browser: "firefox" | "chromium" | "webkit" | "unknown" = (() => {
 })();
 
 export function decodeSongs(input:Songs[]):string {
- let mapping = "";
+ let output = "";
  input.forEach((item:Songs) => {
-  mapping += (item.name + "\n" + item.lyrics.join("\n\n").replaceAll("|", "\n") + "\n\n\n");
+  output += (item.name + "\n" + item.lyrics.join("\n\n").replaceAll("|", "\n") + "\n\n\n");
  });
- return mapping.slice(0, -3);
+ return output.slice(0, -3);
 };
 
 export function encodeSongs(input: string):Songs[] { 
@@ -25,6 +25,7 @@ export function encodeSongs(input: string):Songs[] {
   let lyrics: string[] = item.slice(name.length + 1).split("\n\n").map(item => item.replaceAll("\n", "|"));
   newSongs.push({ name, lyrics })
  });
+ console.log(JSON.stringify(newSongs));
  return newSongs;
 };
 
@@ -38,3 +39,5 @@ export function parseHTML(input: string | string[]) {
  };
  return input;
 };
+
+export const icon = document.querySelector<HTMLLinkElement>("link[rel='icon']").href;
