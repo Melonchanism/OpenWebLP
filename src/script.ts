@@ -36,6 +36,8 @@ function handleKey(event: KeyboardEvent) {
  else if (key === "8") setLyric(7);
  else if (key === "9") setLyric(8);
  else if (key === "0") setLyric(9);
+ else if (key === "-") setLyric(10);
+ else if (key === "=") setLyric(11);
  else if (key === "F1") setSong(0);
  else if (key === "F2") setSong(1);
  else if (key === "F3") setSong(2);
