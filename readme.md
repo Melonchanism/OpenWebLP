@@ -2,7 +2,7 @@
 - An open source web-based Worship Presentation Software.<br>
 - Was meant to be a clone of OpenLp but, its a bit different.<br>
 - Uses the same license as OpenLP.<br>
-- Live demo at [webLP](https://weblp1.web.app/)<br>
+- Live demo at [webLP](https://openweblp.web.app/)<br>
 
 ## Controls:
 - `D`: launch display<br>
@@ -21,7 +21,10 @@
 ## Bugs:
 - on chromium, opening the editor will cause the display to exit fullscreen<br>
 *Temporary Solution: use F11*
+- have editor always open in new tab and not in new window<br>
+*Depends on browser settings*
 
 ## To-Do:
-- Add some themes<br>
-- Add auto display ratio<br>
+- ~~Add some themes~~ Gray mode added because light mode is too bright<br>
+- ~~Add auto preview sizing~~ Mostly Done<br>
+- Get more people to actually use it<br>
