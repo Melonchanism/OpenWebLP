@@ -28,3 +28,4 @@
 - ~~Add some themes~~ Gray mode added because light mode is too bright<br>
 - ~~Add auto preview sizing~~ Mostly Done<br>
 - Get more people to actually use it<br>
+- Add a configurer<br>
