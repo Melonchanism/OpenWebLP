@@ -2,8 +2,7 @@
 - An open source web-based Worship Presentation Software.<br>
 - Was meant to be a clone of OpenLp but, its a bit different.<br>
 - Uses the same license as OpenLP.<br>
-- Live demo at [openweblp.web.app](https://openweblp.web.app?example)<br>
-- Production version at [openweblp.web.app](https://openweblp.web.app)<br>
+- Live demo at [openweblp.web.app/?production](https://openweblp.web.app?example)<br>
 
 ## Controls:
 - `D`: launch display<br>
