@@ -46,9 +46,11 @@ you get the idea
 - ~~have editor always open in new tab and not in new window~~<br>
 *Depends on browser settings*<br>
 removed tabs, using popups instead<br>
-
+- LMK if you find any<br>
 ## To-Do:
 - ~~Add some themes~~ Gray mode added because light mode is too bright<br>
 - ~~Add auto preview sizing~~ Mostly Done<br>
 - Get more people to actually use it<br>
 - ~~Add a configurer~~ WIP but it works<br>
+- Not use about:blank for other windows<br>
+- LMK if you have any ideas<br>
