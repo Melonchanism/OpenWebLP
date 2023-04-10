@@ -1,4 +1,5 @@
 import type { Songs } from "./types";
+export { s, sa } from "smallselectors";
 
 export function decodeSongs(input: Songs[]): string {
  let output = "";

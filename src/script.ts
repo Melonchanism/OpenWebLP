@@ -1,7 +1,9 @@
 import "./style.css";
-import { s, sa } from "smallselectors";
-import { parseHTML, decodeSongs, encodeSongs } from "./lib/parsing";
+import { parseHTML, decodeSongs, encodeSongs, s, sa } from "./lib/parsing";
 import type { Songs } from "./lib/types";
+//To-do: Remove the next 2 lines for production, they are for preloading example songs.
+import { example } from "./lib/ex";
+if (location.href.split("?")[1] === "example") example()
 let display: Window | null,
  editor: Window | null,
  configurer: Window | null,
@@ -82,22 +84,22 @@ function render() {
   songlistHTML += `<li class="songlistitem">${item.name}</li><hr>`;
  });
  songlist.innerHTML = songlistHTML.slice(0, -4);
- const songListItems = sa<HTMLLIElement>("li.songlistitem");
+ const songListItems = Array.from(sa<HTMLLIElement>("li.songlistitem"));
  songListItems.forEach(item => item.classList.remove("selected"));
- songListItems.item(song).classList.add("selected");
+ songListItems[song].classList.add("selected");
  songListItems.forEach(item => {
-  item.addEventListener("click", () => setSong(Array.from(songListItems).indexOf(item)));
+  item.addEventListener("click", () => setSong(songListItems.indexOf(item)));
  });
  s("#songlist > li.selected").scrollIntoView({ behavior: "smooth", block: "center" });
  songs[song].lyrics.forEach(item => {
   lyriclistHTML += `<li class="lyriclistitem">${item.replaceAll("|", "<br>")}</li><hr>`;
  });
  lyriclist.innerHTML = lyriclistHTML.slice(0, -4);
- const lyricListItems = sa<HTMLLIElement>("li.lyriclistitem");
+ const lyricListItems = Array.from(sa<HTMLLIElement>("li.lyriclistitem"));
  lyricListItems.forEach(item => item.classList.remove("selected"));
- lyricListItems.item(lyric).classList.add("selected");
+ lyricListItems[lyric].classList.add("selected");
  lyricListItems.forEach(item => { 
-  item.addEventListener("click", () => setLyric(Array.from(lyricListItems).indexOf(item)));
+  item.addEventListener("click", () => setLyric(lyricListItems.indexOf(item)));
  });
  s("#lyriclist > li.selected").scrollIntoView({ behavior: "smooth", block: "center" });
  if (display && display?.closed === false) display.document.body.innerHTML = `<div><h1>${displayText}</h1></div>`;
@@ -168,7 +170,7 @@ addEventListener("load", () => {
     else if (browser === "chromium" || browser === "webkit") displayInit();
    } else if (key === "e") {
     if (typeof editor?.closed === "boolean" && editor.closed === false) editor.close();
-    editor = open(`about:blank`, "_blank", "width=1280, height=720, popup");
+    editor = open(`about:blank`, "_blank", "width=1366, height=768, popup");
     if (browser === "firefox") editor.addEventListener("load", editorInit);
     else if (browser === "chromium" || browser === "webkit") editorInit();
    } else if (key === "s") {
