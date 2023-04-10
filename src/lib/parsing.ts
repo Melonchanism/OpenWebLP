@@ -15,7 +15,6 @@ export function encodeSongs(input: string): Songs[] {
   let lyrics: string[] = item.slice(name.length + 1).split("\n\n").map(item => item.replaceAll("\n", "|"));
   newSongs.push({ name, lyrics })
  });
- console.log(JSON.stringify(newSongs));
  return newSongs;
 };
 
