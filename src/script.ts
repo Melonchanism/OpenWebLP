@@ -20,8 +20,9 @@ let display: Window | null,
    lyrics: ["No songs found"]
   }]; 
  })(),
+ displayFontSize = "calc(3vh + 3vw)",
  config = {
-  display: `<title>OpenWebLP Display</title><style>body{background-color:black;color:white;font-family:sans-serif;overflow:hidden;margin:0px;width:100vw;height:100vh;}h1{font-size:calc(2.8vh + 2.8vw);text-align:center;user-select:none;}div{top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;margin:0px;width:100vw}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
+  display: `<title>OpenWebLP Display</title><style>body{background-color:black;color:white;font-family:sans-serif;overflow:hidden;margin:0px;width:100vw;height:100vh;}h1{font-size:${displayFontSize};text-align:center;user-select:none;}div{top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;margin:0px;width:100vw}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
   editor: `<title>OpenWebLP Editor</title><style>body{background-color:black;color:white;font-family:sans-serif;margin:0px;overflow:hidden}textarea{margin:0px;border:none;padding:15px;background-color:black;width:100vw;height:100vh;color:white; resize:none;}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
   configurer: `<title>OpenWebLP Settings</title><style>body{background-color:black;color:white;font-family:sans-serif;margin:0px;overflow:hidden;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute}input{background-color:#111111;color:white;border:none;margin:1px;font-size:2rem; width:400px}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
  },
@@ -127,22 +128,29 @@ function editorInit() {
    localStorage.setItem("songs", JSON.stringify(songs));
   };
  });
+ editor.addEventListener("keydown", event => { if (event.key === "Escape") editor.close() });
 };
 
 function configurerInit() {
  configurer.document.head.innerHTML = config.configurer;
- configurer.document.body.innerHTML = `<form><input type="text" id="c1" placeholder="Display Bg Color" value="${window.getComputedStyle(preview.contentDocument.body).getPropertyValue("background-color")}"/><br><input type="text" id="c2" placeholder="Display Text Color" value="${window.getComputedStyle(preview.contentDocument.body).getPropertyValue("color")}"/><br><input type="text" id="c3"/><br><input type="text" id="c4"/><br><input type="submit" value="Update"/></form>`;
+ configurer.document.body.innerHTML = `<form><input type="text" id="c1" placeholder="Display Bg Color" value="${window.getComputedStyle(preview.contentDocument.body).getPropertyValue("background-color")}"/><br><input type="text" id="c2" placeholder="Display Text Color" value="${window.getComputedStyle(preview.contentDocument.body).getPropertyValue("color")}"/><br><input type="text" id="c3" placeholder="Display Font Size" value="${displayFontSize}"/><br><input type="text" id="c4"/><br><input type="submit" value="Update"/></form>`;
  const form = configurer.document.querySelector("form")
  form.addEventListener("submit", (event: SubmitEvent) => { 
   event.preventDefault();
-  //@ts-ignore
+  ///@ts-ignore
   const [c1, c2, c3, c4] = Array.from(configurer.document.querySelectorAll<HTMLInputElement>("input[type='text']"));
-  config.display = `<title>OpenWebLP Display</title><style>body{background-color:${c1.value};color:${c2.value};font-family:sans-serif;overflow:hidden;margin:0px;width:100vw;height:100vh;}h1{font-size:calc(2.8vh + 2.8vw);text-align:center;user-select:none;}div{top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;margin:0px;width:100vw}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`
+  displayFontSize = c3.value;
+  config = {
+   display: `<title>OpenWebLP Display</title><style>body{background-color:${c1.value};color:${c2.value};font-family:sans-serif;overflow:hidden;margin:0px;width:100vw;height:100vh;}h1{font-size:${displayFontSize};text-align:center;user-select:none;}div{top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;margin:0px;width:100vw}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
+   editor: `<title>OpenWebLP Editor</title><style>body{background-color:black;color:white;font-family:sans-serif;margin:0px;overflow:hidden}textarea{margin:0px;border:none;padding:15px;background-color:black;width:100vw;height:100vh;color:white; resize:none;}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
+   configurer: `<title>OpenWebLP Settings</title><style>body{background-color:black;color:white;font-family:sans-serif;margin:0px;overflow:hidden;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute}input{background-color:#111111;color:white;border:none;margin:1px;font-size:2rem; width:400px}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
+  };
   preview.contentDocument.head.innerHTML = config.display;
   if (display && display?.closed === false) display.document.head.innerHTML = config.display;
   if (editor && editor?.closed === false) editor.document.head.innerHTML = config.editor;
   if (configurer && configurer?.closed === false) configurer.document.head.innerHTML = config.configurer;
  });
+ configurer.addEventListener("keydown", event => { if (event.key === "Escape") configurer.close() });
 };
 
 function setSong(number: number) {
