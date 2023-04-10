@@ -18,7 +18,28 @@
 ## Other:
 - Made with Typescript, Vite, and Faith<br>
 - Still not complete yet, but it's usable.<br>
+- Editor Format: 
+```
+Song Name
+Lyrics 1 line 1
+Lyrics 1 line 2
 
+Lyrics 2 line 1
+Lyrics 2 line 2
+
+
+Song Name 2
+Lyrics 1 line 1
+Lyrics 1 line 2
+
+Lyrics 2 line 1
+Lyrics 2 line 2
+```
+- LocalStorage JSON Format:
+```
+[{"name":"Song Name","lyrics":["Lyrics 1 line 1|Lyrics 1 line 2","Lyrics 2 line 1|Lyrics 2 line 2"]},{"name":"Song Name 2","lyrics":["Lyrics 1 line 1|Lyrics 1 line 2","Lyrics 2 line 1|Lyrics 2 line 2"]}]
+```
+you get the idea
 ## Bugs:
 - on chromium, opening the editor will cause the display to exit fullscreen<br>
 *Temporary Solution: use F11*
