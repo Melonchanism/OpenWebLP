@@ -1,7 +1,6 @@
 import "./style.css";
 import { parseHTML, decodeSongs, encodeSongs, s, sa } from "./lib/parsing";
 import type { Songs } from "./lib/types";
-//To-do: Remove the next 2 lines for production, they are for preloading example songs.
 import { example } from "./lib/ex";
 if (location.href.split("?")[1] === "example") example();
 localStorage.setItem("firsttime", "false");
