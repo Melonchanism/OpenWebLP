@@ -57,7 +57,7 @@ li {
  padding-bottom: 7.5px;
 }
 li:hover {
- background-color: rgba(56, 93, 57, 0.703) !important;
+ background-color: rgba(56, 93, 57, 0.233) !important;
 }
 li.selected{
  background-color: rgba(56, 68, 93, 0.703);

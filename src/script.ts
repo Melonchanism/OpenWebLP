@@ -1,8 +1,11 @@
 import "./style.css";
 import { parseHTML, decodeSongs, encodeSongs, s, sa } from "./lib/parsing";
 import type { Songs } from "./lib/types";
-import { example } from "./lib/ex";
-if (location.href.split("?")[1] === "example") example();
+if (location.href.split("?")[1] === "example")
+ (async () => {
+  localStorage.setItem("songs", await fetch('https://raw.githubusercontent.com/Melonchanism/OpenWebLP/master/ex.txt', { mode: "cors" }).then(response => response.text()))
+  location.href = location.href.split("?")[0];
+ })();
 localStorage.setItem("firsttime", "false");
 let display: Window | null,
  editor: Window | null,
@@ -173,17 +176,17 @@ addEventListener("load", () => {
    const key = event.key
    if (key === "d") {
     if (typeof display?.closed === "boolean" && display.closed === false) display.close();
-    display = open("about:blank", "_blank", "width=960, height=540, popup");
+    display = open(location.href, "_blank", "width=960, height=540, popup, left=5000");
     if (browser === "firefox") display.addEventListener("load", displayInit);
     else if (browser === "chromium" || browser === "webkit") displayInit();
    } else if (key === "e") {
     if (typeof editor?.closed === "boolean" && editor.closed === false) editor.close();
-    editor = open("about:blank", "_blank", `width=1366, height=768, popup, top=${(screen.height / 2) - (768 / 2)}, left=${(screen.width / 2) - (1366 / 2) }`);
+    editor = open(location.href, "_blank", `width=1366, height=768, popup, top=${(screen.height / 2) - (768 / 2)}, left=${(screen.width / 2) - (1366 / 2) }`);
     if (browser === "firefox") editor.addEventListener("load", editorInit);
     else if (browser === "chromium" || browser === "webkit") editorInit();
    } else if (key === "s") {
     if (typeof configurer?.closed === "boolean" && configurer.closed === false) configurer.close();
-    configurer = open("about:blank", "_blank", `width=480, height=270, popup, top=${(screen.height / 2) - (270 / 2)}, left=${(screen.width / 2) - (480 / 2) }`);
+    configurer = open(location.href, "_blank", `width=480, height=270, popup, top=${(screen.height / 2) - (270 / 2)}, left=${(screen.width / 2) - (480 / 2) }`);
     if (browser === "firefox") configurer.addEventListener("load", configurerInit);
     else if (browser === "chromium" || browser === "webkit") configurerInit();
    } else handleKey(event);
