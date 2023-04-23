@@ -1,11 +1,11 @@
 import "./style.css";
 import { parseHTML, decodeSongs, encodeSongs, s, sa } from "./lib/parsing";
-import type { Songs } from "./lib/types";
-if (location.href.split("?")[1] === "example")
- (async () => {
-  localStorage.setItem("songs", await fetch('https://raw.githubusercontent.com/Melonchanism/OpenWebLP/master/ex.txt', { mode: "cors" }).then(response => response.text()))
-  location.href = location.href.split("?")[0];
- })();
+import type { Songs, Config } from "./lib/types";
+//Remove next 4 lines for production
+if (location.href.split("?")[1] === "example") (async () => {
+ localStorage.setItem("songs", await fetch('https://raw.githubusercontent.com/Melonchanism/OpenWebLP/master/ex.txt', { mode: "cors" }).then(response => response.text()))
+ location.href = location.href.split("?")[0];
+})();
 localStorage.setItem("firsttime", "false");
 let display: Window | null,
  editor: Window | null,
@@ -16,14 +16,14 @@ let display: Window | null,
  song: number = 0,
  lyric: number = 0,
  songs: Songs[] = (() => {
-  if (localStorage.getItem("songs")) return JSON.parse(localStorage.getItem("songs"));
+  if (localStorage.getItem("songs") && localStorage.getItem("songs").length > 30) return JSON.parse(localStorage.getItem("songs"));
   else return [{
    name: "No songs found",
    lyrics: ["No songs found"]
-  }]; 
+  }];
  })(),
  displayFontSize = "calc(3vh + 3vw)",
- config = {
+ config:Config = {
   display: `<title>OpenWebLP Display</title><style>body{background-color:black;color:white;font-family:sans-serif;overflow:hidden;margin:0px;width:100vw;height:100vh;}h1{font-size:${displayFontSize};text-align:center;user-select:none;}div{top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;margin:0px;width:100vw}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
   editor: `<title>OpenWebLP Editor</title><style>body{background-color:black;color:white;font-family:sans-serif;margin:0px;overflow:hidden}textarea{margin:0px;border:none;padding:15px;background-color:black;width:100vw;height:100vh;color:white; resize:none;}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
   configurer: `<title>OpenWebLP Settings</title><style>body{background-color:black;color:white;font-family:sans-serif;margin:0px;overflow:hidden;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute}input{background-color:#111111;color:white;border:none;margin:1px;font-size:2rem; width:400px}</style><link rel="icon" href=${document.querySelector<HTMLLinkElement>("link[rel='icon']").href}>`,
@@ -40,7 +40,7 @@ let display: Window | null,
 
 function handleKey(event: KeyboardEvent) {
  const key: string = event.key;
- if (key === "ArrowDown" || key === "ArrowUp" || key === "ArrowLeft" || key === "ArrowRight" || key === "F1" || key === "F3" || key === "F5" || key === "F6" || key === "F7" || key === "F10") event.preventDefault();
+ if (!(key === "F11") && !(key === "F12")) event.preventDefault();
  if (key === "ArrowDown") setLyric(lyric + 1);
  else if (key === "ArrowUp") setLyric(lyric - 1);
  else if (key === "ArrowLeft") setSong(song - 1);

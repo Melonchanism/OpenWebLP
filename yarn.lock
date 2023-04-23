@@ -210,9 +210,9 @@ rollup@^3.18.0:
     fsevents "~2.3.2"
 
 smallselectors@^1.0.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/smallselectors/-/smallselectors-1.1.1.tgz#3666b0b2aefbd5e7f8df1c3679ced3761938260f"
-  integrity sha512-n0XWkUgIcEe8gt0BYxlzFBDVosGkUYEVZ3UiEj/LAFgCEEIo7aytdqSnWeRD8dAPmjxQFb0sySAKClPz4zMBFQ==
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/smallselectors/-/smallselectors-1.2.1.tgz#e9b672e43cecc5880cc9895a12f0910700751d43"
+  integrity sha512-hQTGxXCgYntwaj7o5uOcXMOuA6c5RXt4ihp18mV/zs3BQZQLj4FTeL/JzJSU1mVVA2SVqaKvec2v/rh7tmooew==
 
 source-map-js@^1.0.2:
   version "1.0.2"
