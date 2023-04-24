@@ -44,7 +44,7 @@ Lyrics 2 line 2
 you get the idea
 ## Bugs:
 - ~~on chromium, opening the editor will cause the display to exit fullscreen~~<br>
-*Temporary Solution: use F11*
+*Temporary Solution: use F11*<br>
 only with new tabs, using popups for now<br>
 - ~~have editor always open in new tab and not in new window~~<br>
 *Depends on browser settings*<br>
