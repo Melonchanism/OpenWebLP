@@ -6,7 +6,7 @@
   "licence": "GPL-3.0",
   "readme": "readme.md",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "deploy": "tsc && vite build && firebase deploy",

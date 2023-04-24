@@ -1,6 +1,6 @@
 import "./style.css";
-import { parseHTML, decodeSongs, encodeSongs, s, sa } from "./lib/parsing";
-import type { Songs, Config } from "./lib/types";
+import { Songs, parseHTML, s, sa } from "./lib/parsing";
+import type { Config } from "./lib/types";
 //Remove next 4 lines for production
 if (location.href.split("?")[1] === "example") (async () => {
  localStorage.setItem("songs", await fetch('https://raw.githubusercontent.com/Melonchanism/OpenWebLP/master/ex.txt', { mode: "cors" }).then(response => response.text()))
@@ -34,7 +34,7 @@ let display: Window | null,
   ///@ts-ignore
   else if (typeof chrome === "object") return "chromium";
   ///@ts-ignore
-  else if (typeof elem.webkitRequestFullscreen === "function") return "webkit";
+  else if (typeof Element.webkitRequestFullscreen === "function") return "webkit";
   else return "unknown";
  })();
 
@@ -84,27 +84,19 @@ function render() {
  displayText = displayText.join("<br>");
  let songlistHTML: string = "",
   lyriclistHTML: string = "";
- songs.forEach(item => {
-  songlistHTML += `<li class="songlistitem">${item.name}</li><hr>`;
- });
+ for (const item of songs) songlistHTML += `<li class="songlistitem">${item.name}</li><hr>`;
  songlist.innerHTML = songlistHTML.slice(0, -4);
  const songListItems = Array.from(sa<HTMLLIElement>("li.songlistitem"));
- songListItems.forEach(item => item.classList.remove("selected"));
+ for (const item of songListItems) item.classList.remove("selected")
  songListItems[song].classList.add("selected");
- songListItems.forEach(item => {
-  item.addEventListener("click", () => setSong(songListItems.indexOf(item)));
- });
+ for (const item of songListItems) item.addEventListener("click", () => setSong(songListItems.indexOf(item)));
  s("#songlist > li.selected").scrollIntoView({ behavior: "smooth", block: "center" });
- songs[song].lyrics.forEach(item => {
-  lyriclistHTML += `<li class="lyriclistitem">${item.replaceAll("|", "<br>")}</li><hr>`;
- });
+ for (const item of songs[song].lyrics) lyriclistHTML += `<li class="lyriclistitem">${item.replaceAll("|", "<br>")}</li><hr>`;
  lyriclist.innerHTML = lyriclistHTML.slice(0, -4);
  const lyricListItems = Array.from(sa<HTMLLIElement>("li.lyriclistitem"));
- lyricListItems.forEach(item => item.classList.remove("selected"));
+ for (const item of lyricListItems) item.classList.remove("selected")
  lyricListItems[lyric].classList.add("selected");
- lyricListItems.forEach(item => { 
-  item.addEventListener("click", () => setLyric(lyricListItems.indexOf(item)));
- });
+ for (const item of lyricListItems) item.addEventListener("click", () => setLyric(lyricListItems.indexOf(item)));
  s("#lyriclist > li.selected").scrollIntoView({ behavior: "smooth", block: "center" });
  if (display && display?.closed === false) display.document.body.innerHTML = `<div><h1>${displayText}</h1></div>`;
  preview.contentDocument.body.innerHTML = `<div><h1>${displayText}</h1></div>`;
@@ -120,11 +112,11 @@ function editorInit() {
  editor.document.head.innerHTML = config.editor;
  editor.document.body.innerHTML = `<textarea autofocus spellcheck="false"></textarea>`;
  const input = editor.document.querySelector<HTMLTextAreaElement>("textarea");
- input.value = decodeSongs(songs);
+ input.value = Songs.decode(songs);
  input.addEventListener("keydown", (event: KeyboardEvent) => {
   const key = event.key
   if (key === "Enter" && event.ctrlKey) { 
-   songs = encodeSongs(input.value);
+   songs = Songs.parse(input.value);
    if (!songs[song]?.lyrics[lyric]) setSong(0);
    render();
    localStorage.setItem("songs", JSON.stringify(songs));
@@ -171,27 +163,27 @@ function setLyric(number: number) {
 addEventListener("load", () => {
  preview.contentDocument.head.innerHTML = config.display;
  preview.contentDocument.addEventListener("keydown", handleKey);
- [document, preview.contentDocument].forEach(item => {
+ for (const item of [document, preview.contentDocument]) {
   item.addEventListener("keydown", (event: KeyboardEvent) => {
    const key = event.key
    if (key === "d") {
     if (typeof display?.closed === "boolean" && display.closed === false) display.close();
-    display = open(location.href, "_blank", "width=960, height=540, popup, left=5000");
+    display = open("about:blank", "_blank", "width=960, height=540, popup, left=5000");
     if (browser === "firefox") display.addEventListener("load", displayInit);
     else if (browser === "chromium" || browser === "webkit") displayInit();
    } else if (key === "e") {
     if (typeof editor?.closed === "boolean" && editor.closed === false) editor.close();
-    editor = open(location.href, "_blank", `width=1366, height=768, popup, top=${(screen.height / 2) - (768 / 2)}, left=${(screen.width / 2) - (1366 / 2) }`);
+    editor = open("about:blank", "_blank", `width=1366, height=768, popup, top=${(screen.height / 2) - (768 / 2)}, left=${(screen.width / 2) - (1366 / 2)}`);
     if (browser === "firefox") editor.addEventListener("load", editorInit);
     else if (browser === "chromium" || browser === "webkit") editorInit();
    } else if (key === "s") {
     if (typeof configurer?.closed === "boolean" && configurer.closed === false) configurer.close();
-    configurer = open(location.href, "_blank", `width=480, height=270, popup, top=${(screen.height / 2) - (270 / 2)}, left=${(screen.width / 2) - (480 / 2) }`);
+    configurer = open("about:blank", "_blank", `width=480, height=270, popup, top=${(screen.height / 2) - (270 / 2)}, left=${(screen.width / 2) - (480 / 2)}`);
     if (browser === "firefox") configurer.addEventListener("load", configurerInit);
     else if (browser === "chromium" || browser === "webkit") configurerInit();
    } else handleKey(event);
   });
- });
+ }
  render();
  addEventListener("beforeunload", () => {
   if (typeof display?.closed === "boolean" && display.closed === false) display.close();

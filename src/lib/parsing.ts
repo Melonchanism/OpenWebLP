@@ -1,6 +1,6 @@
-import type { Songs } from "./types";
 export { s, sa } from "smallselectors";
 
+/*
 export function decodeSongs(input: Songs[]): string {
  let output = "";
  input.forEach((item: Songs) => {
@@ -18,7 +18,7 @@ export function encodeSongs(input: string): Songs[] {
  });
  return newSongs;
 };
-
+*/
 export function parseHTML(input: string | string[]) {
  if (typeof input === "object") {
   input.forEach(item => {
@@ -29,3 +29,33 @@ export function parseHTML(input: string | string[]) {
  };
  return input;
 };
+export class Songs {
+ name: string;
+ lyrics: string[];
+
+ constructor(name: string, lyrics: string[]) {
+  this.name = name;
+  this.lyrics = lyrics;
+ }
+
+ static parse(input: string): Songs[] {
+  let newSongs: Songs[] = [];
+  for (const item of input.split("\n\n\n")) {
+   let name = item.split("\n", 1)[0];
+   let lyrics: string[] = item
+    .slice(name.length + 1)
+    .split("\n\n")
+    .map((item) => item.replaceAll("\n", "|"));
+   newSongs.push(new Songs(name, lyrics));
+  }
+  return newSongs;
+ }
+
+ static decode(input: Songs[]): string {
+  let output = "";
+  for (const item of input) {
+   output += item.name + "\n" + item.lyrics.join("\n\n").replaceAll("|", "\n") + "\n\n\n";
+  }
+  return output.slice(0, -3);
+ }
+}
