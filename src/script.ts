@@ -2,9 +2,9 @@ import "./style.css";
 import { Songs, parseHTML, s, sa } from "./lib/parsing";
 import type { Config } from "./lib/types";
 //Remove next 4 lines for production
-if (location.href.split("?")[1] === "example") (async () => {
+if (location.search === "?example") (async () => {
  localStorage.setItem("songs", await fetch('https://raw.githubusercontent.com/Melonchanism/OpenWebLP/master/ex.txt', { mode: "cors" }).then(response => response.text()))
- location.href = location.href.split("?")[0];
+ location.search = "";
 })();
 localStorage.setItem("firsttime", "false");
 let display: Window | null,
