@@ -13,7 +13,7 @@ onMount(() => {
 channel.addEventListener("message", evt => {
   if (evt.data.type === "lyrics") {
     if (settings.crossfade) {
-      nextLyric = evt.data.message.split("\\n").slice(1).join("<br>");
+      nextLyric = evt.data.message;
       document.querySelector(".future")?.classList.add("new");
       document.querySelector(".future")?.classList.remove("future");
       document.querySelector(".current")?.classList.add("old");
@@ -27,7 +27,7 @@ channel.addEventListener("message", evt => {
         document.querySelector(".new")?.classList.remove("new");
       }, 300);
     } else {
-      currentLyric = evt.data.message.split("\\n").slice(1).join("<br>");
+      currentLyric = evt.data.message;
     }
   } else if (evt.data.type === "fullscreen" && top === self) {
     document.body.requestFullscreen();
@@ -41,8 +41,8 @@ channel.addEventListener("message", evt => {
 <svelte:window on:keydown={evt => channel.postMessage({ type: "keypress", message: { key: evt.key } })} />
 
 <div class="main">
-  <h1 class="current">{@html currentLyric}</h1>
-  <h1 class="future">{@html nextLyric}</h1>
+  <h1 class="current">{currentLyric}</h1>
+  <h1 class="future">{nextLyric}</h1>
 </div>
 
 <style lang="postcss">
@@ -57,6 +57,7 @@ channel.addEventListener("message", evt => {
     font-size: 7vh;
     position: absolute;
     animation-duration: 300ms;
+    white-space: pre-line;
     &:is(.new) {
       animation-name: fade-in;
     }
