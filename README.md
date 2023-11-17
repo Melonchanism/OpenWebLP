@@ -52,7 +52,6 @@ removed tabs, using popups instead<br>
 - Window doesnt spawn on the left monitor on non-firefox<br>
 - LMK if you find any<br>
 ## To-Do:
-- ~~Add some themes~~ Gray mode added because light mode is too bright<br>
 - ~~Add auto preview sizing~~ Mostly Done<br>
 - Get more people to actually use it<br>
 - ~~Add a configurer~~ WIP but it works<br>
