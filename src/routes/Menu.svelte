@@ -2,6 +2,7 @@
 import { fade, scale, slide } from "svelte/transition";
 import { createEventDispatcher, onMount } from "svelte";
 import DragList from "./DragList.svelte";
+import { cubicInOut } from "svelte/easing";
 type Song = {
   name: string;
   lyrics: string[];
@@ -35,7 +36,7 @@ $: if (editingSong !== -1 && editingSongList) {
 };
 </script>
 
-<div class="main" in:slide={{delay: 250, duration: 250}} out:slide|global={{duration: 250}}>
+<div class="main" transition:scale={{duration: 500, easing: cubicInOut}}>
   <div class="navbar">
     <h1><button class="close" on:click={() => dispatch("close")}><i class="bi bi-x-lg" /></button>Menu</h1>
     <h2 on:click={() => route = "settings"} aria-current={route === "settings"}><i class="bi bi-gear" /><span>Settings</span></h2>
@@ -71,10 +72,8 @@ $: if (editingSong !== -1 && editingSongList) {
       <div class="editor" in:fade>
         <div class="songlist" bind:this={editingSongList}>
           <h1><i class="bi bi-file-earmark-plus" />New Song</h1>
-          <hr />
           {#each songs as song}
             <h3 on:click={evt => editingSong = Array.from(editingSongList.querySelectorAll("h3")).indexOf(evt.target)}>{song.name}</h3>
-            <hr />
           {/each}
         </div> 
         <textarea placeholder="input" spellcheck="false" bind:this={editorTextArea} on:keydown|stopPropagation />
@@ -90,7 +89,7 @@ $: if (editingSong !== -1 && editingSongList) {
 <style lang="postcss">
 .main {
   display: flex;
-  width: 100%;
+  width: 90vw;
   height: 90vh;
   .navbar {
     display: flex;
@@ -131,8 +130,7 @@ $: if (editingSong !== -1 && editingSongList) {
         input {
           margin-top: 5.5px;
           height: 23px;
-          position: absolute;
-          right: 100px;
+          float: right;
           background-color: var(--border-color);
           color: white;
           border: 1px var(--border-color) solid;
@@ -201,7 +199,7 @@ $: if (editingSong !== -1 && editingSongList) {
     height: 50px;
     cursor: pointer;
     i {
-      font-size: 3rem;
+      font-size: 2rem;
     }
   }
 }

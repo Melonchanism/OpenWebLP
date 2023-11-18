@@ -4,7 +4,6 @@ import { dndzone, overrideItemIdKeyNameBeforeInitialisingDndZones, type DndEvent
 import currentSongs from "./currentSongs";
 import songs from "$lib/example.json"
 export let name: string;
-export let readonly: boolean;
 export let items: {
   name: string,
   lyrics: string[]
