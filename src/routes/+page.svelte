@@ -1,9 +1,8 @@
 <script lang="ts">
-import currentSongsStore from "./currentSongs";
-// import songsStore from "./allSongs";
-import songs from "$lib/example.json"
+import currentSongsStore from "$lib/stores/currentSongs";
+import songsStore from "$lib/stores/songs";
 import { onMount } from "svelte";
-import Menu from "./Menu.svelte";
+import Menu from "$lib/menu/Menu.svelte";
 import { fade } from "svelte/transition";
 const channel = new BroadcastChannel("lyrics");
 let currentSong = 0;
@@ -11,13 +10,16 @@ let currentLyric = 0;
 let loaded = false;
 let showMenu = false;
 $: currentSongs = $currentSongsStore;
-// $: songs = $songsStore;
+$: songs = $songsStore
 onMount(() => loaded = true);
 channel.addEventListener("message", evt => {
 	if (evt.data.type === "fetch") {
 		channel.postMessage({
 			type: "lyrics",
-			message: currentSongs[currentSong]?.lyrics[currentLyric]?.split("\n").slice(1).join("\n") ?? "OpenWebLp"
+			message: {
+				lyric: currentSongs[currentSong]?.lyrics[currentLyric]?.split("\n").slice(1).join("\n") ?? "OpenWebLp",
+				type: currentSongs[currentSong]?.lyrics[currentLyric]?.split("\n", 1)[0]
+			}
 		});
 	} else if (evt.data.type === "keypress") {
 		handeKey(evt.data.message);
@@ -47,12 +49,16 @@ function handeKey(evt: { preventDefault?: () => any; key: string; }) {
 		case "m":
 			showMenu = true;
 			break;
+		case "b":
+			currentLyric = -1;
+			break;
 		case "Escape":
 			evt.preventDefault ? showMenu = false : null;
 			break;
 	}
 };
 $: if (currentLyric !== -1 && currentSongs[0]  && loaded) {
+	console.log("update")
 	let songElems = document.querySelectorAll(".song");
 	let lyricElems = document.querySelectorAll(".lyric");
 	lyricElems.forEach(elem => {
@@ -67,16 +73,23 @@ $: if (currentLyric !== -1 && currentSongs[0]  && loaded) {
 		songElems[currentSong].ariaCurrent = "true";
 		channel.postMessage({
 			type: "lyrics",
-			message: currentSongs[currentSong].lyrics[currentLyric].split("\n").slice(1).join("\n")
+			message: {
+				lyric: currentSongs[currentSong]?.lyrics[currentLyric]?.split("\n").slice(1).join("\n"),
+				type: currentSongs[currentSong]?.lyrics[currentLyric]?.split("\n", 1)[0]
+			}
 		});
 	} else {
 		setTimeout(() => {
 			currentLyric = 1;
 			currentLyric = 0;
-		}, 100);
+		}, 10);
 	}
 };
-$: if (currentSong !== -1) currentLyric = 0;
+$: if (currentSong !== -1) {
+	setTimeout(() => {
+		currentLyric = 0;
+	}, 10);
+}
 </script>
 
 <svelte:window on:keydown={handeKey} />
@@ -85,14 +98,11 @@ $: if (currentSong !== -1) currentLyric = 0;
 	<div class="secondary">
 		<div class="songs">
 			<ul>
-				<hr>
 				{#if currentSongs[0]}
 					{#each currentSongs as song}
 						<li class="song" on:click|preventDefault={evt => {
 							currentSong = Array.from(document.querySelectorAll(".song")).indexOf(evt.target);
-							currentLyric = 0;
 						}}>{song.name}</li>
-						<hr>
 					{/each}
 				{:else}
 					<h1>No songs</h1>
@@ -103,11 +113,9 @@ $: if (currentSong !== -1) currentLyric = 0;
 	</div>
 	<div class="secondary">
 		<ul>
-			<hr>
 			{#if currentSongs[0]}
 				{#each currentSongs[currentSong].lyrics as lyric}
 					<li class="lyric" on:click|preventDefault={evt => currentLyric = Array.from(document.querySelectorAll(".lyric")).indexOf(evt.target)}>{lyric}</li>
-					<hr>
 				{/each}
 			{:else}
 				<h1>No songs</h1>
@@ -118,7 +126,7 @@ $: if (currentSong !== -1) currentLyric = 0;
 
 <div class="menu-container {showMenu ? "active" : ""}">
 	{#if showMenu}
-		<Menu {channel} {currentSongs} {songs} on:close={() => showMenu = false} />
+		<Menu {channel} on:close={() => showMenu = false} />
 	{:else}
 		<button transition:fade={{duration: 250}} on:click={() => showMenu = true}><i class="bi bi-list"></i></button>
 	{/if}
@@ -143,6 +151,7 @@ $: if (currentSong !== -1) currentLyric = 0;
 		padding: 3px;
 		font-size: 16px;
 		transition: all 200ms;
+		border-bottom: 1px var(--border-color) solid;
 		white-space: pre-line;
 		&::first-line {
 			font-size: 20px;
@@ -150,6 +159,9 @@ $: if (currentSong !== -1) currentLyric = 0;
 		&:hover {
 			background-color: rgb(18, 29, 29);
 			cursor: pointer;
+		}
+		&:first-child {
+			border-top: 1px var(--border-color) solid;
 		}
   }
 	.songs {
@@ -179,7 +191,7 @@ $: if (currentSong !== -1) currentLyric = 0;
 	height: 40px;
 	align-items: center;
 	justify-content: center;
-	transition: all 500ms cubic-bezier(calc(2/3), 0, calc(1/3), 1);
+	transition: all 400ms cubic-bezier(calc(2/3), 0, calc(1/3), 1);
 	&.active {
 		left: 5vw;
 		bottom: 5vh;
@@ -194,7 +206,7 @@ $: if (currentSong !== -1) currentLyric = 0;
 		background-color: rgba(0, 0, 0, 0);
 		border: none;
 		color: white;
-		transition: all 500ms;
+		transition: all 250ms;
 		height: 40px;
 		width: 40px;
 		border-radius: 10px;

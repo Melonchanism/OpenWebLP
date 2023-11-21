@@ -1,4 +1,4 @@
-import { readable, writable, type Readable } from "svelte/store";
+import { writable } from "svelte/store";
 type Song = {
   name: string;
   lyrics: string[];
@@ -101,4 +101,4 @@ export default writable([
       "[Chorus]\n'Cause I know my God saved the day\nAnd I know His word never fails\nAnd I know my God made a way for me\nSalvation is here"
     ]
   }
-]) as Readable<Song[]>
+])

@@ -1,8 +1,8 @@
 <script lang="ts">
 import { flip } from "svelte/animate";
 import { dndzone, overrideItemIdKeyNameBeforeInitialisingDndZones, type DndEvent } from "svelte-dnd-action";
-import currentSongs from "./currentSongs";
-import songs from "$lib/example.json"
+import currentSongs from "$lib/stores/currentSongs";
+import songs from "$lib/stores/songs";
 export let name: string;
 export let items: {
   name: string,
@@ -14,12 +14,12 @@ interface asdfEvent extends CustomEvent {
 }
 function dndConsider(evt: asdfEvent) {
   items = evt.detail.items;
+  console.log(items);
   items.forEach(itm => itm.name === evt.detail.info.id ? evt.preventDefault() : null)
-  console.log(evt)
 }
 function dndFinalize(evt: asdfEvent) {
   items = evt.detail.items;
-  name === "current" ? currentSongs.set(items) : null;
+  name === "current" ? currentSongs.set(items) : songs.set(items);
 }
 </script>
 

@@ -37,6 +37,7 @@ hr {
 	color: var(--border-color);
 	background-color: var(--border-color);
 	border-color: var(--border-color);
+	height: 1px;
 }
 [aria-current=true] {
 	background-color: rgb(39, 66, 66) !important;

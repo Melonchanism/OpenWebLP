@@ -1,16 +1,13 @@
 <script>
-import { onNavigate } from '$app/navigation';
+import { onMount } from 'svelte';
 import './styles.css';
-onNavigate(nav => {
-	//@ts-expect-error
-	if (!document.startViewTransition) return;
-	return new Promise(res => {
-		//@ts-expect-error
-		document.startViewTransition(async () => {
-			res();
-			await nav.complete;
-		})		
-	})
+onMount(() => {
+  !localStorage.getItem("settings") ? localStorage.setItem("settings", JSON.stringify(
+    {
+      crossfade: "normal",
+      displayfontsize: "7vh",
+    })
+  ) : null;
 })
 </script>
 
