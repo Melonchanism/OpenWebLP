@@ -1,5 +1,5 @@
 <script lang="ts">
-import DragList from "./input/DragList.svelte";
+import DragList from './input/DragList.svelte'
 import { send, recieve } from "./crossfade";
 import songsStore from "$lib/stores/songs"
 import currentSongsStore from "$lib/stores/currentSongs";
@@ -10,11 +10,15 @@ $: songs = $songsStore
 <div class="songselector" in:send={{key:"menu"}} out:recieve={{key:"menu"}}>
   <div class="songlist">
     <h1><i class="bi bi-floppy" />Stored</h1>
-    <DragList items={songs} name="stored" />
+      {#each songs as song}
+        <h3>{song.name}</h3>
+      {/each}
   </div>
   <div class="songlist">
     <h1><i class="bi bi-tv" />Current</h1>
-    <DragList items={currentSongs} name="current" />
+      {#each currentSongs as song}
+        <h3>{song.name}</h3>
+      {/each}
   </div> 
 </div>
 
@@ -28,19 +32,27 @@ $: songs = $songsStore
     width: 50%;
     height: 100%;
     overflow-y: scroll;
-    &:nth-child(1) {
-      border-right: 1px var(--border-color) solid;
+    h3 {
+      border-bottom: 1px var(--border-color) solid;
+      transition: background-color opacity 250ms;
+      height: 30px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      cursor: grab;
+      &:hover {
+        background-color: rgb(18, 29, 29);
+      }
+      &:is(.dragging) {
+        opacity: 0;
+        background-color: rgb(39, 66, 66) !important;
+      }
     }
-    &:nth-child(2) h1 {
-      border-top-right-radius: 32px
+    &:first-child {
+      border-right: 1px var(--border-color) solid;
     }
     h1 {
       transition: all 250ms;
       border-bottom: 1px var(--border-color) solid;
-      &:hover {
-        cursor: pointer;
-        background-color: rgb(18, 29, 29);
-      }
       .bi {
         margin: 4px;
       }

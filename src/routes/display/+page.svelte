@@ -2,27 +2,29 @@
 import { onMount } from "svelte";
 import { cubicOut } from "svelte/easing";
 import { crossfade, fade } from "svelte/transition";
+import type { SettingsObj } from "$lib/types";
 const channel = new BroadcastChannel("lyrics");
-let settings = {};
+//@ts-expect-error
+let settings: SettingsObj = {};
 let transitioning = false;
 let currentLyric = "";
 let nextLyric = "";
 let type = "";
+let songName = "";
 const [send, recieve] = crossfade({
   duration: 300,
   easing: cubicOut
 })
 onMount(() => {
   setTimeout(() => channel.postMessage({ type: "fetch" }), 100);
-  settings = JSON.parse(localStorage.getItem("settings")!);
+  settings = JSON.parse(localStorage.getItem("settings"));
 });
 channel.addEventListener("message", evt => {
   if (evt.data.type === "lyrics") {
-    console.log(settings);
     if (settings.crossfade !== "none") {
-      console.log(evt.data)
       nextLyric = evt.data.message.lyric;
-      type = evt.data.message.type
+      type = evt.data.message.type;
+      songName = evt.data.message.song;
       transitioning = true;
       setTimeout(() => {
         nextLyric !== " " ? currentLyric = nextLyric : null;
@@ -31,6 +33,8 @@ channel.addEventListener("message", evt => {
       }, 301);
     } else {
       currentLyric = evt.data.message.lyric;
+      type = evt.data.message.type;
+      songName = evt.data.message.name;
     }
   } else if (evt.data.type === "fullscreen" && top === self && !document.fullscreenElement) {
     document.body.requestFullscreen();
@@ -50,16 +54,20 @@ channel.addEventListener("message", evt => {
     {:else}
       <h1 out:recieve={{key:"lyric"}}>{currentLyric}</h1>
     {/if}
-    <p>{type}</p>
-    <p></p>
+    {#if !settings.simple}
+      <p>{type}</p>
+      <p>{songName}</p>
+    {/if}
   {:else}
     {#if (transitioning)}
       <h1 in:fade={{duration: 300}}>{nextLyric}</h1>
     {:else}
       <h1 out:fade={{duration: 300}}>{currentLyric}</h1>
     {/if}
-    <p></p>
-    <p></p>
+    {#if !settings.simple}
+      <p>{type}</p>
+      <p>{songName}</p>
+    {/if}
   {/if}
 </div>
 
@@ -85,7 +93,7 @@ channel.addEventListener("message", evt => {
       bottom: 5px;
       left: 5px;
     }
-    &:nth-of-type(1) {
+    &:nth-of-type(2) {
       bottom: 5px;
       right: 5px;
     }

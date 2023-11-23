@@ -2,6 +2,7 @@
 import songsStore from "$lib/stores/songs"
 import currentSongsStore from "$lib/stores/currentSongs";
 import { send, recieve } from "./crossfade";
+import type { Song } from "$lib/types";
 $: currentSongs = $currentSongsStore;
 $: songs = $songsStore
 $: allSongs = [...songs, ...currentSongs]

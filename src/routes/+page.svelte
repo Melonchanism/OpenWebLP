@@ -50,7 +50,14 @@ function handeKey(evt: { preventDefault?: () => any; key: string; }) {
 			showMenu = true;
 			break;
 		case "b":
-			currentLyric = -1;
+			channel.postMessage({
+				type: "lyrics",
+				message: {
+					lyric: "",
+					type: "blank",
+					song: ""
+				}
+			});
 			break;
 		case "Escape":
 			evt.preventDefault ? showMenu = false : null;
@@ -58,7 +65,6 @@ function handeKey(evt: { preventDefault?: () => any; key: string; }) {
 	}
 };
 $: if (currentLyric !== -1 && currentSongs[0]  && loaded) {
-	console.log("update")
 	let songElems = document.querySelectorAll(".song");
 	let lyricElems = document.querySelectorAll(".lyric");
 	lyricElems.forEach(elem => {
@@ -75,7 +81,8 @@ $: if (currentLyric !== -1 && currentSongs[0]  && loaded) {
 			type: "lyrics",
 			message: {
 				lyric: currentSongs[currentSong]?.lyrics[currentLyric]?.split("\n").slice(1).join("\n"),
-				type: currentSongs[currentSong]?.lyrics[currentLyric]?.split("\n", 1)[0]
+				type: currentSongs[currentSong]?.lyrics[currentLyric]?.split("\n", 1)[0],
+				song: currentSongs[currentSong]?.name
 			}
 		});
 	} else {

@@ -1,8 +1,8 @@
 <script lang="ts">
-export let on: boolean;
+export let toggled: boolean;
 </script>
 
-<div class="switch {on ? "on" : ""}" on:click={() => on = !on}><div class="switchslider" /></div>
+<div class="switch {toggled ? "on" : ""}" on:click={() => toggled = !toggled}><div class="switchslider" /></div>
 
 <style lang="postcss">
 .switch {

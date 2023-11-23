@@ -5,7 +5,8 @@ onMount(() => {
   !localStorage.getItem("settings") ? localStorage.setItem("settings", JSON.stringify(
     {
       crossfade: "normal",
-      displayfontsize: "7vh",
+      displayfontsize: "7",
+      simple: true,
     })
   ) : null;
 })

@@ -1,8 +1,9 @@
 <script lang="ts">
 import { send, recieve } from "./crossfade";
 import Switch from "./input/Switch.svelte";
+import type { SettingsObj } from "$lib/types";
 export let channel: BroadcastChannel;
-let settings = JSON.parse(localStorage.getItem("settings")!);
+let settings: SettingsObj = JSON.parse(localStorage.getItem("settings")!);
 $: if (settings) {
   localStorage.setItem("settings", JSON.stringify(settings));
   channel.postMessage({type: "settingupdate"});
@@ -23,19 +24,22 @@ $: if (settings) {
   <div class="setting">
     <h2>Simple mode</h2>
     <p>- Only show the lyric on the display</p>
-    <Switch bind:on={settings.simple} />
+    <Switch bind:toggled={settings.simple} />
   </div>
   <div class="setting">
     <h2>Test</h2>
     <p>- what</p>
-    <Switch on={true} />
+    <Switch toggled={true} />
   </div>
   <div class="setting">
     <h2>Display Font Size</h2>
-    <p>- Size of display font (% of vertical height)</p>
-    <input type="number" inputmode="numeric" min="1" max="100" bind:value={settings.displayfontsize} on:keydown|stopPropagation={(evt) => {
-      "1234567890".search(evt.key) === -1 && !evt.ctrlKey && evt.key !== "Backspace" ? evt.preventDefault() : null;
-    }} />
+    <p>- Size of display font (Honestly I don't know what to scale it by)</p>
+    <select bind:value={settings.displayfontsize}>
+      <option value="3">Xtra Small</option>
+      <option value="5">Small</option>
+      <option value="7">Medium</option>
+      <option value="10">large</option>
+    </select>
   </div>
 </div>
 
@@ -51,13 +55,15 @@ $: if (settings) {
     width: calc(100% - 30px);
     align-items: center;
     border-bottom: 1px var(--border-color) solid;
-    input, select {
-      height: 25px;
+    select {
+      width: 100px;
       position: absolute;
+      display: flex;
       right: 30px;
       background-color: var(--border-color);
       color: white;
-      border: 1px var(--border-color) solid;
+      border: 5px var(--border-color) solid;
+      border-radius: 8px;
     }
     p {
       margin-left: 4px;
