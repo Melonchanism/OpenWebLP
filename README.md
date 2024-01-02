@@ -54,5 +54,5 @@ removed tabs, using popups instead<br>
 ## To-Do:
 - ~~Add auto preview sizing~~ Mostly Done<br>
 - Get more people to actually use it<br>
-- ~~Add a configurer~~ WIP but it works<br>
+- ~~Add a configurer~~ Changed to settings<br>
 - LMK if you have any ideas<br>
