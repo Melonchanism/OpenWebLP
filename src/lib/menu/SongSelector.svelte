@@ -7,7 +7,7 @@ $: currentSongs = $currentSongsStore;
 $: songs = $songsStore
 </script>
 
-<div class="songselector" in:send={{key:"menu"}} out:recieve={{key:"menu"}}>
+<div class="songselector" in:send|global={{key:"menu"}} out:recieve|global={{key:"menu"}}>
   <div class="songlist">
     <h1><i class="bi bi-floppy" />Stored</h1>
       {#each songs as song}

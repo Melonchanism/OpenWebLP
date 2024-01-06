@@ -11,7 +11,7 @@ $: if (settings) {
 };
 </script>
 
-<div class="settings" in:send={{key:"menu"}} out:recieve={{key:"menu"}}>
+<div class="settings" in:send|global={{key:"menu"}} out:recieve|global={{key:"menu"}}>
   <div class="setting">
     <h2>CrossFade Animation</h2>
     <p>- Fade between lyrics</p>

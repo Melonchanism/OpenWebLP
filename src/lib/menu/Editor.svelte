@@ -19,7 +19,7 @@ $: if (editingSong !== -1 && editingSongList) {
 };
 </script>
 
-<div class="editor" in:send={{key:"menu"}} out:recieve={{key:"menu"}}>
+<div class="editor" in:send|global={{key:"menu"}} out:recieve|global={{key:"menu"}}>
   <div class="songlist" bind:this={editingSongList}>
     <h1><i class="bi bi-file-earmark-plus" />New Song</h1>
     {#each allSongs as song}

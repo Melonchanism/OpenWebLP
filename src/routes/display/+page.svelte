@@ -11,7 +11,7 @@ let currentLyric = "";
 let nextLyric = "";
 let type = "";
 let songName = "";
-const [send, recieve] = crossfade({
+const [send, receive] = crossfade({
   duration: 300,
   easing: cubicOut
 })
@@ -47,12 +47,12 @@ channel.addEventListener("message", evt => {
 
 <svelte:window on:keydown={evt => channel.postMessage({ type: "keypress", message: { key: evt.key } })} />
 
-<div class="main" style:font-size={`${settings.displayfontsize / 2}vh`}>
+<div class="main" style:font-size={`${settings.displayfontsize}vh`}>
   {#if settings.crossfade === "fancy"}
     {#if (transitioning)}
-      <h1 in:send={{key: "lyric"}}>{nextLyric}</h1>
+      <h1 in:send|global={{key: "lyric"}}>{nextLyric}</h1>
     {:else}
-      <h1 out:recieve={{key:"lyric"}}>{currentLyric}</h1>
+      <h1 out:receive|global='{{key:"lyric"}}'>{currentLyric}</h1>
     {/if}
     {#if !settings.simple}
       <p>{type}</p>
@@ -60,9 +60,9 @@ channel.addEventListener("message", evt => {
     {/if}
   {:else}
     {#if (transitioning)}
-      <h1 in:fade={{duration: 300}}>{nextLyric}</h1>
+      <h1 in:fade|global={{duration: 300}}>{nextLyric}</h1>
     {:else}
-      <h1 out:fade={{duration: 300}}>{currentLyric}</h1>
+      <h1 out:fade|global={{duration: 300}}>{currentLyric}</h1>
     {/if}
     {#if !settings.simple}
       <p>{type}</p>
@@ -73,16 +73,17 @@ channel.addEventListener("message", evt => {
 
 <style lang="postcss">
 .main {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100vw;
   height: 100vh;
   h1 {
+    top: 50%;
+    left: 50%;
+    width: fit-content;
+    transform: translate(-50%, -50%);
     transition: all 250ms;
     text-align: center;
     font-weight: 600;
-    font-size: inherit, 7vh;
+    font-size: inherit;
     position: absolute;
     white-space: pre-line;
   }

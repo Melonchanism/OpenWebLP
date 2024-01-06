@@ -135,7 +135,7 @@ $: if (currentSong !== -1) {
 	{#if showMenu}
 		<Menu {channel} on:close={() => showMenu = false} />
 	{:else}
-		<button transition:fade={{duration: 250}} on:click={() => showMenu = true}><i class="bi bi-list"></i></button>
+		<button transition:fade|global={{duration: 250}} on:click={() => showMenu = true}><i class="bi bi-list"></i></button>
 	{/if}
 </div>
 

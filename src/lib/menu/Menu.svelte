@@ -11,7 +11,7 @@ const dispatch = createEventDispatcher();
 let route = "settings";
 </script>
 
-<div class="main" transition:scale={{duration: 400, easing: cubicInOut}}>
+<div class="main" transition:scale|global={{duration: 400, easing: cubicInOut}}>
   <div class="navbar">
     <h1><button class="close" on:click={() => dispatch("close")}><i class="bi bi-x-lg" /></button>Menu</h1>
     <h2 on:click={() => route = "settings"} aria-current={route === "settings"}><i class="bi bi-gear" /><span>Settings</span></h2>
@@ -27,7 +27,7 @@ let route = "settings";
     {:else if (route === "editor")}
       <Editor />
     {:else if (route === "about")}
-      <div class="about" in:send={{key:"menu"}} out:recieve={{key:"menu"}}>
+      <div class="about" in:send|global={{key:"menu"}} out:recieve|global={{key:"menu"}}>
         <h1>This is free and open source software</h1>
       </div>
     {/if}
