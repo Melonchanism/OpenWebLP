@@ -296,12 +296,6 @@ export let allSongs: song[] = [
 					"Jesus is calling (Oh-oh)"
 			},
 			{
-				type: "Tag",
-				number: 1,
-				text: "A Savior\n" +
-					"What a Savior"
-			},
-			{
 				type: "Bridge",
 				number: 1,
 				text: "Oh, what a Savior\n" +
