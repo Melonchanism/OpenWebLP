@@ -271,6 +271,7 @@ export let allSongs: song[] = [
 				text: "Are you hurting and broken within?\n" +
 					"Overwhelmed by the weight of your sin?\n" +
 					"Jesus is calling\n" +
+					"\n" +
 					"Have you come to the end of yourself?\n" +
 					"Do you thirst for a drink from the well?\n" +
 					"Jesus is calling"
@@ -289,6 +290,7 @@ export let allSongs: song[] = [
 				text: "Leave behind your regrets and mistakes\n" +
 					"Come today, there's no reason to wait\n" +
 					"Jesus is calling\n" +
+					"\n" +
 					"Bring your sorrows and trade them for joy\n" +
 					"From the ashes, a new life is born\n" +
 					"Jesus is calling (Oh-oh)"
