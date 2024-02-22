@@ -23,6 +23,7 @@
 	"dependencies": {
 		"@types/sortablejs": "^1.15.8",
 		"bootstrap-icons": "^1.11.3",
+		"days-since": "^2.0.1",
 		"less": "^4.2.0",
 		"sortablejs": "^1.15.2"
 	}
