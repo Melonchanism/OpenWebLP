@@ -1,3 +1,5 @@
+# This version wasn't even completed
+
 # OpenWebLp:
 - An open source web-based Worship Presentation Software.<br>
 - Was meant to be a clone of OpenLp but, its a bit different.<br>
