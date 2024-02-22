@@ -4,6 +4,7 @@ body {
   --border-color: #222222;
   --window-background: #17171795;
   --background-color: #000000;
+  --item-background-color: #232323c5;
 
   background: var(--background-color);
   color: white;
@@ -26,7 +27,7 @@ button.item, div.item {
   text-align: left;
   font-size: 18px;
   font-weight: 250;
-  background: #171717c5;
+  background: var(--item-background-color);
   margin: 0 8px 0 8px;
   border-bottom: var(--border-color) 1px solid;
   border-top: var(--border-color) 1px solid;
@@ -50,11 +51,18 @@ button.item, div.item {
     font-weight: normal;
   }
   &:hover {
-    background: #252525c5;
+    background: #272727c5;
   }
   &.current {
-    background: #303230c5;
+    background: #353535c5;
   }
+}
+div.glass {
+  background: var(--window-background);
+  border: var(--border-color) 1px solid;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 8px;
 }
 
 @keyframes fade-in {

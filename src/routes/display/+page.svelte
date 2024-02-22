@@ -18,8 +18,8 @@ let displayText2 = "";
 let songInfo = "";
 let lyricInfo = "";
 onMount(() => {
+	updateSettings()
 	updateDisplay()
-  updateSettings()
 	addEventListener("storage", evt => {
 		if (evt.key === "lyric") updateDisplay();
 		else if (evt.key === "settings") updateSettings()
@@ -29,16 +29,21 @@ onMount(() => {
 function updateDisplay() {
 	lyricInfo = localStorage.getItem("lyricInfo") ?? "";
 	songInfo = localStorage.getItem("songInfo") ?? "";
-	elm1?.style ? elm1.style.animationName = "none" : null;
-	setTimeout(() => {
-		elm1?.style ? elm1.style.animationName = `${animationName}-in` : null;
-		transitioning = true;
-		displayText2 = localStorage.getItem("lyric") ?? "";
+	if (settings.transition !== "none") {
+		elm1?.style ? elm1.style.animationName = "none" : null;
 		setTimeout(() => {
-			transitioning = false;
-			displayText = displayText2;
-		}, 400)
-  }, 0)
+			elm1?.style ? elm1.style.animationName = `${animationName}-in` : null;
+			transitioning = true;
+			displayText2 = localStorage.getItem("lyric") ?? "";
+			setTimeout(() => {
+				transitioning = false;
+				displayText = displayText2;
+			}, 400)
+		}, 0)
+  } else {
+		displayText = localStorage.getItem("lyric") ?? "";
+		displayText2 = displayText
+  }
 }
 
 function updateSettings() {

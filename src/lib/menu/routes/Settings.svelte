@@ -20,6 +20,7 @@ function update() {
           The animation that plays when the lyrics switch
         </div>
         <select name="transition" class="input" bind:value={settings.transition} on:input={update}>
+          <option value="none">None</option>
           <option value="fade">Crossfade</option>
           <option value="slide">Slide Left</option>
           <option value="reverse-slide">Slide Right</option>
