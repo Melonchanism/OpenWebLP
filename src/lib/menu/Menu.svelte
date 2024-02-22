@@ -1,96 +1,105 @@
 <script lang="ts">
-import { scale } from "svelte/transition";
-import { createEventDispatcher } from "svelte";
-import { cubicInOut } from "svelte/easing";
-import { send, recieve } from "./crossfade";
-import Settings from "./Settings.svelte";
-import SongSelector from "./SongSelector.svelte";
-import Editor from "./Editor.svelte";
-export let channel: BroadcastChannel;
-const dispatch = createEventDispatcher();
+import {scale} from "svelte/transition";
+import Settings from "$lib/menu/routes/Settings.svelte";
+import Service from "$lib/menu/routes/Service.svelte";
+import Editor from "$lib/menu/routes/Editor.svelte";
+
+let show = false;
 let route = "settings";
 </script>
 
-<div class="main" transition:scale|global={{duration: 400, easing: cubicInOut}}>
-  <div class="navbar">
-    <h1><button class="close" on:click={() => dispatch("close")}><i class="bi bi-x-lg" /></button>Menu</h1>
-    <h2 on:click={() => route = "settings"} aria-current={route === "settings"}><i class="bi bi-gear" /><span>Settings</span></h2>
-    <h2 on:click={() => route = "songselector"} aria-current={route === "songselector"}><i class="bi bi-music-note" /><span>Select Songs</span></h2>
-    <h2 on:click={() => route = "editor"} aria-current={route === "editor"}><i class="bi bi-pen" /><span>Editor</span></h2>
-    <h2 on:click={() => route = "about"} aria-current={route === "about"}><i class="bi bi-info" /><span>About</span></h2>
-  </div>
-  <div class="content" >
-    {#if (route === "settings")}
-      <Settings {channel} />
-    {:else if (route === "songselector")}
-      <SongSelector />
-    {:else if (route === "editor")}
-      <Editor />
-    {:else if (route === "about")}
-      <div class="about" in:send|global={{key:"menu"}} out:recieve|global={{key:"menu"}}>
-        <h1>This is free and open source software</h1>
-      </div>
-    {/if}
-  </div>
-</div>
+<svelte:window on:keydown={evt => evt.key === "Escape" ? show = false : null} />
 
-<style lang="postcss">
-.main {
-  display: flex;
-  width: 90vw;
-  height: 90vh;
-  .navbar {
-    overflow: scroll;
-    display: flex;
-    flex-direction: column;
-    width: 20%;
-    min-width: 220px;
-    border-right: 1px var(--border-color) solid;
-    h1 {
-      margin-left: 15px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-      display: flex;
+<button class="toggle {show ? 'open' : ''}" on:click={() => show = !show}>
+  {#if show}
+    <i class="bi bi-x-lg" style="font-size: xx-large" />
+  {:else}
+    <i class="bi bi-list" style="font-size: xx-large" />
+  {/if}
+</button>
+
+{#if show}
+  <div class="main" transition:scale={{duration: 300}}>
+    <div class="sidebar">
+      <h1 class="title">Menu</h1>
+      <div>
+        <button
+          class="item {route === 'settings' ? 'current' : ''}"
+          on:click={() => route = "settings"}>
+          <i class="bi bi-gear" /> Settings
+        </button>
+        <button
+          class="item {route === 'service' ? 'current' : ''}"
+          on:click={() => route = "service"}>
+          <i class="bi bi-music-note-list"/> Service
+        </button>
+        <button
+          class="item {route === 'editor' ? 'current' : ''}"
+          on:click={() => route = "editor"}>
+          <i class="bi bi-pencil" /> Editor
+        </button>
+      </div>
+    </div>
+    <div class="content">
+      {#if route === "settings"}
+        <Settings />
+      {:else if route === "service"}
+        <Service />
+      {:else if route === "editor"}
+        <Editor />
+      {/if}
+    </div>
+  </div>
+{/if}
+
+<style>
+div.main {
+  display: grid;
+  grid-template-columns: 20% 80%;
+  background: var(--window-background);
+  border: var(--border-color) 1px solid;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 8px;
+  position: fixed;
+  top: 10vh;
+  left: 10vw;
+  width: 80vw;
+  height: 80vh;
+  div.sidebar {
+    border-right: 2px solid var(--border-color);
+    h1.title {
+      margin-left: 56px;
+      margin-top: 8px;
     }
-    h2 {
-      margin-left: 15px;
-      margin-right: 15px;
-      transition: all 250ms;
-      border-radius: 10px;
-      &:hover {
-        background-color: rgb(18, 29, 29);
-        cursor: pointer;
-      }
-      i {
-        margin: 5px;
-      }
-      span {
-        margin-left: 5px;
-      }
+    button.item {
+      width: calc(100% - 16px);
     }
   }
-  .content {
-    width: 80%;
-    height: 100%;
-    .about {
-      position: absolute;
-      height: 100%;
-      width: 80%;
-      display: flex;
-    }
+  div.content {
+    max-height: 80vh;
+    height: inherit;
   }
-  .close {
-    display: grid;
-    place-content: center;
-    background-color: transparent;
-    border: none;
-    color: white;
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
-    i {
-      font-size: 2rem;
-    }
+}
+button.toggle {
+  color: white;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  background: #17171795;
+  border: var(--border-color) 1px solid;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 8px;
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  z-index: 1;
+  transition: all 300ms;
+  &.open {
+    left: calc(10vw + 8px);
+    bottom: calc(90vh - 48px);
   }
 }
 </style>
