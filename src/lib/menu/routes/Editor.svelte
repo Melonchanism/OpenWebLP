@@ -6,6 +6,7 @@ let currentSong = 0;
 
 <div class="main">
   <div class="list">
+    <h1>This will work later :)</h1>
     <div>
       <button class="item">
         <i class="bi bi-file-earmark-plus" />

@@ -3,6 +3,7 @@ import {scale} from "svelte/transition";
 import Settings from "$lib/menu/routes/Settings.svelte";
 import Service from "$lib/menu/routes/Service.svelte";
 import Editor from "$lib/menu/routes/Editor.svelte";
+import About from "$lib/menu/routes/About.svelte";
 
 let show = false;
 let route = "settings";
@@ -38,6 +39,11 @@ let route = "settings";
           on:click={() => route = "editor"}>
           <i class="bi bi-pencil" /> Editor
         </button>
+        <button
+          class="item {route === 'about' ? 'current' : ''}"
+          on:click={() => route = "about"}>
+          <i class="bi bi-info-circle" /> About
+        </button>
       </div>
     </div>
     <div class="content">
@@ -47,6 +53,8 @@ let route = "settings";
         <Service />
       {:else if route === "editor"}
         <Editor />
+      {:else if route === "about"}
+        <About />
       {/if}
     </div>
   </div>
@@ -66,8 +74,7 @@ div.main {
   left: 10vw;
   width: 80vw;
   height: 80vh;
-  transition: all 50ms;
-  @media (max-width: 900px) {
+  @media (max-width: 1000px) {
     top: 0;
     left: 0;
     width: 100vw;
@@ -79,7 +86,7 @@ div.main {
     h1.title {
       margin-left: 56px;
       margin-top: 8px;
-      @media (max-width: 900px) {
+      @media (max-width: 1000px) {
         opacity: 0;
         width: 0;
       }
@@ -89,7 +96,7 @@ div.main {
       flex-direction: column;
       button.item {
         width: calc(100% - 16px);
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
           width: auto;
           font-size: 0px !important;
           color: transparent;
@@ -99,7 +106,7 @@ div.main {
   }
   div.content {
     max-height: 80vh;
-    @media (max-width: 900px) {
+    @media (max-width: 1000px) {
       max-height: 100vh;
     }
     height: inherit;
@@ -124,7 +131,7 @@ button.toggle {
   &.open {
     left: calc(10vw + 8px);
     bottom: calc(90vh - 48px);
-    @media (max-width: 900px) {
+    @media (max-width: 1000px) {
       left: 8px;
       bottom: calc(100vh - 48px);
     }
