@@ -40,12 +40,20 @@ export let allSongs: song[] = [
 					"We're lost unless you guide us with your light"
 			},
 			{
-				type : "Bridge",
+				type : "Tag",
 				number: 1,
 				text: "We cry out\n" +
 					"For your love to refine us cry out\n" +
 					"For your love to define us cry out\n" +
 					"For your mercy to keep us blameless until you return"
+			},
+			{
+				type: "Bridge",
+				number: 1,
+				text: "So reign, please reign in us\n" +
+					"Come purify our hearts we need your touch\n" +
+					"Come cleanse us like a flood and send us out\n" +
+					"So the world may know you reign, you reign in us"
 			}
 		]
 	},
@@ -310,6 +318,65 @@ export let allSongs: song[] = [
 				number: 1,
 				text: "Bear your cross as you wait for the crown\n" +
 					"Tell the world of the treasure you found"
+			}
+		]
+	},
+	{
+		name: "Second Chance",
+		artist: "Hillsong United",
+		lyrics: [
+			{
+				type: "Verse",
+				number: 1,
+				text: "You called my name\n" +
+					"Reached out Your hand\n" +
+					"Restored my life\n" +
+					"And I was redeemed\n" +
+					"The moment You entered my life"
+			},
+			{
+				type: "Verse",
+				number: 2,
+				text: "Amazing grace\n" +
+					"Christ gave that day\n" +
+					"My life was changed\n" +
+					"When from my shoulders\n" +
+					"Fell the weight of my sin"
+			},
+			{
+				type: "Chorus",
+				number: 1,
+				text: "So it's with everything I am\n" +
+					"I reach out for Your hand\n" +
+					"The hope for change\n" +
+					"The second chance I've gained" +
+					"\n" +
+					"On You I throw my life\n" +
+					"Casting all my fears aside\n" +
+					"How could greater love than this\n" +
+					"Ever possibly exist"
+			},
+			{
+				type: "Verse",
+				number: 3,
+				text: "Consume my thoughts\n" +
+					"As I rest in You\n" +
+					"I'm now in love\n" +
+					"With a Saviour\n" +
+					"Bearing the marks of His love"
+			},
+			{
+				type: "Bridge",
+				number: 1,
+				text: "So I'll wait upon You now\n" +
+					"With my hands released to You\n" +
+					"Where a little faith's enough\n" +
+					"To see mountains lift and move\n" +
+					"\n" +
+					"And I'll wait upon You now\n" +
+					"Dedicated to Your will\n" +
+					"To this love that will remain\n" +
+					"A love that never fails"
 			}
 		]
 	}
