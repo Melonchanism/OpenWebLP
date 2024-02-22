@@ -2,9 +2,9 @@
 export let toggled: boolean;
 </script>
 
-<div class="switch {toggled ? "on" : ""}" on:click={() => toggled = !toggled}><div class="switchslider" /></div>
+<div class="switch {toggled ? 'on' : ''}" on:click={() => toggled = !toggled}><div class="switchslider" /></div>
 
-<style lang="postcss">
+<style lang="less">
 .switch {
   position: absolute;
   transition: all 250ms;

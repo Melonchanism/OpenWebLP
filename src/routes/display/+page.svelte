@@ -17,7 +17,7 @@ const [send, receive] = crossfade({
 })
 onMount(() => {
   setTimeout(() => channel.postMessage({ type: "fetch" }), 100);
-  settings = JSON.parse(localStorage.getItem("settings"));
+  settings = JSON.parse(localStorage.getItem("settings")!);
 });
 channel.addEventListener("message", evt => {
   if (evt.data.type === "lyrics") {
@@ -38,21 +38,23 @@ channel.addEventListener("message", evt => {
     }
   } else if (evt.data.type === "fullscreen" && top === self && !document.fullscreenElement) {
     document.body.requestFullscreen();
-    setTimeout(() => channel.postMessage({ type: "aspectratio", message: innerWidth / innerHeight }), 200)
   } else if (evt.data.type === "settingupdate") {
     settings = JSON.parse(localStorage.getItem("settings")!);
   };
 });
 </script>
 
-<svelte:window on:keydown={evt => channel.postMessage({ type: "keypress", message: { key: evt.key } })} />
+<svelte:window
+  on:keydown={evt => channel.postMessage({ type: "keypress", message: { key: evt.key } })}
+  on:resize={() => channel.postMessage({ type: "aspectratio", message: innerWidth / innerHeight })}
+/>
 
 <div class="main" style:font-size={`${settings.displayfontsize}vh`}>
   {#if settings.crossfade === "fancy"}
     {#if (transitioning)}
-      <h1 in:send|global={{key: "lyric"}}>{nextLyric}</h1>
+      <h1 in:receive={{key: "lyric"}}>{nextLyric}</h1>
     {:else}
-      <h1 out:receive|global='{{key:"lyric"}}'>{currentLyric}</h1>
+      <h1 out:send|global='{{key:"lyric"}}'>{currentLyric}</h1>
     {/if}
     {#if !settings.simple}
       <p>{type}</p>
@@ -71,7 +73,7 @@ channel.addEventListener("message", evt => {
   {/if}
 </div>
 
-<style lang="postcss">
+<style lang="less">
 .main {
   width: 100vw;
   height: 100vh;
@@ -89,7 +91,7 @@ channel.addEventListener("message", evt => {
   }
   p {
     position: absolute;
-    font-size: x-small;
+    font-size: 0.5vw;
     &:nth-of-type(1) {
       bottom: 5px;
       left: 5px;
