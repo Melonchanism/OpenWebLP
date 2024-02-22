@@ -66,18 +66,42 @@ div.main {
   left: 10vw;
   width: 80vw;
   height: 80vh;
+  transition: all 50ms;
+  @media (max-width: 900px) {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    grid-template-columns: min-content auto;
+  }
   div.sidebar {
     border-right: 2px solid var(--border-color);
     h1.title {
       margin-left: 56px;
       margin-top: 8px;
+      @media (max-width: 900px) {
+        opacity: 0;
+        width: 0;
+      }
     }
-    button.item {
-      width: calc(100% - 16px);
+    div {
+      display: flex;
+      flex-direction: column;
+      button.item {
+        width: calc(100% - 16px);
+        @media (max-width: 900px) {
+          width: auto;
+          font-size: 0px !important;
+          color: transparent;
+        }
+      }
     }
   }
   div.content {
     max-height: 80vh;
+    @media (max-width: 900px) {
+      max-height: 100vh;
+    }
     height: inherit;
   }
 }
@@ -100,6 +124,10 @@ button.toggle {
   &.open {
     left: calc(10vw + 8px);
     bottom: calc(90vh - 48px);
+    @media (max-width: 900px) {
+      left: 8px;
+      bottom: calc(100vh - 48px);
+    }
   }
 }
 </style>
