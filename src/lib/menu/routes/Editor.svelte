@@ -78,13 +78,12 @@
   <div class="secondary glass" transition:scale={{ duration: 300 }}>
     <div class="titlebar">
       <button
-        class="close"
+        class="close glass"
         on:click={() => {
           editing = "none";
           lyricsList
             .querySelectorAll("button")
             .forEach((itm) => itm.classList.remove("current"));
-          alert("changes will not persist yet");
         }}
       >
         <i class="bi bi-x-lg" style="font-size: xx-large" />
@@ -115,7 +114,6 @@
       </select>
       <input
         type="number"
-        name="number"
         placeholder="Number..."
         bind:value={$allSongs[currentSong].lyrics[currentLyric].number}
         style:grid-area="numbre"
@@ -124,7 +122,7 @@
   </div>
 {/if}
 
-<style lang="less">
+<style>
   div.main {
     display: grid;
     grid-template-columns: 50% 50%;
@@ -154,12 +152,7 @@
         place-items: center;
         width: 40px;
         height: 40px;
-        background: #17171795;
-        border: var(--border-color) 1px solid;
         margin: 8px;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: 8px;
         z-index: 1;
       }
       h2.title {

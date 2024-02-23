@@ -87,7 +87,7 @@
   </div>
 </div>
 
-<style lang="less">
+<style>
   div.main {
     display: grid;
     grid-template-columns: 50% 50%;

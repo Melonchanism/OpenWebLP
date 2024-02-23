@@ -3,7 +3,7 @@
   import Menu from "$lib/menu/Menu.svelte";
   import { blur } from "svelte/transition";
   import { onMount } from "svelte";
-  import "../styles.less";
+  import "../styles.css";
   import { allSongs, myServiceStore } from "$lib/songs";
 
   const channel = new BroadcastChannel("key");
@@ -68,6 +68,7 @@
     channel.addEventListener("message", (evt) =>
       handleKey(evt.data[0], undefined, evt.data[1]),
     );
+    updateTheme();
   });
 
   function handleKey(key: string, evt?: KeyboardEvent, shift?: boolean) {
@@ -137,9 +138,18 @@
         break;
     }
   }
+  function updateTheme() {
+    document.querySelector("body")!.classList.value = "";
+    document
+      .querySelector("body")
+      ?.classList.add(localStorage.getItem("theme") || "dark");
+  }
 </script>
 
-<svelte:window on:keydown={(evt) => handleKey(evt.key, evt, evt.shiftKey)} />
+<svelte:window
+  on:keydown={(evt) => handleKey(evt.key, evt, evt.shiftKey)}
+  on:storage={(evt) => (evt.key === "theme" ? updateTheme() : 0)}
+/>
 
 <div class="main">
   <div class="grid-item songs" style:grid-area="songs">
@@ -187,14 +197,14 @@
 
 <Menu />
 
-<style lang="less">
-  @gridItem: calc(50% - 5px);
+<style>
   .main {
+    --grid-item: calc(50% - 5px);
     display: grid;
     height: 100%;
     grid-template-areas: "songs lyrics" "preview lyrics";
-    grid-template-rows: @gridItem @gridItem;
-    grid-template-columns: @gridItem @gridItem;
+    grid-template-rows: var(--grid-item) var(--grid-item);
+    grid-template-columns: var(--grid-item) var(--grid-item);
     gap: 10px;
     .grid-item {
       display: flex;

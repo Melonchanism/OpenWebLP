@@ -58,7 +58,10 @@
   </div>
 {/if}
 
-<button class="toggle {show ? 'open' : ''}" on:click={() => (show = !show)}>
+<button
+  class="toggle glass {show ? 'open' : ''}"
+  on:click={() => (show = !show)}
+>
   {#if show}
     <i class="bi bi-x-lg" style="font-size: xx-large" />
   {:else}
@@ -121,11 +124,6 @@
     place-items: center;
     width: 40px;
     height: 40px;
-    background: #17171795;
-    border: var(--border-color) 1px solid;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 8px;
     position: fixed;
     bottom: 16px;
     left: 16px;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import "../../styles.less";
+  import "../../styles.css";
 
   const channel = new BroadcastChannel("key");
 
@@ -79,7 +79,11 @@
   </div>
 {/if}
 
-<style lang="less">
+<style>
+  :global(body) {
+    background-color: black;
+    color: white;
+  }
   div.container {
     display: grid;
     position: absolute;

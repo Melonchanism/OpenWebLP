@@ -169,13 +169,13 @@
       flex-direction: column;
       align-items: center;
       font-size: 52px;
+      position: absolute;
       img {
         width: 196px;
         height: 196px;
         margin-right: 8px;
       }
       &.scrolled {
-        position: absolute;
         justify-content: center;
         width: 80%;
         flex-direction: row;
@@ -189,13 +189,13 @@
       }
     }
     div.spacer {
-      width: 100px;
-      height: 0px;
+      width: 100%;
+      height: 316px;
       flex-shrink: 0;
+      z-index: 99;
+      transition: height 300ms;
       &.scrolled {
-        height: 316px;
-        transition-property: height;
-        transition-delay: 300ms;
+        height: 55px;
       }
     }
     div.links {
