@@ -1,6 +1,6 @@
 <script lang="ts">
   import { allSongs } from "$lib/songs";
-  import { scale, fade } from "svelte/transition";
+  import { scale } from "svelte/transition";
   import { onMount } from "svelte";
 
   let currentSong = 0;

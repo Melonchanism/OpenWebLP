@@ -1,7 +1,5 @@
 <script lang="ts">
   import since from "days-since";
-  import { onMount } from "svelte";
-  import { crossfade } from "svelte/transition";
 
   let animationPct = $state(0);
   let h1Elm: HTMLHeadingElement;
@@ -11,9 +9,13 @@
 <div
   class="main"
   on:scroll={(evt) => {
+    //@ts-ignore
     console.log(evt.target?.scrollTop);
+    //@ts-ignore
     if (evt.target?.scrollTop === 0) animationPct = 0;
+    //@ts-ignore
     else if (evt.target?.scrollTop >= 264) animationPct = 1;
+    //@ts-ignore
     else animationPct = evt.target?.scrollTop / 264;
     h1Elm.style.fontSize = `${0.75 + 1.25 * (1 - animationPct)}em`;
     imgElm.style.height = `${52 + 143 * (1 - animationPct)}px`;
