@@ -23,7 +23,7 @@
 >
   <div class="spacer" />
   <div class="titlebar">
-    <img src="favicon-1024.png" alt="hireslogo" bind:this={imgElm} />
+    <img src="favicon.png" alt="hireslogo" bind:this={imgElm} />
     <h1 bind:this={h1Elm}>OpenWebLP</h1>
   </div>
   <div class="titlebarbackground" />

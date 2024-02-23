@@ -60,6 +60,7 @@
 
 <button
   class="toggle glass {show ? 'open' : ''}"
+  name="menu"
   on:click={() => (show = !show)}
 >
   {#if show}
