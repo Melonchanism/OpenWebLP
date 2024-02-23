@@ -74,13 +74,14 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80vw;
-    height: 80vh;
+    width: 80dvw;
+    height: 80dvh;
     @media (max-width: 1000px) {
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      transform: none;
+      width: 100dvw;
+      height: 100dvh;
       grid-template-columns: min-content auto;
     }
     div.sidebar {
