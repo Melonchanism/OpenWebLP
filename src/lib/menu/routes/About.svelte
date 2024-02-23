@@ -1,46 +1,32 @@
 <script lang="ts">
   import since from "days-since";
+  import { onMount } from "svelte";
   import { crossfade } from "svelte/transition";
 
-  let scrolled = false;
-
-  const [send, recieve] = crossfade({
-    duration: 300,
-  });
+  let animationPct = $state(0);
+  let h1Elm: HTMLHeadingElement;
+  let imgElm: HTMLImageElement;
 </script>
 
 <div
   class="main"
-  on:scroll={(evt) =>
-    //@ts-ignore
-    evt.target?.scrollTop > 0 ? (scrolled = true) : (scrolled = false)}
+  on:scroll={(evt) => {
+    console.log(evt.target?.scrollTop);
+    if (evt.target?.scrollTop === 0) animationPct = 0;
+    else if (evt.target?.scrollTop >= 264) animationPct = 1;
+    else animationPct = evt.target?.scrollTop / 264;
+    h1Elm.style.fontSize = `${0.75 + 1.25 * (1 - animationPct)}em`;
+    imgElm.style.height = `${52 + 143 * (1 - animationPct)}px`;
+    h1Elm.style.transform = `translate(${52 * animationPct}px, ${-52 * animationPct}px)`;
+    imgElm.style.transform = `translate(${-95 * animationPct}px)`;
+  }}
 >
-  <div class="spacer {scrolled ? 'scrolled' : ''}" />
-  {#if !scrolled}
-    <div class="titlebar">
-      <img
-        src="favicon-1024.png"
-        alt="hireslogo"
-        in:recieve={{ key: "img" }}
-        out:send={{ key: "img" }}
-      />
-      <h1 in:recieve={{ key: "title" }} out:send={{ key: "title" }}>
-        OpenWebLP
-      </h1>
-    </div>
-  {:else}
-    <div class="titlebar scrolled">
-      <img
-        src="favicon-1024.png"
-        alt="hireslogo"
-        in:recieve={{ key: "img" }}
-        out:send={{ key: "img" }}
-      />
-      <h1 in:recieve={{ key: "title" }} out:send={{ key: "title" }}>
-        OpenWebLP
-      </h1>
-    </div>
-  {/if}
+  <div class="spacer" />
+  <div class="titlebar">
+    <img src="favicon-1024.png" alt="hireslogo" bind:this={imgElm} />
+    <h1 bind:this={h1Elm}>OpenWebLP</h1>
+  </div>
+  <div class="titlebarbackground" />
   <h2>v3</h2>
   <h3>
     Licenced Under: <a href="https://www.gnu.org/licenses/gpl-3.0.txt"
@@ -168,35 +154,26 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 52px;
       position: absolute;
+      font-size: 52px;
+      z-index: 98;
       img {
-        width: 196px;
         height: 196px;
-        margin-right: 8px;
       }
-      &.scrolled {
-        justify-content: center;
-        width: 80%;
-        flex-direction: row;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        font-size: 24px;
-        img {
-          width: 48px;
-          height: 48px;
-        }
-      }
+    }
+    div.titlebarbackground {
+      position: absolute;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      width: 80%;
+      height: 52px;
     }
     div.spacer {
       width: 100%;
-      height: 316px;
+      height: 315px;
       flex-shrink: 0;
       z-index: 99;
       transition: height 300ms;
-      &.scrolled {
-        height: 55px;
-      }
     }
     div.links {
       text-align: center;
