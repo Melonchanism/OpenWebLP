@@ -12,6 +12,7 @@
 <div
   class="main"
   on:scroll={(evt) =>
+    //@ts-ignore
     evt.target?.scrollTop > 0 ? (scrolled = true) : (scrolled = false)}
 >
   <div class="spacer {scrolled ? 'scrolled' : ''}" />
