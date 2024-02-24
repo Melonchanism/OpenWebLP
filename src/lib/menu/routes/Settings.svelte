@@ -75,6 +75,27 @@
           <option value="ew">Ew Light Mode</option>
         </select>
       </div>
+      <div class="item">
+        <div class="info">
+          Font
+          <br />
+          The global font used in the console and presentation
+        </div>
+        <select
+          name="font"
+          class="input"
+          value={localStorage.getItem("font") ?? "sans-serif"}
+          on:input={(evt) => {
+            // @ts-ignore
+            localStorage.setItem("font", evt.target?.value);
+            window.dispatchEvent(new StorageEvent("storage", { key: "font" }));
+          }}
+        >
+          <option value="sans-serif">Sans-Serif</option>
+          <option value="roboto">Roboto</option>
+          <option value="montserrat">Montserrat</option>
+        </select>
+      </div>
     </div>
   </div>
 </div>

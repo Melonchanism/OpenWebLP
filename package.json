@@ -21,6 +21,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@sveltejs/adapter-vercel": "^5.1.0",
     "@types/sortablejs": "^1.15.8",
     "bootstrap-icons": "^1.11.3",
     "days-since": "^2.0.1",

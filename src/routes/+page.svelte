@@ -69,6 +69,7 @@
       handleKey(evt.data[0], undefined, evt.data[1]),
     );
     updateTheme();
+    updateFont();
   });
 
   function handleKey(key: string, evt?: KeyboardEvent, shift?: boolean) {
@@ -144,11 +145,19 @@
       .querySelector("body")
       ?.classList.add(localStorage.getItem("theme") || "dark");
   }
+  function updateFont() {
+    document
+      .querySelector("body")!
+      .style.setProperty(
+        "--font",
+        localStorage.getItem("font") || "sans-serif",
+      );
+  }
 </script>
 
 <svelte:window
   on:keydown={(evt) => handleKey(evt.key, evt, evt.shiftKey)}
-  on:storage={(evt) => (evt.key === "theme" ? updateTheme() : 0)}
+  on:storage={(evt) => (evt.key === "theme" ? updateTheme() : updateFont())}
 />
 
 <div class="main">
@@ -156,10 +165,12 @@
     {#each $myServiceStore.songs as index}
       <button
         class="item"
+        transition:blur={{ duration: 300 }}
         on:click={(evt) => {
           evt.preventDefault();
           currentSong =
             Array.from(
+              //@ts-ignore
               evt.target?.parentElement.querySelectorAll("button"),
             ).indexOf(evt.target) || 0;
         }}

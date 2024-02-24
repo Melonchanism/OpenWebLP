@@ -20,9 +20,11 @@
   onMount(() => {
     updateSettings();
     updateDisplay();
+    updateFont();
     addEventListener("storage", (evt) => {
       if (evt.key === "lyric") updateDisplay();
       else if (evt.key === "settings") updateSettings();
+      else if (evt.key === "font") updateFont();
     });
   });
 
@@ -43,13 +45,20 @@
       displayText2 = displayText;
     }
   }
-
   function updateSettings() {
     settings = JSON.parse(
       localStorage.getItem("settings") ??
         `{"transition": "fade", "info": false}`,
     );
     animationName = settings.transition;
+  }
+  function updateFont() {
+    document
+      .querySelector("body")!
+      .style.setProperty(
+        "--font",
+        localStorage.getItem("font") || "sans-serif",
+      );
   }
 </script>
 
