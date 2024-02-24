@@ -1,7 +1,7 @@
 <script lang="ts">
   import since from "days-since";
 
-  let animationPct = $state(0);
+  let animPgs = $state(0);
   let h1Elm: HTMLHeadingElement;
   let imgElm: HTMLImageElement;
 </script>
@@ -10,17 +10,16 @@
   class="main"
   on:scroll={(evt) => {
     //@ts-ignore
-    console.log(evt.target?.scrollTop);
+    if (evt.target?.scrollTop === 0) animPgs = 0;
     //@ts-ignore
-    if (evt.target?.scrollTop === 0) animationPct = 0;
+    else if (evt.target?.scrollTop >= 264) animPgs = 1;
     //@ts-ignore
-    else if (evt.target?.scrollTop >= 264) animationPct = 1;
-    //@ts-ignore
-    else animationPct = evt.target?.scrollTop / 264;
-    h1Elm.style.fontSize = `${0.75 + 1.25 * (1 - animationPct)}em`;
-    imgElm.style.height = `${52 + 143 * (1 - animationPct)}px`;
-    h1Elm.style.transform = `translate(${52 * animationPct}px, ${-52 * animationPct}px)`;
-    imgElm.style.transform = `translate(${-95 * animationPct}px)`;
+    else animPgs = evt.target?.scrollTop / 264;
+    h1Elm.style.fontSize = `${0.75 + 1.25 * (1 - animPgs)}em`;
+    imgElm.style.height = `${52 + 143 * (1 - animPgs)}px`;
+    h1Elm.style.transform = `translate(${52 * animPgs}px, ${-52 * animPgs}px)`;
+    imgElm.style.transform = `translate(${-95 * animPgs}px)`;
+    document.querySelector<HTMLDivElement>(".titlebarbackground")!.style.opacity = animPgs.toString();
   }}
 >
   <div class="spacer" />
@@ -29,7 +28,7 @@
     <h1 bind:this={h1Elm}>OpenWebLP</h1>
   </div>
   <div class="titlebarbackground" />
-  <h2>v3</h2>
+  <h2>v 3.0.0</h2>
   <h3>
     Licenced Under: <a href="https://www.gnu.org/licenses/gpl-3.0.txt"
       >The GNU GPL v3</a
@@ -175,12 +174,10 @@
       height: 315px;
       flex-shrink: 0;
       z-index: 99;
-      transition: height 300ms;
     }
     div.links {
       text-align: center;
       display: flex;
-      flex-direction: row;
       margin: 8px;
       a {
         margin: 4px;

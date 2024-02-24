@@ -209,7 +209,7 @@
     .grid-item {
       display: flex;
       flex-direction: column;
-      border: var(--border-color) solid 2px;
+      border: var(--border-color) solid 1px;
       border-radius: 4px;
       overflow: scroll;
     }

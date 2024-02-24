@@ -879,9 +879,9 @@ svelte-preprocess@^5.1.0:
     strip-indent "^3.0.0"
 
 svelte@^5.0.0-next.1:
-  version "5.0.0-next.65"
-  resolved "https://registry.yarnpkg.com/svelte/-/svelte-5.0.0-next.65.tgz#0efdae1cc8f2f9fc8d1d4f90e48cd13eb6db8c03"
-  integrity sha512-meJJKuOStSWsJDEZLPi02/hB0ujblItxrVEj1W3y1274/BS0pgRIcMhHUDwnzNe0uJTvc7/qKRPZR1TFQ+hE4g==
+  version "5.0.0-next.68"
+  resolved "https://registry.yarnpkg.com/svelte/-/svelte-5.0.0-next.68.tgz#a1305b88f38b51a972e38e5ebb64429f93e4ad97"
+  integrity sha512-pgsTtDkFt4Ujw3ek1JGL02VIU/uZ9N1bId3girHkC3ZZG7bjTjO5L53quj6/R7LUHDcEvs0SCyM5xZmJRaWCUw==
   dependencies:
     "@ampproject/remapping" "^2.2.1"
     "@jridgewell/sourcemap-codec" "^1.4.15"

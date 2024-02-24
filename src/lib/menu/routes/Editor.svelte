@@ -15,6 +15,18 @@
   });
 </script>
 
+<svelte:body
+  on:keydown={(evt) => {
+    if (evt.key === "Escape" && editing !== "none") {
+      evt.stopPropagation();
+      editing = "none";
+      lyricsList
+        .querySelectorAll("button")
+        .forEach((itm) => itm.classList.remove("current"));
+    }
+  }}
+/>
+
 <div class="main">
   <div class="list">
     <div>
@@ -28,12 +40,16 @@
         <button
           class="item"
           on:click={(evt) => {
-            currentSong = $allSongs.indexOf(song);
-            songsList
-              .querySelectorAll("button")
-              .forEach((itm) => itm.classList.remove("current"));
-            // @ts-ignore
-            evt.target?.classList.add("current");
+            if (currentSong === $allSongs.indexOf(song)) {
+              editing = "song";
+            } else {
+              currentSong = $allSongs.indexOf(song);
+              songsList
+                .querySelectorAll("button")
+                .forEach((itm) => itm.classList.remove("current"));
+              // @ts-ignore
+              evt.target?.classList.add("current");
+            }
           }}
         >
           {song.name}
@@ -88,9 +104,9 @@
       >
         <i class="bi bi-x-lg" style="font-size: xx-large" />
       </button>
-      <h2 class="title">Edit Lyric</h2>
+      <h1 class="title">Edit Lyric</h1>
     </div>
-    <div class="input-grid">
+    <div class="input-grid-lyric">
       <textarea
         rows="15"
         cols="50"
@@ -117,6 +133,29 @@
         placeholder="Number..."
         bind:value={$allSongs[currentSong].lyrics[currentLyric].number}
         style:grid-area="numbre"
+      />
+    </div>
+  </div>
+{:else if editing === "song"}
+  <div class="secondary glass" transition:scale={{ duration: 300 }}>
+    <div class="titlebar">
+      <button class="close glass" on:click={() => (editing = "none")}>
+        <i class="bi bi-x-lg" style="font-size: xx-large" />
+      </button>
+      <h1 class="title">Edit Song</h1>
+    </div>
+    <div class="input-grid-song">
+      <input
+        type="text"
+        placeholder="Song Name..."
+        on:keydown|stopPropagation={() => {}}
+        bind:value={$allSongs[currentSong].name}
+      />
+      <input
+        type="text"
+        placeholder="Song Artist..."
+        on:keydown|stopPropagation={() => {}}
+        bind:value={$allSongs[currentSong].artist}
       />
     </div>
   </div>
@@ -155,25 +194,31 @@
         margin: 8px;
         z-index: 1;
       }
-      h2.title {
-        margin-right: 8px;
-      }
     }
-    div {
+    div.input-grid-lyric {
       display: grid;
       grid-template-areas: "text text" "type numbre";
       textarea {
         background-color: var(--item-background-color);
-        font-size: 16px;
         height: max-content;
+        resize: none;
+      }
+      select,
+      input,
+      textarea {
+        background-color: var(--item-background-color);
+        -webkit-appearance: none;
+        font-size: 17px;
         margin: 8px;
         padding: 4px;
         border-radius: 8px;
       }
-      select,
+    }
+    div.input-grid-song {
+      display: flex;
+      flex-direction: column;
       input {
         background-color: var(--item-background-color);
-        -webkit-appearance: none;
         font-size: 17px;
         margin: 8px;
         padding: 4px;

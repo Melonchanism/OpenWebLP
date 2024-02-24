@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { scale } from "svelte/transition";
+  import { scale, fade } from "svelte/transition";
   import Settings from "$lib/menu/routes/Settings.svelte";
   import Service from "$lib/menu/routes/Service.svelte";
   import Editor from "$lib/menu/routes/Editor.svelte";
@@ -14,10 +14,15 @@
 />
 
 {#if show}
-  <div class="main glass" transition:scale>
+  <div class="main glass" transition:scale={{ duration: 300 }}>
     <div class="sidebar">
-      <h1 class="title">Menu</h1>
-      <div>
+      <div class="titlebar">
+        <button class="toggle glass" on:click={() => (show = false)}>
+          <i class="bi bi-x-lg" style="font-size: xx-large" />
+        </button>
+        <h1 class="title">Menu</h1>
+      </div>
+      <div class="navlinks">
         <button
           class="item {route === 'settings' ? 'current' : ''}"
           on:click={() => (route = "settings")}
@@ -56,19 +61,16 @@
       {/if}
     </div>
   </div>
-{/if}
-
-<button
-  class="toggle glass {show ? 'open' : ''}"
-  name="menu"
-  on:click={() => (show = !show)}
->
-  {#if show}
-    <i class="bi bi-x-lg" style="font-size: xx-large" />
-  {:else}
+{:else}
+  <button
+    class="toggle original glass"
+    name="menu"
+    on:click={() => (show = true)}
+    transition:fade={{ duration: 300 }}
+  >
     <i class="bi bi-list" style="font-size: xx-large" />
-  {/if}
-</button>
+  </button>
+{/if}
 
 <style>
   div.main {
@@ -90,15 +92,17 @@
     }
     div.sidebar {
       border-right: 2px solid var(--border-color);
-      h1.title {
-        margin-left: 56px;
-        margin-top: 8px;
-        @media (max-width: 1000px) {
-          opacity: 0;
-          width: 0;
+      div.titlebar {
+        display: flex;
+        align-items: center;
+        h1.title {
+          @media (max-width: 1000px) {
+            opacity: 0;
+            width: 0;
+          }
         }
       }
-      div {
+      div.navlinks {
         display: flex;
         flex-direction: column;
         button.item {
@@ -120,22 +124,15 @@
     }
   }
   button.toggle {
-    color: white;
     display: grid;
     place-items: center;
     width: 40px;
     height: 40px;
-    position: fixed;
-    bottom: 16px;
-    left: 16px;
-    transition: all 300ms;
-    &.open {
-      left: calc(10vw + 8px);
-      bottom: calc(90vh - 48px);
-      @media (max-width: 1000px) {
-        left: 8px;
-        bottom: calc(100vh - 48px);
-      }
+    margin: 8px;
+    &.original {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
     }
   }
 </style>
