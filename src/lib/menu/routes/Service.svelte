@@ -78,9 +78,9 @@
     <div class="list" bind:this={listElm2}>
       {#each myService.songs as index}
         <div class="item" data-id={index}>
-          {$allSongs[index].name}
+          {$allSongs[index]?.name}
           <br />
-          {$allSongs[index].artist}
+          {$allSongs[index]?.artist}
         </div>
       {/each}
     </div>

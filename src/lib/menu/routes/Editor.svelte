@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { allSongs } from "$lib/songs";
+  import { allSongs, myServiceStore } from "$lib/songs";
   import { scale } from "svelte/transition";
   import { onMount } from "svelte";
 
-  let currentSong = 0;
-  let currentLyric = 0;
-  let editing = "none";
+  let currentSong = $state(0);
+  let currentLyric = $state(0);
+  let editing = $state("none");
 
   let songsList: HTMLDivElement;
   let lyricsList: HTMLDivElement;
@@ -29,8 +29,21 @@
 
 <div class="main">
   <div class="list">
+    <h1>Stuff will not store atm</h1>
     <div>
-      <button class="item">
+      <button
+        class="item"
+        on:click={() => {
+          allSongs.update((songs) => {
+            songs.push({
+              name: "New Song",
+              artist: "Artist",
+              lyrics: [],
+            });
+            return songs;
+          });
+        }}
+      >
         <i class="bi bi-file-earmark-plus" />
         New Song
       </button>
@@ -61,31 +74,45 @@
   </div>
   <div class="list">
     <div>
-      <button class="item">
+      <button
+        class="item"
+        on:click={() => {
+          allSongs.update((songs) => {
+            songs[currentSong].lyrics.push({
+              type: "Verse",
+              number: 0,
+              text: "New Lyric",
+            });
+            return songs;
+          });
+        }}
+      >
         <i class="bi bi-plus-circle" />
         New Lyric
       </button>
     </div>
     <div bind:this={lyricsList}>
-      {#each $allSongs[currentSong].lyrics as lyric}
-        <button
-          class="item"
-          on:click={(evt) => {
-            currentLyric = $allSongs[currentSong].lyrics.indexOf(lyric);
-            lyricsList
-              .querySelectorAll("button")
-              .forEach((itm) => itm.classList.remove("current"));
-            //@ts-ignore
-            evt.target?.classList.add("current");
-            editing = "lyric";
-          }}
-        >
-          {lyric.type}
-          {lyric.number}
-          <br />
-          {lyric.text}
-        </button>
-      {/each}
+      {#if $allSongs[currentSong]}
+        {#each $allSongs[currentSong].lyrics as lyric}
+          <button
+            class="item"
+            on:click={(evt) => {
+              currentLyric = $allSongs[currentSong].lyrics.indexOf(lyric);
+              lyricsList
+                .querySelectorAll("button")
+                .forEach((itm) => itm.classList.remove("current"));
+              //@ts-ignore
+              evt.target?.classList.add("current");
+              editing = "lyric";
+            }}
+          >
+            {lyric.type}
+            {lyric.number}
+            <br />
+            {lyric.text}
+          </button>
+        {/each}
+      {/if}
     </div>
   </div>
 </div>
@@ -134,6 +161,21 @@
         bind:value={$allSongs[currentSong].lyrics[currentLyric].number}
         style:grid-area="numbre"
       />
+      <button
+        style:grid-area="delete"
+        on:click={() => {
+          if (confirm("are you sure?? This will likely mess things up!!")) {
+            allSongs.update((songs) => {
+              songs[currentSong].lyrics.splice(currentLyric, 1);
+              return songs;
+            });
+            editing = "none";
+          }
+        }}
+      >
+        <i class="bi bi-trash" />
+        Delete Lyric(may mess up service)
+      </button>
     </div>
   </div>
 {:else if editing === "song"}
@@ -157,6 +199,27 @@
         on:keydown|stopPropagation={() => {}}
         bind:value={$allSongs[currentSong].artist}
       />
+      <button
+        on:click={() => {
+          if (confirm("are you sure?? This will likely mess things up!!")) {
+            allSongs.update((songs) => {
+              songs.splice(currentSong, 1);
+              return songs;
+            });
+            let songToDelete = $myServiceStore.songs.indexOf(currentSong);
+            if (songToDelete !== -1) {
+              myServiceStore.update((store) => {
+                store.songs.splice(songToDelete, 1);
+                return store;
+              });
+            }
+            editing = "none";
+          }
+        }}
+      >
+        <i class="bi bi-trash" />
+        Delete Song(will mess up service)
+      </button>
     </div>
   </div>
 {/if}
@@ -197,7 +260,7 @@
     }
     div.input-grid-lyric {
       display: grid;
-      grid-template-areas: "text text" "type numbre";
+      grid-template-areas: "text text" "type numbre" "delete delete";
       textarea {
         background-color: var(--item-background-color);
         height: max-content;
@@ -205,7 +268,8 @@
       }
       select,
       input,
-      textarea {
+      textarea,
+      button {
         background-color: var(--item-background-color);
         -webkit-appearance: none;
         font-size: 17px;
@@ -217,13 +281,17 @@
     div.input-grid-song {
       display: flex;
       flex-direction: column;
-      input {
+      input,
+      button {
         background-color: var(--item-background-color);
         font-size: 17px;
         margin: 8px;
         padding: 4px;
         border-radius: 8px;
       }
+    }
+    button {
+      color: red;
     }
   }
 </style>
