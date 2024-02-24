@@ -154,20 +154,20 @@
 <div class="main">
   <div class="grid-item songs" style:grid-area="songs">
     {#each $myServiceStore.songs as index}
-      {#if $allSongs[index]}
-        <button
-          class="item"
-          on:click={() => (currentSong = index)}
-          on:contextmenu={(evt) => {
-            evt.preventDefault();
-            currentSong = index;
-          }}
-        >
-          {$allSongs[index].name}
-          <br />
-          {$allSongs[index].artist}
-        </button>
-      {/if}
+      <button
+        class="item"
+        on:click={(evt) => {
+          evt.preventDefault();
+          currentSong =
+            Array.from(
+              evt.target?.parentElement.querySelectorAll("button"),
+            ).indexOf(evt.target) || 0;
+        }}
+      >
+        {$allSongs[index]?.name}
+        <br />
+        {$allSongs[index]?.artist}
+      </button>
     {/each}
   </div>
   <div class="grid-item lyrics" style:grid-area="lyrics">
