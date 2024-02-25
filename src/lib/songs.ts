@@ -1,7 +1,7 @@
 import { Service, type song } from "$lib/types";
 import { writable, type Writable } from "svelte/store";
 
-export const myServiceStore = writable(new Service("myService", [4, 5, 6]));
+export const myServiceStore = writable(new Service("myService", [8, 9, 10, 1]));
 
 export let allSongs: Writable<song[]> = writable([
   {
@@ -411,6 +411,172 @@ export let allSongs: Writable<song[]> = writable([
           "Dedicated to Your will\n" +
           "To this love that will remain\n" +
           "A love that never fails",
+      },
+    ],
+  },
+  {
+    name: "Your Grace is Enough",
+    artist: "Chris Tomlin",
+    lyrics: [
+      {
+        type: "Verse",
+        number: 1,
+        text:
+          "Great is Your faithfulness, o God\n" +
+          "You wrestle with the sinner's heart\n" +
+          "You lead us by still waters and to mercy\n" +
+          "And nothing can keep us apart\n",
+      },
+      {
+        type: "Pre-Chorus",
+        number: 1,
+        text: `So remember Your people
+Remember Your children
+Remember Your promise, o God`,
+      },
+      {
+        type: "Chorus",
+        number: 1,
+        text: `Your grace is enough
+Your grace is enough
+Your grace is enough for me`,
+      },
+      {
+        type: "Verse",
+        number: 2,
+        text: `Great is Your love and justice, God
+You use the weak to lead the strong
+You lead us in the song of Your salvation
+And all Your people sing along`,
+      },
+      {
+        type: "Ending",
+        number: 1,
+        text: `Yeah, Your grace is enough
+Heaven reaching down to us
+Your grace is enough for me
+
+God, I see Your grace is enough
+I'm covered in Your love
+Your grace is enough for me, for me`,
+      },
+    ],
+  },
+  {
+    name: "Blessed be Your Name",
+    artist: "Matt Redman",
+    lyrics: [
+      {
+        type: "Verse",
+        number: 1,
+        text: `Blessed Be Your Name
+In the land that is plentiful
+Where Your streams of abundance flow
+Blessed be Your name`,
+      },
+      {
+        type: "Verse",
+        number: 2,
+        text: `Blessed Be Your name
+When I'm found in the desert place
+Though I walk through the wilderness
+Blessed Be Your name`,
+      },
+      {
+        type: "Pre-Chorus",
+        number: 1,
+        text: `Every blessing You pour out
+I'll turn back to praise
+When the darkness closes in, Lord
+Still I will say`,
+      },
+      {
+        type: "Chorus",
+        number: 1,
+        text: `Blessed be the name of the Lord
+Blessed be Your name
+Blessed be the name of the Lord
+Blessed be Your glorious name`,
+      },
+      {
+        type: "Verse",
+        number: 3,
+        text: `Blessed be Your name
+When the sun's shining down on me
+When the world's 'all as it should be'
+Blessed be Your name`,
+      },
+      {
+        type: "Verse",
+        number: 4,
+        text: `Blessed be Your name
+On the road marked with suffering
+Though there's pain in the offering
+Blessed be Your name`,
+      },
+      {
+        type: "Bridge",
+        number: 1,
+        text: `You give and take away
+You give and take away
+My heart will choose to say
+Lord, blessed be Your name`,
+      },
+    ],
+  },
+  {
+    name: "Make a Way",
+    artist: "I am They",
+    lyrics: [
+      {
+        type: "Verse",
+        number: 1,
+        text: `You brought me to the desert
+so You could be my water
+You brought me to the fire
+so You could be my shield
+You brought me to the darkness
+so You could be my morning light
+If You brought me this far,
+if You brought me this far`,
+      },
+      {
+        type: "Chorus",
+        number: 1,
+        text: `Wherever You lead me, I know You won't leave me
+Wherever You call me, You will make a way
+Wherever we're goin', I will be holdin'
+To the promise You have made
+You will make a way, ay, ay
+You will make a way ay, ay`,
+      },
+      {
+        type: "Verse",
+        number: 2,
+        text: `And when I'm in the valley
+You will be my comfort
+And when I'm at the end of me
+I'll find You there
+And when I'm in the battle
+You will be my present peace
+'Cause You brought me this far,
+You brought me this far`,
+      },
+      {
+        type: "Bridge",
+        number: 1,
+        text: `'Cause You brought me this far
+You brought me this far
+You brought me this far,
+You will make a way`,
+      },
+      {
+        type: "Bridge",
+        number: 2,
+        text: `You brought me this far
+You brought me this far
+You brought me this far
+My God will make a way`,
       },
     ],
   },
