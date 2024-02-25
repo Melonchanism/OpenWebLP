@@ -113,33 +113,6 @@
     o<br />
     o<br />
     o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
-    o<br />
     l test
   </p>
 </div>
@@ -164,6 +137,7 @@
     }
     div.titlebarbackground {
       position: absolute;
+      right: 0;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       width: 80%;

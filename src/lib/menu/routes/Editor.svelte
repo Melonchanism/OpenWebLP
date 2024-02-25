@@ -2,6 +2,7 @@
   import { allSongs, myServiceStore } from "$lib/songs";
   import { scale } from "svelte/transition";
   import { onMount } from "svelte";
+  import { Service } from "$lib/types";
 
   let currentSong = $state(0);
   let currentLyric = $state(0);
@@ -135,7 +136,7 @@
     </div>
     <div class="input-grid-lyric">
       <textarea
-        rows="15"
+        rows="9"
         cols="50"
         placeholder="Lyric..."
         on:keydown|stopPropagation={() => {}}
@@ -164,7 +165,7 @@
       <button
         style:grid-area="delete"
         on:click={() => {
-          if (confirm("are you sure?? This will likely mess things up!!")) {
+          if (confirm("are you sure??")) {
             allSongs.update((songs) => {
               songs[currentSong].lyrics.splice(currentLyric, 1);
               return songs;
@@ -174,7 +175,7 @@
         }}
       >
         <i class="bi bi-trash" />
-        Delete Lyric(may mess up service)
+        Delete Lyric
       </button>
     </div>
   </div>
@@ -201,24 +202,27 @@
       />
       <button
         on:click={() => {
-          if (confirm("are you sure?? This will likely mess things up!!")) {
+          if (confirm("are you sure??")) {
+            let songToDelete = $myServiceStore.songs.indexOf(currentSong);
+            myServiceStore.update((store) => {
+              songToDelete !== -1 ? store.songs.splice(songToDelete, 1) : null;
+              let updated = store.songs.map((itm) => {
+                if (itm > currentSong) {
+                  return itm - 1;
+                } else return itm;
+              });
+              return new Service(store.name, updated);
+            });
             allSongs.update((songs) => {
               songs.splice(currentSong, 1);
               return songs;
             });
-            let songToDelete = $myServiceStore.songs.indexOf(currentSong);
-            if (songToDelete !== -1) {
-              myServiceStore.update((store) => {
-                store.songs.splice(songToDelete, 1);
-                return store;
-              });
-            }
             editing = "none";
           }
         }}
       >
         <i class="bi bi-trash" />
-        Delete Song(will mess up service)
+        Delete Song
       </button>
     </div>
   </div>
@@ -261,10 +265,12 @@
     div.input-grid-lyric {
       display: grid;
       grid-template-areas: "text text" "type numbre" "delete delete";
+      max-height: 100vh;
       textarea {
         background-color: var(--item-background-color);
         height: max-content;
         resize: none;
+        max-height: calc(100vh - 170px);
       }
       select,
       input,

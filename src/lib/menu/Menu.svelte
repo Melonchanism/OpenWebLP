@@ -91,7 +91,7 @@
       grid-template-columns: min-content auto;
     }
     div.sidebar {
-      border-right: 2px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
       div.titlebar {
         display: flex;
         align-items: center;
