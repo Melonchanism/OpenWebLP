@@ -5,15 +5,20 @@
   import { onMount } from "svelte";
   import "../styles.css";
   import { allSongs, myService } from "$lib/songs";
+  import { supabase } from "$lib/supabase";
+  import type { RealtimeChannel } from "@supabase/supabase-js";
 
-  const channel = new BroadcastChannel("key");
+  const keyChannel = new BroadcastChannel("key");
 
   let currentSong = $state(0);
   let currentLyric = $state(0);
 
   let isBlank = false;
 
+  let remoteChannel: RealtimeChannel;
+
   onMount(() => {
+    initRemote();
     $effect(() => {
       if (
         $myService.songs.length > 0 &&
@@ -56,16 +61,32 @@
             block: "center",
             inline: "nearest",
           });
+        remoteChannel?.send({
+          type: "broadcast",
+          event: "test",
+          payload: {
+            lyric: currentLyric,
+            song: currentSong,
+          },
+        });
       } else if ($myService.songs.length > 0) {
         currentSong = 0;
         currentLyric = 0;
+        remoteChannel?.send({
+          type: "broadcast",
+          event: "test",
+          payload: {
+            lyric: currentLyric,
+            song: currentSong,
+          },
+        });
       } else {
         localStorage.setItem("lyricInfo", "");
         localStorage.setItem("songInfo", "");
         localStorage.setItem("lyric", "");
       }
     });
-    channel.addEventListener("message", (evt) =>
+    keyChannel.addEventListener("message", (evt) =>
       handleKey(evt.data[0], undefined, evt.data[1]),
     );
     updateTheme();
@@ -144,6 +165,28 @@
         "--font",
         localStorage.getItem("font") || "sans-serif",
       );
+  }
+  function initRemote() {
+    console.log("initializing");
+    let code = "123456";
+    remoteChannel = supabase.channel(code);
+    remoteChannel
+      .on("broadcast", { event: "test" }, (dat: any) => {
+        if (dat.payload.song != null) currentSong = dat.payload.song;
+        if (dat.payload.lyric != null) currentLyric = dat.payload.lyric;
+        console.log(dat);
+      })
+      .on("presence", { event: "join" }, () => {
+        remoteChannel.send({
+          type: "broadcast",
+          event: "test",
+          payload: {
+            lyric: currentLyric,
+            song: currentSong,
+          },
+        });
+      })
+      .subscribe();
   }
 </script>
 

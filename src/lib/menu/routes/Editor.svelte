@@ -2,7 +2,7 @@
   import { allSongs, myService } from "$lib/songs";
   import { scale } from "svelte/transition";
   import { onMount } from "svelte";
-  import { Service } from "$lib/types";
+  import { Service } from "$lib/main";
 
   let currentSong = $state(0);
   let currentLyric = $state(0);
@@ -163,7 +163,7 @@
         style:grid-area="numbre"
       />
       <button
-        class="editor"
+        class="notitem"
         style:grid-area="delete"
         on:click={() => {
           if (confirm("are you sure??")) {
@@ -202,13 +202,13 @@
         bind:value={$allSongs[currentSong].artist}
       />
       <button
-        class="editor"
+        class="notitem"
         on:click={() => {
           if (confirm("are you sure??")) {
             let songToDelete = $myService.songs.indexOf(currentSong);
             myService.update((store) => {
               songToDelete !== -1 ? store.songs.splice(songToDelete, 1) : null;
-              let updated = store.songs.map((itm) => {
+              let updated = store.songs.map((itm: number) => {
                 if (itm > currentSong) {
                   return itm - 1;
                 } else return itm;

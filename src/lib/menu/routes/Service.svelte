@@ -3,7 +3,7 @@
   import { slide } from "svelte/transition";
   import { allSongs, myService } from "$lib/songs";
   import { onMount } from "svelte";
-  import { Service } from "$lib/types";
+  import { Service } from "$lib/main";
 
   let listElm: HTMLDivElement;
   let listElm2: HTMLDivElement;
@@ -76,7 +76,7 @@
   <div class="column">
     <h2>Current</h2>
     <div class="list" bind:this={listElm2}>
-      {#each myService.songs as index}
+      {#each editingService.songs as index}
         <div class="item" data-id={index}>
           {$allSongs[index]?.name}
           <br />

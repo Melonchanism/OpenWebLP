@@ -68,7 +68,7 @@ a {
 select,
 input,
 textarea,
-button.editor {
+button.notitem {
   background-color: var(--item-background-color);
   -webkit-appearance: none;
   font-size: 17px;

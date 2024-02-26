@@ -1,4 +1,4 @@
-import { Service, type song } from "$lib/types";
+import { Service, type song } from "$lib/main";
 import { writable, type Writable } from "svelte/store";
 import { supabase } from "./supabase";
 
