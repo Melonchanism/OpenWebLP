@@ -1,7 +1,7 @@
 <script lang="ts">
   import Sortable from "sortablejs";
   import { slide } from "svelte/transition";
-  import { allSongs, myServiceStore } from "$lib/songs";
+  import { allSongs, myService } from "$lib/songs";
   import { onMount } from "svelte";
   import { Service } from "$lib/types";
 
@@ -12,7 +12,7 @@
 
   let search = $state("");
 
-  const myService = $myServiceStore;
+  const editingService = $myService;
 
   onMount(() => {
     new Sortable(listElm, {
@@ -41,7 +41,7 @@
       list.toArray().forEach((item) => {
         output.push(parseInt(item));
       });
-      myServiceStore.set(new Service("auto", output));
+      myService.set(new Service("auto", output));
     }, 50);
   }
 </script>
@@ -96,10 +96,8 @@
       text-align: center;
     }
     input {
-      background: #222222c5;
       font-size: 20px;
       margin-left: 8px;
-      border-radius: 8px;
       padding: 4px;
       width: calc(100% - 24px);
     }

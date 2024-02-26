@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { allSongs, myServiceStore } from "$lib/songs";
+  import { allSongs, myService } from "$lib/songs";
   import { scale } from "svelte/transition";
   import { onMount } from "svelte";
   import { Service } from "$lib/types";
@@ -163,6 +163,7 @@
         style:grid-area="numbre"
       />
       <button
+        class="editor"
         style:grid-area="delete"
         on:click={() => {
           if (confirm("are you sure??")) {
@@ -201,10 +202,11 @@
         bind:value={$allSongs[currentSong].artist}
       />
       <button
+        class="editor"
         on:click={() => {
           if (confirm("are you sure??")) {
-            let songToDelete = $myServiceStore.songs.indexOf(currentSong);
-            myServiceStore.update((store) => {
+            let songToDelete = $myService.songs.indexOf(currentSong);
+            myService.update((store) => {
               songToDelete !== -1 ? store.songs.splice(songToDelete, 1) : null;
               let updated = store.songs.map((itm) => {
                 if (itm > currentSong) {
@@ -271,17 +273,6 @@
         height: max-content;
         resize: none;
         max-height: calc(100vh - 170px);
-      }
-      select,
-      input,
-      textarea,
-      button {
-        background-color: var(--item-background-color);
-        -webkit-appearance: none;
-        font-size: 17px;
-        margin: 8px;
-        padding: 4px;
-        border-radius: 8px;
       }
     }
     div.input-grid-song {

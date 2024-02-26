@@ -21,10 +21,13 @@
   },
   "type": "module",
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
     "@sveltejs/adapter-vercel": "^5.1.0",
     "@types/sortablejs": "^1.15.8",
     "bootstrap-icons": "^1.11.3",
     "days-since": "^2.0.1",
+    "install": "^0.13.0",
+    "npm": "^10.4.0",
     "sortablejs": "^1.15.2"
   }
 }

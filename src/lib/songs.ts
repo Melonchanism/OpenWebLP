@@ -1,7 +1,8 @@
 import { Service, type song } from "$lib/types";
 import { writable, type Writable } from "svelte/store";
+import { supabase } from "./supabase";
 
-export const myServiceStore = writable(new Service("myService", [8, 9, 10, 1]));
+export const myService = writable(new Service("myService", [8, 9, 10, 1]));
 
 export let allSongs: Writable<song[]> = writable([
   {

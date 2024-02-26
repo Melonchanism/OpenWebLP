@@ -77,7 +77,7 @@
   </div>
 {/if}
 <div class="container">
-  <h1 style:animation-name="{animationName}-in" bind:this={elm1}>
+  <h1 bind:this={elm1}>
     {displayText2}
   </h1>
 </div>

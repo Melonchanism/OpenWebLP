@@ -3,10 +3,12 @@
   import Settings from "$lib/menu/routes/Settings.svelte";
   import Service from "$lib/menu/routes/Service.svelte";
   import Editor from "$lib/menu/routes/Editor.svelte";
+  import Remote from "$lib/menu/routes/Remote.svelte";
   import About from "$lib/menu/routes/About.svelte";
 
   let show = false;
-  let route = "settings";
+  let route: "settings" | "service" | "editor" | "about" | "remote" =
+    "settings";
 </script>
 
 <svelte:window
@@ -42,6 +44,12 @@
           <i class="bi bi-pencil" /> Editor
         </button>
         <button
+          class="item {route === 'remote' ? 'current' : ''}"
+          on:click={() => (route = "remote")}
+        >
+          <i class="bi bi-router" /> Remote
+        </button>
+        <button
           class="item {route === 'about' ? 'current' : ''}"
           on:click={() => (route = "about")}
         >
@@ -56,6 +64,8 @@
         <Service />
       {:else if route === "editor"}
         <Editor />
+      {:else if route === "remote"}
+        <Remote />
       {:else if route === "about"}
         <About />
       {/if}

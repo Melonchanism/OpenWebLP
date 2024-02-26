@@ -65,6 +65,18 @@ a {
   color: rgb(200, 200, 255);
 }
 
+select,
+input,
+textarea,
+button.editor {
+  background-color: var(--item-background-color);
+  -webkit-appearance: none;
+  font-size: 17px;
+  margin: 8px;
+  padding: 4px;
+  border-radius: 8px;
+}
+
 button.item,
 div.item {
   text-align: left;
@@ -98,6 +110,10 @@ div.item {
   }
   &.current {
     background: var(--item-current-background-color);
+  }
+  div.info:first-line {
+    font-size: 25px;
+    font-weight: normal;
   }
 }
 div.glass,

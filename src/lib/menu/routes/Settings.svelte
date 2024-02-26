@@ -117,13 +117,6 @@
         button.item {
           display: grid;
           grid-template-columns: auto auto;
-          div.info:first-line {
-            font-size: 25px;
-            font-weight: normal;
-          }
-          &.current > div.indicator {
-            background: #22b600;
-          }
         }
       }
     }
@@ -137,12 +130,15 @@
     padding: 0 16px 0 16px;
     -webkit-appearance: none;
   }
-  div.indicator {
+  :global(div.indicator) {
     background: var(--background-color);
     justify-self: right;
     width: 40px;
     height: 40px;
     border-radius: 8px;
     transition: background-color 200ms;
+  }
+  :global(button.item.current > div.indicator) {
+    background: #22b600;
   }
 </style>
