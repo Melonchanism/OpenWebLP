@@ -4,7 +4,7 @@
   import { blur } from "svelte/transition";
   import { onMount } from "svelte";
   import "../styles.css";
-  import { allSongs, myServiceStore } from "$lib/songs";
+  import { allSongs, myService } from "$lib/songs";
 
   const channel = new BroadcastChannel("key");
 
@@ -16,16 +16,16 @@
   onMount(() => {
     $effect(() => {
       if (
-        $myServiceStore.songs.length > 0 &&
-        $allSongs[$myServiceStore.songs[currentSong]]
+        $myService.songs.length > 0 &&
+        $allSongs[$myService.songs[currentSong]]
       ) {
         const lyric =
-          $allSongs[$myServiceStore.songs[currentSong]].lyrics[currentLyric];
+          $allSongs[$myService.songs[currentSong]].lyrics[currentLyric];
         if (!isBlank) {
           localStorage.setItem("lyricInfo", `${lyric.type} ${lyric.number}`);
           localStorage.setItem(
             "songInfo",
-            `${$allSongs[$myServiceStore.songs[currentSong]].name} | ${$allSongs[$myServiceStore.songs[currentSong]].artist}`,
+            `${$allSongs[$myService.songs[currentSong]].name} | ${$allSongs[$myService.songs[currentSong]].artist}`,
           );
           localStorage.setItem("lyric", lyric.text);
         }
@@ -56,7 +56,7 @@
             block: "center",
             inline: "nearest",
           });
-      } else if ($myServiceStore.songs.length > 0) {
+      } else if ($myService.songs.length > 0) {
         currentSong = 0;
         currentLyric = 0;
       } else {
@@ -77,39 +77,31 @@
       case "ArrowDown":
         evt?.preventDefault();
         !shift
-          ? $allSongs[$myServiceStore.songs[currentSong]].lyrics[
-              currentLyric + 1
-            ]
+          ? $allSongs[$myService.songs[currentSong]].lyrics[currentLyric + 1]
             ? currentLyric++
             : null
-          : $allSongs[$myServiceStore.songs[currentSong]].lyrics[
-                currentLyric + 2
-              ]
+          : $allSongs[$myService.songs[currentSong]].lyrics[currentLyric + 2]
             ? (currentLyric += 2)
             : null;
         break;
       case "ArrowUp":
         evt?.preventDefault();
         !shift
-          ? $allSongs[$myServiceStore.songs[currentSong]].lyrics[
-              currentLyric - 1
-            ]
+          ? $allSongs[$myService.songs[currentSong]].lyrics[currentLyric - 1]
             ? currentLyric--
             : null
-          : $allSongs[$myServiceStore.songs[currentSong]].lyrics[
-                currentLyric - 2
-              ]
+          : $allSongs[$myService.songs[currentSong]].lyrics[currentLyric - 2]
             ? (currentLyric -= 2)
             : null;
         break;
       case "ArrowRight":
-        if ($allSongs[$myServiceStore.songs[currentSong + 1]]) {
+        if ($allSongs[$myService.songs[currentSong + 1]]) {
           currentLyric = 0;
           currentSong++;
         }
         break;
       case "ArrowLeft":
-        if ($allSongs[$myServiceStore.songs[currentSong - 1]]) {
+        if ($allSongs[$myService.songs[currentSong - 1]]) {
           currentLyric = 0;
           currentSong--;
         }
@@ -122,11 +114,11 @@
           localStorage.setItem("lyric", "");
         } else {
           const lyric =
-            $allSongs[$myServiceStore.songs[currentSong]].lyrics[currentLyric];
+            $allSongs[$myService.songs[currentSong]].lyrics[currentLyric];
           localStorage.setItem("lyricInfo", `${lyric.type} ${lyric.number}`);
           localStorage.setItem(
             "songInfo",
-            `${$allSongs[$myServiceStore.songs[currentSong]].name} by: ${$allSongs[$myServiceStore.songs[currentSong]].artist}`,
+            `${$allSongs[$myService.songs[currentSong]].name} by: ${$allSongs[$myService.songs[currentSong]].artist}`,
           );
           localStorage.setItem("lyric", lyric.text);
         }
@@ -162,12 +154,13 @@
 
 <div class="main">
   <div class="grid-item songs" style:grid-area="songs">
-    {#each $myServiceStore.songs as index}
+    {#each $myService.songs as index}
       <button
         class="item"
         transition:blur={{ duration: 300 }}
         on:click={(evt) => {
           evt.preventDefault();
+          currentLyric = 0;
           currentSong =
             Array.from(
               //@ts-ignore
@@ -182,8 +175,8 @@
     {/each}
   </div>
   <div class="grid-item lyrics" style:grid-area="lyrics">
-    {#if $myServiceStore.songs.length > 0 && $allSongs[$myServiceStore.songs[currentSong]]}
-      {#each $allSongs[$myServiceStore.songs[currentSong]].lyrics as lyric}
+    {#if $myService.songs.length > 0 && $allSongs[$myService.songs[currentSong]]}
+      {#each $allSongs[$myService.songs[currentSong]].lyrics as lyric}
         <button
           class="item"
           on:click={(evt) =>
