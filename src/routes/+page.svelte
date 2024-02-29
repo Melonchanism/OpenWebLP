@@ -7,6 +7,7 @@
   import { allSongs, myService } from "$lib/songs";
   import { supabase } from "$lib/supabase";
   import type { RealtimeChannel } from "@supabase/supabase-js";
+  import { remote } from "$lib/remote";
 
   const keyChannel = new BroadcastChannel("key");
 
@@ -15,10 +16,9 @@
 
   let isBlank = false;
 
-  let remoteChannel: RealtimeChannel;
+  let remoteChannel: RealtimeChannel | undefined;
 
   onMount(() => {
-    initRemote();
     $effect(() => {
       if (
         $myService.songs.length > 0 &&
@@ -89,6 +89,32 @@
     keyChannel.addEventListener("message", (evt) =>
       handleKey(evt.data[0], undefined, evt.data[1]),
     );
+    remote.subscribe((val) => {
+      let code = val.code;
+      if (val.enabled) {
+        remoteChannel = supabase.channel(code);
+        remoteChannel
+          .on("broadcast", { event: "test" }, (dat: any) => {
+            if (dat.payload.song != null) currentSong = dat.payload.song;
+            if (dat.payload.lyric != null) currentLyric = dat.payload.lyric;
+            console.log(dat);
+          })
+          .on("presence", { event: "join" }, () => {
+            remoteChannel?.send({
+              type: "broadcast",
+              event: "test",
+              payload: {
+                lyric: currentLyric,
+                song: currentSong,
+              },
+            });
+          })
+          .subscribe();
+      } else {
+        remoteChannel?.unsubscribe();
+        remoteChannel = undefined;
+      }
+    });
     updateTheme();
     updateFont();
   });
@@ -165,28 +191,6 @@
         "--font",
         localStorage.getItem("font") || "sans-serif",
       );
-  }
-  function initRemote() {
-    console.log("initializing");
-    let code = "123456";
-    remoteChannel = supabase.channel(code);
-    remoteChannel
-      .on("broadcast", { event: "test" }, (dat: any) => {
-        if (dat.payload.song != null) currentSong = dat.payload.song;
-        if (dat.payload.lyric != null) currentLyric = dat.payload.lyric;
-        console.log(dat);
-      })
-      .on("presence", { event: "join" }, () => {
-        remoteChannel.send({
-          type: "broadcast",
-          event: "test",
-          payload: {
-            lyric: currentLyric,
-            song: currentSong,
-          },
-        });
-      })
-      .subscribe();
   }
 </script>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { supabase } from "$lib/supabase";
-  import { scale } from "svelte/transition";
+  import { scale, fade } from "svelte/transition";
   import { allSongs, myService } from "$lib/songs";
   import "../../styles.css";
   import type { RealtimeChannel } from "@supabase/supabase-js";
@@ -13,7 +13,6 @@
   let currentSong = $state(0);
 
   function init() {
-    console.log("initializing");
     channel = supabase.channel(code!);
     showLogin = false;
     channel
@@ -90,6 +89,7 @@
       <input type="submit" />
     </form>
   </div>
+  <div class="loginbackground" transition:fade={{ duration: 300 }} />
 {/if}
 
 <style>
@@ -97,12 +97,15 @@
     display: grid;
     grid-template-columns: auto auto;
     grid-template-columns: auto auto;
+    gap: 8px;
     button {
-      height: 40dvh;
+      height: calc(50dvh - 4px);
+      margin: 0;
     }
   }
   div.login {
     position: absolute;
+    z-index: 1;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -110,5 +113,14 @@
       display: flex;
       flex-direction: column;
     }
+  }
+  div.loginbackground {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
   }
 </style>

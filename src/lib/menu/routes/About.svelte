@@ -18,7 +18,7 @@
     h1Elm.style.fontSize = `${0.75 + 1.25 * (1 - animPgs)}em`;
     imgElm.style.height = `${52 + 143 * (1 - animPgs)}px`;
     h1Elm.style.transform = `translate(${52 * animPgs}px, ${-52 * animPgs}px)`;
-    imgElm.style.transform = `translate(${-95 * animPgs}px)`;
+    imgElm.style.transform = `translate(${-95 * animPgs}px) rotate(${360 * animPgs}deg)`;
     document.querySelector<HTMLDivElement>(".titlebarbackground")!.style.opacity = animPgs.toString();
   }}
 >
@@ -140,8 +140,12 @@
       right: 0;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+      opacity: 0;
       width: 80%;
       height: 52px;
+      @media (max-width: 1000px) {
+        width: calc(100% - 58px);
+      }
     }
     div.spacer {
       width: 100%;
