@@ -17,6 +17,7 @@
 ## Other:
 
 - Still not complete yet, but it's usable.<br>
+- Remote avaliable at /remote & remote under the menu
 - Format:
 
 ```ts
