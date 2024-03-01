@@ -29,31 +29,31 @@
           class="item {route === 'settings' ? 'current' : ''}"
           on:click={() => (route = "settings")}
         >
-          <i class="bi bi-gear" /> Settings
+          <i class="bi bi-gear" /><span>Settings</span>
         </button>
         <button
           class="item {route === 'service' ? 'current' : ''}"
           on:click={() => (route = "service")}
         >
-          <i class="bi bi-music-note-list" /> Service
+          <i class="bi bi-music-note-list" /><span>Service</span>
         </button>
         <button
           class="item {route === 'editor' ? 'current' : ''}"
           on:click={() => (route = "editor")}
         >
-          <i class="bi bi-pencil" /> Editor
+          <i class="bi bi-pencil" /><span>Editor</span>
         </button>
         <button
           class="item {route === 'remote' ? 'current' : ''}"
           on:click={() => (route = "remote")}
         >
-          <i class="bi bi-router" /> Remote
+          <i class="bi bi-router" /><span>Remote</span>
         </button>
         <button
           class="item {route === 'about' ? 'current' : ''}"
           on:click={() => (route = "about")}
         >
-          <i class="bi bi-info-circle" /> About
+          <i class="bi bi-info-circle" /><span>About</span>
         </button>
       </div>
     </div>
@@ -120,7 +120,9 @@
           @media (max-width: 1000px) {
             width: auto;
             font-size: 0px !important;
-            color: transparent;
+            span {
+              display: none;
+            }
           }
         }
       }

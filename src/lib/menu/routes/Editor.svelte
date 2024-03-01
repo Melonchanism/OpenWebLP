@@ -1,12 +1,14 @@
 <script lang="ts">
   import { allSongs, myService } from "$lib/songs";
   import { scale } from "svelte/transition";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { Service } from "$lib/main";
 
   let currentSong = $state(0);
   let currentLyric = $state(0);
   let editing = $state("none");
+  //@ts-ignore
+  let resConfirming: (value: any) => void | undefined = $state(undefined);
 
   let songsList: HTMLDivElement;
   let lyricsList: HTMLDivElement;
@@ -16,14 +18,16 @@
   });
 </script>
 
-<svelte:body
-  on:keydown={(evt) => {
+<svelte:window on:keydown|capture={(evt) => {
     if (evt.key === "Escape" && editing !== "none") {
       evt.stopPropagation();
-      editing = "none";
-      lyricsList
-        .querySelectorAll("button")
-        .forEach((itm) => itm.classList.remove("current"));
+      if (resConfirming) resConfirming(false);
+      else {
+          editing = "none";
+          lyricsList
+            .querySelectorAll("button")
+            .forEach((itm) => itm.classList.remove("current"));
+      }
     }
   }}
 />
@@ -163,16 +167,21 @@
         style:grid-area="numbre"
       />
       <button
-        class="notitem"
+        class="notitem delete"
         style:grid-area="delete"
-        on:click={() => {
-          if (confirm("are you sure??")) {
+        on:click={async () => {
+          let confirmed = await new Promise((res) => {
+            resConfirming = res;
+          })
+          if (confirmed) {
             allSongs.update((songs) => {
               songs[currentSong].lyrics.splice(currentLyric, 1);
               return songs;
             });
             editing = "none";
           }
+          //@ts-ignore
+          resConfirming = undefined;
         }}
       >
         <i class="bi bi-trash" />
@@ -202,9 +211,12 @@
         bind:value={$allSongs[currentSong].artist}
       />
       <button
-        class="notitem"
-        on:click={() => {
-          if (confirm("are you sure??")) {
+        class="notitem delete"
+        on:click={async () => {
+          let confirmed = await new Promise((res) => {
+            resConfirming = res;
+          });
+          if (confirmed) {
             let songToDelete = $myService.songs.indexOf(currentSong);
             myService.update((store) => {
               songToDelete !== -1 ? store.songs.splice(songToDelete, 1) : null;
@@ -221,11 +233,25 @@
             });
             editing = "none";
           }
+          //@ts-ignore
+          resConfirming = undefined;
         }}
       >
         <i class="bi bi-trash" />
         Delete Song
       </button>
+    </div>
+  </div>
+{/if}
+
+{#if resConfirming}
+  <div class="secondary glass" transition:scale={{duration: 300}}>
+    <div class="titlebar">
+      <h1>Are You Sure??</h1>
+    </div>
+    <div>
+      <button class="notitem" style:background={"red"} on:click={() => resConfirming(true)}>Yes</button>
+      <button class="notitem" on:click={() => resConfirming(false)}>No</button>
     </div>
   </div>
 {/if}
@@ -287,7 +313,7 @@
         border-radius: 8px;
       }
     }
-    button {
+    button.delete {
       color: red;
     }
   }
