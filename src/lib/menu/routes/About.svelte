@@ -66,6 +66,7 @@
         <li>Easy to use</li>
         <li>Fast</li>
         <li>Cool Transitions</li>
+        <li>Remote</li>
       </ul>
     </div>
     <div>
@@ -138,10 +139,11 @@
     div.titlebarbackground {
       position: absolute;
       right: 0;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
       opacity: 0;
       width: 80%;
+      margin-top: -1px;
       height: 52px;
       @media (max-width: 1000px) {
         width: calc(100% - 58px);
@@ -149,7 +151,7 @@
     }
     div.spacer {
       width: 100%;
-      height: 315px;
+      height: 324px;
       flex-shrink: 0;
       z-index: 99;
     }

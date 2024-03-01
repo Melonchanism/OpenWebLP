@@ -94,9 +94,11 @@
     height: 80dvh;
     @media (max-width: 1000px) {
       top: 0;
-      left: 0;
+      left: env(safe-area-inset-left);
       transform: none;
-      width: 100dvw;
+      width: calc(
+        100dvw - env(safe-area-inset-left) - env(safe-area-inset-right)
+      );
       height: 100dvh;
       grid-template-columns: min-content auto;
     }
