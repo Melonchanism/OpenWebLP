@@ -85,7 +85,7 @@
   <div class="login glass" transition:scale={{ duration: 300 }}>
     <h1>Enter Code</h1>
     <form on:submit|preventDefault={init}>
-      <input type="text" bind:value={code} />
+      <input type="text" inputmode="numeric" bind:value={code} />
       <input type="submit" />
     </form>
   </div>

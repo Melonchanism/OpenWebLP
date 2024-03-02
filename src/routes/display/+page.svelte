@@ -26,7 +26,7 @@
       else if (evt.key === "settings") updateSettings();
       else if (evt.key === "font") updateFont();
     });
-    channel.postMessage(Math.round((innerWidth / innerHeight) * 100) / 100);
+    setInterval(() => channel.postMessage(innerWidth / innerHeight), 250);
   });
 
   function updateDisplay() {
@@ -68,14 +68,11 @@
     evt.key !== "f"
       ? channel.postMessage([evt.key, evt.shiftKey])
       : document.body.requestFullscreen()}
-  on:resize={() => {
-    channel.postMessage(Math.round((innerWidth / innerHeight) * 100) / 100);
-  }}
 />
 
 {#if transitioning}
   <div class="container">
-    <h1 style:animation-name="{animationName}-out">
+    <h1 style:animation-name={`${animationName}-out`}>
       {displayText}
     </h1>
   </div>

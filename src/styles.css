@@ -189,7 +189,7 @@ button.glass {
 @keyframes slide-in {
   from {
     opacity: 0;
-    transform: translateX(-50vw);
+    transform: translateX(-90vw);
   }
   to {
     opacity: 1;
@@ -203,14 +203,14 @@ button.glass {
   }
   to {
     opacity: 0;
-    transform: translateX(50vw);
+    transform: translateX(90vw);
   }
 }
 
 @keyframes reverse-slide-in {
   from {
     opacity: 0;
-    transform: translateX(50vw);
+    transform: translateX(90vw);
   }
   to {
     opacity: 1;
@@ -224,14 +224,14 @@ button.glass {
   }
   to {
     opacity: 0;
-    transform: translateX(-50vw);
+    transform: translateX(-90vw);
   }
 }
 
 @keyframes scroll-in {
   from {
     opacity: 0;
-    transform: translateY(50vh);
+    transform: translateY(90vh);
   }
   to {
     opacity: 1;
@@ -245,14 +245,14 @@ button.glass {
   }
   to {
     opacity: 0;
-    transform: translateY(-50vh);
+    transform: translateY(-90vh);
   }
 }
 
 @keyframes reverse-scroll-in {
   from {
     opacity: 0;
-    transform: translateY(-50vh);
+    transform: translateY(-90vh);
   }
   to {
     opacity: 1;
@@ -266,23 +266,29 @@ button.glass {
   }
   to {
     opacity: 0;
-    transform: translateY(50vh);
+    transform: translateY(90vh);
   }
 }
 
 @keyframes rotate-in {
-  from {
+  0% {
     transform: scaleX(0);
   }
-  to {
+  50% {
+    transform: scaleX(0);
+  }
+  100% {
     transform: scaleX(1);
   }
 }
 @keyframes rotate-out {
-  from {
+  0% {
     transform: scaleX(1);
   }
-  to {
+  50% {
+    transform: scaleX(0);
+  }
+  100% {
     transform: scaleX(0);
   }
 }

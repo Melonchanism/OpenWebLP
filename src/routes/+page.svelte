@@ -92,7 +92,6 @@
       typeof evt.data === "object"
         ? handleKey(evt.data[0], undefined, evt.data[1])
         : (previewAspectRatio = evt.data);
-      console.log(evt.data);
     });
     remote.subscribe((val) => {
       let code = val.code;
@@ -102,7 +101,6 @@
           .on("broadcast", { event: "test" }, (dat: any) => {
             if (dat.payload.song != null) currentSong = dat.payload.song;
             if (dat.payload.lyric != null) currentLyric = dat.payload.lyric;
-            console.log(dat);
           })
           .on("presence", { event: "join" }, () => {
             remoteChannel?.send({
@@ -174,9 +172,6 @@
           );
           localStorage.setItem("lyric", lyric.text);
         }
-        break;
-      case "f":
-        document.querySelector("iframe")?.requestFullscreen();
         break;
       case "d":
         open("/display", "_blank", "popup");
