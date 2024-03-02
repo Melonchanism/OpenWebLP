@@ -1,5 +1,6 @@
 <script lang="ts">
   import { scale, fade } from "svelte/transition";
+  import { draggable } from "@neodrag/svelte";
   import Settings from "$lib/menu/routes/Settings.svelte";
   import Service from "$lib/menu/routes/Service.svelte";
   import Editor from "$lib/menu/routes/Editor.svelte";
@@ -16,10 +17,22 @@
 />
 
 {#if show}
-  <div class="main glass" transition:scale={{ duration: 300 }}>
+  <div
+    class="main glass"
+    transition:scale={{ duration: 300 }}
+    use:draggable={{
+      handle: "& > .sidebar > .titlebar",
+      cancel: ".toggle",
+      bounds: "body",
+      legacyTranslate: false,
+    }}
+  >
     <div class="sidebar">
       <div class="titlebar">
-        <button class="toggle glass" on:click={() => (show = false)}>
+        <button
+          class="toggle glass"
+          on:click|stopPropagation={() => (show = false)}
+        >
           <i class="bi bi-x-lg" style="font-size: xx-large" />
         </button>
         <h1 class="title">Menu</h1>
@@ -95,6 +108,7 @@
     @media (max-width: 1000px) {
       top: 0;
       left: env(safe-area-inset-left);
+      translate: none !important;
       transform: none;
       width: calc(
         100dvw - env(safe-area-inset-left) - env(safe-area-inset-right)

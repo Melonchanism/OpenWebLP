@@ -9,7 +9,7 @@
   import type { RealtimeChannel } from "@supabase/supabase-js";
   import { remote } from "$lib/remote";
 
-  const keyChannel = new BroadcastChannel("key");
+  const displayChannel = new BroadcastChannel("key");
 
   let currentSong = $state(0);
   let currentLyric = $state(0);
@@ -17,6 +17,8 @@
   let isBlank = false;
 
   let remoteChannel: RealtimeChannel | undefined;
+
+  let previewAspectRatio = $state(16 / 9);
 
   onMount(() => {
     $effect(() => {
@@ -86,9 +88,12 @@
         localStorage.setItem("lyric", "");
       }
     });
-    keyChannel.addEventListener("message", (evt) =>
-      handleKey(evt.data[0], undefined, evt.data[1]),
-    );
+    displayChannel.addEventListener("message", (evt) => {
+      typeof evt.data === "object"
+        ? handleKey(evt.data[0], undefined, evt.data[1])
+        : (previewAspectRatio = evt.data);
+      console.log(evt.data);
+    });
     remote.subscribe((val) => {
       let code = val.code;
       if (val.enabled) {
@@ -241,7 +246,7 @@
     {/if}
   </div>
   <div class="grid-item" style:grid-area="preview">
-    <Preview />
+    <Preview bind:aspectRatio={previewAspectRatio} />
   </div>
 </div>
 

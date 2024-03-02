@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  let sml = false;
-  let aspectRatio = 16 / 9;
+  let { aspectRatio } = $props<{ aspectRatio: number }>();
+
+  let sml = $state.frozen(false);
 
   onMount(() => {
     const elm = document
@@ -11,6 +12,14 @@
     if (elm.width / elm.height < aspectRatio) sml = true;
     else sml = false;
     addEventListener("resize", () => {
+      const elm = document
+        .querySelector("div.container")!
+        .getBoundingClientRect();
+      if (elm.width / elm.height < aspectRatio) sml = true;
+      else sml = false;
+    });
+    $effect(() => {
+      aspectRatio + 1;
       const elm = document
         .querySelector("div.container")!
         .getBoundingClientRect();

@@ -3,7 +3,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 body {
   --border-color: #222222;
-  --window-background-color: #17171795;
+  --window-background-color: #171717cc;
   --background-color: #000000;
   --item-background-color: #232323c5;
   --item-hover-background-color: #272727c5;
@@ -12,7 +12,7 @@ body {
 
   &.ew {
     --border-color: #000000;
-    --window-background-color: #ffffff95;
+    --window-background-color: #ffffffcc;
     --background-color: #ffffff;
     --item-background-color: #f0f0f0c5;
     --item-hover-background-color: #d5d5d5c5;
@@ -22,7 +22,7 @@ body {
 
   &.solarized {
     --border-color: #002b36;
-    --window-background-color: #002b3695;
+    --window-background-color: #002b36cc;
     --background-color: #002b36;
     --item-background-color: #073642c5;
     --item-hover-background-color: #384e55c5;
@@ -32,7 +32,7 @@ body {
 
   &.ayu {
     --border-color: #3f4042;
-    --window-background-color: #0f141995;
+    --window-background-color: #0f1419cc;
     --background-color: rgb(13, 17, 21);
     --item-background-color: rgba(26, 29, 35, 0.77);
     --item-hover-background-color: rgba(49, 51, 56, 0.77);
@@ -85,12 +85,10 @@ div.item {
   background: var(--item-background-color);
   margin: 0 8px 0 8px;
   border-bottom: var(--border-color) 1px solid;
-  border-top: var(--border-color) 1px solid;
   padding: 8px;
   white-space: pre;
   transition: background-color 200ms;
   &:first-child {
-    border-top: none;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     margin-top: 8px;
@@ -123,6 +121,10 @@ button.glass {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-radius: 8px;
+  box-shadow: #000000 0 0 60px;
+  .titlebar {
+    cursor: move;
+  }
 }
 
 @keyframes fade-in {

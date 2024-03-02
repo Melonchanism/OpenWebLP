@@ -26,6 +26,7 @@
       else if (evt.key === "settings") updateSettings();
       else if (evt.key === "font") updateFont();
     });
+    channel.postMessage(Math.round((innerWidth / innerHeight) * 100) / 100);
   });
 
   function updateDisplay() {
@@ -67,6 +68,9 @@
     evt.key !== "f"
       ? channel.postMessage([evt.key, evt.shiftKey])
       : document.body.requestFullscreen()}
+  on:resize={() => {
+    channel.postMessage(Math.round((innerWidth / innerHeight) * 100) / 100);
+  }}
 />
 
 {#if transitioning}

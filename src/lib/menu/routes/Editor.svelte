@@ -1,12 +1,13 @@
 <script lang="ts">
   import { allSongs, myService } from "$lib/songs";
   import { scale } from "svelte/transition";
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { Service } from "$lib/main";
+  import { draggable } from "@neodrag/svelte";
 
   let currentSong = $state(0);
   let currentLyric = $state(0);
-  let editing = $state("none");
+  let editing: "song" | "lyric" | "none" = $state("none");
   //@ts-ignore
   let resConfirming: (value: any) => void | undefined = $state(undefined);
 
@@ -123,15 +124,18 @@
 </div>
 
 {#if editing === "lyric"}
-  <div class="secondary glass" transition:scale={{ duration: 300 }}>
+  <div class="secondary glass" transition:scale={{ duration: 300 }} use:draggable={{
+    handle: "& > .titlebar",
+    bounds: "body",
+    cancel: ".close",
+    legacyTranslate: false
+  }}>
     <div class="titlebar">
       <button
         class="close glass"
         on:click={() => {
           editing = "none";
-          lyricsList
-            .querySelectorAll("button")
-            .forEach((itm) => itm.classList.remove("current"));
+          lyricsList.querySelectorAll("button").item(currentLyric).classList.remove("current")
         }}
       >
         <i class="bi bi-x-lg" style="font-size: xx-large" />
@@ -170,10 +174,7 @@
         class="notitem delete"
         style:grid-area="delete"
         on:click={async () => {
-          let confirmed = await new Promise((res) => {
-            resConfirming = res;
-          })
-          if (confirmed) {
+          if (await new Promise(res => resConfirming = res)) {
             allSongs.update((songs) => {
               songs[currentSong].lyrics.splice(currentLyric, 1);
               return songs;
@@ -190,7 +191,12 @@
     </div>
   </div>
 {:else if editing === "song"}
-  <div class="secondary glass" transition:scale={{ duration: 300 }}>
+  <div class="secondary glass" transition:scale={{ duration: 300 }} use:draggable={{
+    handle: "& > .titlebar",
+    bounds: "body",
+    cancel: ".close",
+    legacyTranslate: false
+  }}>
     <div class="titlebar">
       <button class="close glass" on:click={() => (editing = "none")}>
         <i class="bi bi-x-lg" style="font-size: xx-large" />
@@ -213,10 +219,7 @@
       <button
         class="notitem delete"
         on:click={async () => {
-          let confirmed = await new Promise((res) => {
-            resConfirming = res;
-          });
-          if (confirmed) {
+          if (await new Promise(res => resConfirming = res)) {
             let songToDelete = $myService.songs.indexOf(currentSong);
             myService.update((store) => {
               songToDelete !== -1 ? store.songs.splice(songToDelete, 1) : null;
@@ -273,7 +276,7 @@
     }
   }
   div.secondary {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
