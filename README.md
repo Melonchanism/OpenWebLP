@@ -7,12 +7,11 @@
 
 ## Controls:
 
-
 - `D`: launch display (On firefox, it will spawn on the left monitor using left=5000)<br>
-- `F`: If focused on display, fullscreens it, else, fullscreens the preview<br>
+- `F`: If focused on display, fullscreens it<br>
+- `Esc`: Close the current menu
 - `Left/Right arrow keys`: next/previous song<br>
 - `Up/Down arrow keys`: nex/previous lyric<br>
-
 
 ## Other:
 
@@ -22,17 +21,25 @@
 
 ```ts
 type song = {
-	name: string,
-	artist: string,
-	lyrics: {
-		type: "Intro" | "Verse" | "Pre-Chorus" | "Chorus" | "Bridge" | "Tag" | "Ending",
-		number: number,
-		text: string
-	}
-}
-
+  name: string;
+  artist: string;
+  lyrics: {
+    type:
+      | "Intro"
+      | "Verse"
+      | "Pre-Chorus"
+      | "Chorus"
+      | "Bridge"
+      | "Tag"
+      | "Ending";
+    number: number;
+    text: string;
+  };
+};
 ```
 
 ## To Do:
 
-- create a cloud storage api
+- Storage
+- Cloud storage
+- Full fledged remote

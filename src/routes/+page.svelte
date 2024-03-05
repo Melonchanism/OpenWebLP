@@ -18,6 +18,9 @@
 
   let remoteChannel: RealtimeChannel | undefined;
 
+  let theme = $state("dark");
+  let font = $state("sans-serif");
+
   let previewAspectRatio = $state(16 / 9);
 
   onMount(() => {
@@ -118,8 +121,8 @@
         remoteChannel = undefined;
       }
     });
-    updateTheme();
-    updateFont();
+    theme = localStorage.getItem("theme") ?? "dark";
+    font = localStorage.getItem("font") ?? "sans-serif";
   });
 
   function handleKey(key: string, evt?: KeyboardEvent, shift?: boolean) {
@@ -178,26 +181,17 @@
         break;
     }
   }
-  function updateTheme() {
-    document.querySelector("body")!.classList.value = "";
-    document
-      .querySelector("body")
-      ?.classList.add(localStorage.getItem("theme") || "dark");
-  }
-  function updateFont() {
-    document
-      .querySelector("body")!
-      .style.setProperty(
-        "--font",
-        localStorage.getItem("font") || "sans-serif",
-      );
-  }
 </script>
 
 <svelte:window
   on:keydown={(evt) => handleKey(evt.key, evt, evt.shiftKey)}
-  on:storage={(evt) => (evt.key === "theme" ? updateTheme() : updateFont())}
+  on:storage={(evt) =>
+    evt.key === "theme"
+      ? (theme = localStorage.getItem("theme") ?? "dark")
+      : (font = localStorage.getItem("font") ?? "sans-serif")}
 />
+
+<svelte:body class={theme} style:--font={font} />
 
 <div class="main">
   <div class="grid-item songs" style:grid-area="songs">

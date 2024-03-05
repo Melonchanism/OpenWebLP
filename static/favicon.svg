@@ -2,11 +2,12 @@
 <g clip-path="url(#clip0_1_5)">
 <rect width="1024" height="1024" rx="512" transform="matrix(-1 0 0 1 1024 0)" fill="white"/>
 <circle cx="512" cy="512" r="432" fill="#25539E"/>
-<rect y="472" width="1024" height="80" fill="white"/>
-<rect x="14" y="737.031" width="1024" height="80" transform="rotate(-15 14 737.031)" fill="white"/>
-<rect x="118" y="984" width="1024" height="80" transform="rotate(-30 118 984)" fill="white"/>
-<rect x="55.7054" y="210" width="1024" height="80" transform="rotate(15 55.7054 210)" fill="white"/>
-<path d="M137 -29L1023.81 483L983.81 552.282L96.9999 40.282L137 -29Z" fill="white"/>
+<rect x="995.11" y="498.057" width="20" height="36" fill="white"/>
+<rect x="-18.8906" y="475.057" width="968" height="80" fill="white"/>
+<rect x="-123" y="774.415" width="1037.64" height="80" transform="rotate(-15 -123 774.415)" fill="white"/>
+<rect x="24.2163" y="1023.95" width="1108.4" height="80" transform="rotate(-30 24.2163 1023.95)" fill="white"/>
+<rect x="-53.4838" y="188.862" width="1005.31" height="80" transform="rotate(15 -53.4838 188.862)" fill="white"/>
+<path d="M51.7998 -70L1023.28 490.887L983.284 560.169L11.7998 -0.717987L51.7998 -70Z" fill="white"/>
 </g>
 <defs>
 <clipPath id="clip0_1_5">
