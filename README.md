@@ -4,8 +4,7 @@
 - An open source web-based Worship Presentation Software.<br>
 - Was meant to be a clone of OpenLp but, its a bit different.<br>
 - Uses the same license as OpenLP.<br>
-- Demo at [openweblp.web.app/?production](https://openweblp.web.app?example)<br>
-- Production demo at [openweblp.web.app/](https://openweblp.web.app)<br>
+- Demo at [https://openweblp-git-v2-melonchanism.vercel.app](https://openweblp-git-v2-melonchanism.vercel.app)<br>
 - If you used the demo, you have to clear it using the editor to use production, as it is saved in localStorage.<br>
 
 ## Controls:
