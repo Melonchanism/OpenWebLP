@@ -1,127 +1,78 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import "../../styles.css";
+  import { displayData, settings } from "$lib/localStorage.svelte"
+  import { onMount, tick } from "svelte"
 
-  const channel = new BroadcastChannel("key");
-
-  let animationName = "none";
-
-  let transitioning = false;
-  let elm1: HTMLHeadingElement;
-  let settings: {
-    transition: string;
-    info: boolean;
-  };
-
-  let displayText = "";
-  let displayText2 = "";
-  let songInfo = "";
-  let lyricInfo = "";
   onMount(() => {
-    updateSettings();
-    updateDisplay();
-    updateFont();
-    addEventListener("storage", (evt) => {
-      if (evt.key === "lyric") updateDisplay();
-      else if (evt.key === "settings") updateSettings();
-      else if (evt.key === "font") updateFont();
-    });
-    setInterval(() => channel.postMessage(innerWidth / innerHeight), 250);
-  });
-
-  function updateDisplay() {
-    lyricInfo = localStorage.getItem("lyricInfo") ?? "";
-    songInfo = localStorage.getItem("songInfo") ?? "";
-    if (settings.transition !== "none") {
-      elm1?.style ? (elm1.style.animationName = `${animationName}-in`) : null;
-      transitioning = true;
-      displayText2 = localStorage.getItem("lyric") ?? "";
-      setTimeout(() => {
-        transitioning = false;
-        displayText = displayText2;
-        elm1?.style ? (elm1.style.animationName = "none") : null;
-      }, 400);
-    } else {
-      displayText = localStorage.getItem("lyric") ?? "";
-      displayText2 = displayText;
-    }
-  }
-  function updateSettings() {
-    settings = JSON.parse(
-      localStorage.getItem("settings") ??
-        `{"transition": "fade", "info": false}`,
-    );
-    animationName = settings.transition;
-  }
-  function updateFont() {
-    document
-      .querySelector("body")!
-      .style.setProperty(
-        "--font",
-        localStorage.getItem("font") || "sans-serif",
-      );
-  }
+    localStorage.setItem("aspectRatio", innerWidth / innerHeight)
+    displayData.set(JSON.parse(localStorage.getItem("displayData") ?? "null"))
+  })
 </script>
 
 <svelte:window
-  on:keydown={(evt) =>
-    evt.key !== "f"
-      ? channel.postMessage([evt.key, evt.shiftKey])
-      : document.body.requestFullscreen()}
+  onstorage={(evt) => {
+    if (evt.key === "displayData")
+      document.startViewTransition(async () => {
+        displayData.set(JSON.parse(evt.newValue ?? "null"))
+        await tick()
+      })
+  }}
+  onresize={() => {
+    if (window.top === window) localStorage.setItem("aspectRatio", innerWidth / innerHeight)
+  }}
 />
 
-{#if transitioning}
-  <div class="container">
-    <h1 style:animation-name={`${animationName}-out`}>
-      {displayText}
+<div class="main">
+  <div class="lyric-container">
+    <h1 class={$settings?.transition ?? ""}>
+      {$displayData?.lyric?.text}
     </h1>
   </div>
-{/if}
-<div class="container">
-  <h1 bind:this={elm1}>
-    {displayText2}
-  </h1>
-</div>
-{#if settings?.info ?? false}
-  <div class="info">
-    <p>{lyricInfo}</p>
-    <p>{songInfo}</p>
+  <div class="info-container">
+    <p>
+      {$displayData?.name ?? " "}<br />{$displayData?.artists.reduce((carry, artist) => carry + `, ${artist}`) ?? " "}
+    </p>
+    <p>{$displayData?.lyric?.type} {$displayData?.lyric?.number}</p>
   </div>
-{/if}
+</div>
 
 <style>
-  :global(body) {
-    background-color: black;
-    color: white;
-  }
-  div.container {
-    display: grid;
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    place-content: center;
-  }
-
-  div.info {
-    position: fixed;
-    display: grid;
-    grid-template-columns: auto auto;
-    width: 100vw;
-    bottom: 0;
-    p {
-      font-size: calc(0.5vw + 0.5vh);
-      &:last-child {
-        text-align: right;
+  div.main {
+    div.lyric-container {
+      position: fixed;
+      display: grid;
+      place-items: center;
+      height: 100dvh;
+      width: 100vw;
+      h1 {
+        font-size: calc(2.7vw + 2.7vh);
+        font-weight: normal;
+        width: fit-content;
+        white-space: pre-wrap;
+        text-align: center;
+        &.morph {
+          view-transition-name: lyric;
+        }
+      }
+    }
+    div.info-container {
+      position: fixed;
+      bottom: 0;
+      left: 4px;
+      width: calc(100vw - 8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      p {
+        font-size: calc(0.7vw + 0.7vh);
+        /*font-weight: lighter;*/
       }
     }
   }
 
-  h1 {
-    white-space: pre;
-    font-size: calc(2.5vw + 2.5vh);
-    font-weight: normal;
-    text-align: center;
-    animation-fill-mode: forwards;
-    animation-duration: 400ms;
+  ::view-transition-old(lyric),
+  ::view-transition-new(lyric) {
+    height: 100%;
+    width: 100%;
+    animation-duration: 300ms;
   }
 </style>
