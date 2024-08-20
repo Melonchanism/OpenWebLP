@@ -1,13 +1,15 @@
 <script lang="ts">
-  import { displayData } from "$lib/localStorage.svelte"
+  import { displayData, service } from "$lib/localStorage"
   import { onMount } from "svelte"
-  import { crossfade, fade, fly } from "svelte/transition"
-  import { sidebarFade } from "$lib/transitions"
+  import { fly } from "svelte/transition"
+  import { menuBlur, send, recieve } from "$lib/transitions"
   import { cubicInOut } from "svelte/easing"
   import Sortable from "sortablejs"
   import Preview from "$lib/Preview.svelte"
-  import Settings from "$lib/Settings.svelte"
-  import Songs from "$lib/Songs.svelte"
+  import SideBar from "$lib/side/Bar.svelte"
+  import Settings from "$lib/side/Settings.svelte"
+  import Songs from "$lib/side/Songs.svelte"
+  import Editor from "$lib/side/Editor.svelte"
 
   const { data } = $props()
 
@@ -24,21 +26,17 @@
       onEnd: recreateService,
       onAdd: recreateService,
     })
+    $service = JSON.parse(localStorage.getItem("service") ?? "[]")
+    $effect(() => localStorage.setItem("service", JSON.stringify($service)))
+    $displayData = JSON.parse(localStorage.getItem("displayData") ?? "null")
+    displayData.subscribe((data) => {localStorage.setItem("displayData", JSON.stringify(data))})
   })
-
-  const [send, recieve] = crossfade({
-    duration: 300,
-    fallback: fade,
-  })
-
-  let service = $state([{ id: 1 }, { id: 4 }, { id: 5 }, { id: 4 }])
 
   function recreateService() {
-    service = sortable.toArray().map((itm: string) => {
-      return { id: parseInt(itm) }
-    })
-    listElm.querySelectorAll("div").forEach((elm) => elm.remove())
+    $service = sortable.toArray().map((itm: string) => { return { id: parseInt(itm) } })
+    listElm.querySelector("button.added-song")?.remove()
     console.log(service)
+    console.log(sortable.toArray())
   }
 
   let current = $state({ song: 0, lyric: 0 })
@@ -46,30 +44,26 @@
   let sidePanel: string | null = $state(null)
 
   $effect(() => {
+  //@ts-ignore
     document.querySelectorAll(".songs > div > button")?.item(current.song)?.scrollIntoViewIfNeeded()
+    //@ts-ignore
     document.querySelectorAll(".lyrics > div > button")?.item(current.lyric)?.scrollIntoViewIfNeeded()
     scrollTo(0, -1)
     if (!blank) {
       displayData.set({
-        name: data.songs.find((song) => song.id === service[current.song].id)?.name,
-        artists: data.songs.find((song) => song.id === service[current.song].id)?.artists,
-        lyric: data.songs.find((song) => song.id === service[current.song].id)?.lyrics[current.lyric],
+        name: data.songs.find((song) => song.id === $service[current.song].id)?.name ?? "",
+        artists: data.songs.find((song) => song.id === $service[current.song].id)?.artists ?? [""],
+        lyric: data.songs.find((song) => song.id === $service[current.song].id)?.lyrics[current.lyric],
       })
     } else {
-      displayData.set({name: "", artists: [""], lyric: { type: "", text: "", number: "" }})
+      displayData.set({name: "", artists: [""], lyric: { type: "", text: "", number: -1 }})
     }
   })
 
   $effect.pre(() => {
+    $service
     current.song
     current.lyric = 0
-  })
-
-  onMount(() => {
-    displayData.subscribe((data) => {
-      localStorage.setItem("displayData", JSON.stringify(data))
-    })
-    displayData.set(JSON.parse(localStorage.getItem("displayData") ?? "null"))
   })
 
   function handleKey(evt: KeyboardEvent) {
@@ -83,24 +77,27 @@
         break
       case "ArrowLeft":
         evt.preventDefault()
-        if (service[current.song - 1 - (evt.shiftKey as unknown as number)])
+        if ($service[current.song - 1 - (evt.shiftKey as unknown as number)])
           current.song -= 1 + (evt.shiftKey as unknown as number)
         break
       case "ArrowRight":
         evt.preventDefault()
-        if (service[current.song + 1 + (evt.shiftKey as unknown as number)])
+        if ($service[current.song + 1 + (evt.shiftKey as unknown as number)])
           current.song += 1 + (evt.shiftKey as unknown as number)
         break
       case "ArrowUp":
         evt.preventDefault()
-        if (data.songs.find((song) => song.id === service[current.song].id)!.lyrics[current.lyric - 1 - (evt.shiftKey as unknown as number)])
+        if (data.songs.find((song) => song.id === $service[current.song].id)?.lyrics[current.lyric - 1 - (evt.shiftKey as unknown as number)])
           current.lyric -= 1 + (evt.shiftKey as unknown as number)
         break
       case "ArrowDown":
         evt.preventDefault()
-        if (data.songs.find((song) => song.id === service[current.song].id)!.lyrics[current.lyric + 1 + (evt.shiftKey as unknown as number)])
+        if (data.songs.find((song) => song.id === $service[current.song].id)?.lyrics[current.lyric + 1 + (evt.shiftKey as unknown as number)])
           current.lyric += 1 + (evt.shiftKey as unknown as number)
         break
+      default:
+        if (parseInt(evt.key) > 0 && data.songs.find((song) => song.id === $service[current.song].id)?.lyrics[parseInt(evt.key) - 1]) current.lyric = parseInt(evt.key) - 1
+        else if ($service[parseInt(evt.key.substring(1)) - 1]) current.song = parseInt(evt.key.substring(1)) - 1
     }
   }
 </script>
@@ -108,38 +105,7 @@
 <svelte:window onbeforeunload={() => displayData.set(null)} onkeydown={handleKey} />
 
 <div class="main">
-  <div class="sidebar">
-    <div class="top">
-      <button title="Songs" onclick={() => (sidePanel !== "songs" ? (sidePanel = "songs") : (sidePanel = null))}>
-        {#if sidePanel === "songs"}
-          <i transition:sidebarFade class="bi bi-file-earmark-music-fill"></i>
-          <div class="selector" in:recieve={{ key: "sidepanel" }} out:send={{ key: "sidepanel" }}></div>
-        {:else}
-          <i transition:sidebarFade class="bi bi-file-earmark-music"></i>
-        {/if}
-      </button>
-      <button
-        title="Settings"
-        onclick={() => (sidePanel !== "settings" ? (sidePanel = "settings") : (sidePanel = null))}
-      >
-        {#if sidePanel === "settings"}
-          <i transition:sidebarFade class="bi bi-gear-fill"></i>
-          <div class="selector" in:recieve={{ key: "sidepanel" }} out:send={{ key: "sidepanel" }}></div>
-        {:else}
-          <i transition:sidebarFade class="bi bi-gear"></i>
-        {/if}
-      </button>
-    </div>
-    <div class="bottom">
-      <button title="Blank Screen" class={blank ? "active" : ""} onclick={() => (blank = !blank)}>
-        {#if blank}
-          <i transition:sidebarFade class="bi bi-aspect-ratio-fill"></i>
-        {:else}
-          <i transition:sidebarFade class="bi bi-aspect-ratio"></i>
-        {/if}
-      </button>
-    </div>
-  </div>
+  <SideBar bind:sidePanel={sidePanel} bind:blank={blank} />
   <div class="console {sidePanel ? 'sidepanelactive' : ''}">
     {#if sidePanel}
       <div transition:fly={{ duration: 400, easing: cubicInOut, opacity: 1 }} class="sidepanel">
@@ -147,38 +113,48 @@
           <Songs songs={data.songs} />
         {:else if sidePanel === "settings"}
           <Settings />
+        {:else if sidePanel === "editor"}
+          <Editor />
         {/if}
       </div>
     {/if}
     <div class="songs">
       <div class="list" bind:this={listElm}>
-        {#each service as idObj (idObj)}
-          <button data-id={idObj.id} onclick={() => (current.song = service.indexOf(idObj))}>
-            <h3>{data.songs.find((song) => song.id === idObj.id)?.name}</h3>
-            <p>
-              {data.songs
-                .find((song) => song.id === idObj.id)
-                ?.artists.reduce((carry, artist) => carry + `, ${artist}`)}
-            </p>
-            {#if service[current.song] === idObj}
-              <div class="selector" in:recieve={{ key: "song" }} out:send={{ key: "song" }}></div>
-            {/if}
-          </button>
-        {/each}
+        {#if $service}
+          {#each $service as idObj (idObj)}
+            <button data-id={idObj.id} onclick={() => (current.song = $service.indexOf(idObj))}>
+              <kbd>F{$service.indexOf(idObj) + 1}</kbd>
+              <div>
+                <h3>{data.songs.find((song) => song.id === idObj.id)?.name}</h3>
+                <p>{data.songs.find((song) => song.id === idObj.id)?.artists.reduce((carry: string, artist: string) => carry + `, ${artist}`)}</p>
+                {#if $service[current.song] === idObj}
+                  <div class="selector" in:recieve={{ key: "song" }} out:send={{ key: "song" }}></div>
+                {/if}
+              </div>
+            </button>
+          {/each}
+        {/if}
       </div>
     </div>
     <div class="lyrics">
-      <div class="list">
-        {#each data.songs.find((song) => song.id === service[current.song].id)!.lyrics as lyric}
-          <button onclick={() => (current.lyric = data.songs.find((song) => song.id === service[current.song].id)!.lyrics.indexOf(lyric))}>
-            <h3>{lyric.type} {lyric.number}</h3>
-            <p>{lyric.text}</p>
-            {#if current.lyric === data.songs.find((song) => song.id === service[current.song].id)!.lyrics.indexOf(lyric)}
-              <div class="selector" in:recieve={{ key: "lyric" }} out:send={{ key: "lyric" }}></div>
-            {/if}
-          </button>
-        {/each}
-      </div>
+      {#if $service[0]}
+      {#key current.song}
+        <div class="list" transition:menuBlur>
+          {#each data.songs.find((song) => song.id === $service[current.song].id)!.lyrics as lyric}
+            <button onclick={() => (current.lyric = data.songs.find((song) => song.id === $service[current.song].id)!.lyrics.indexOf(lyric))}>
+              <kbd>{data.songs.find((song) => song.id === $service[current.song].id)!.lyrics.indexOf(lyric) + 1}</kbd>
+                <div>
+                  <h3>{lyric.type} {lyric.number}</h3>
+                  <p>{lyric.text}</p>
+                  {#if current.lyric === data.songs.find((song) => song.id === $service[current.song].id)!.lyrics.indexOf(lyric)}
+                    <div class="selector" in:recieve={{ key: "lyric" }} out:send={{ key: "lyric" }}></div>
+                  {/if}
+                </div>
+            </button>
+          {/each}
+        </div>
+      {/key}
+      {/if}
     </div>
     <div class="preview">
       <Preview />
@@ -190,63 +166,6 @@
   div.main {
     display: grid;
     grid-template-columns: 48px 1fr;
-    div.sidebar {
-      background-color: rgb(20, 20, 20);
-      border-right: 1px solid var(--border);
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-      z-index: 2;
-      & > div {
-        display: flex;
-        flex-direction: column;
-        &.bottom {
-          flex-direction: column-reverse;
-          justify-content: end;
-        }
-        button {
-          position: relative;
-          background: none;
-          border: 1px solid var(--border-subtle);
-          border-bottom: none;
-          width: 40px;
-          height: 40px;
-          margin: 0 4px;
-          .selector {
-            width: 100%;
-            height: 100%;
-            background: var(--border);
-          }
-          &.active {
-            background: var(--border);
-          }
-          &:first-child {
-            margin-top: 4px;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            .selector {
-              border-top-left-radius: 8px;
-              border-top-right-radius: 8px;
-            }
-          }
-          &:last-child {
-            margin-bottom: 4px;
-            border-bottom: 1px solid var(--border-subtle);
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-            .selector {
-              border-bottom-left-radius: 8px;
-              border-bottom-right-radius: 8px;
-            }
-          }
-          i {
-            position: absolute;
-            top: 10px;
-            left: 11px;
-            z-index: 2;
-          }
-        }
-      }
-    }
     div.console {
       display: grid;
       position: relative;
@@ -256,9 +175,10 @@
       height: calc(100vh - 16px);
       gap: 8px;
       margin: 8px;
-      transition: translate 400ms cubic-bezier(0.42, 0, 0.58, 1);
+      transition: left 400ms cubic-bezier(0.42, 0, 0.58, 1);
+      left: 0;
       &.sidepanelactive {
-        translate: calc(50% + 4px);
+        left: calc(50% - 4px);
       }
       & > div {
         border: 1px solid var(--border);
@@ -266,12 +186,32 @@
         overflow: scroll;
         &.songs {
           grid-area: songs;
+          position: relative;
         }
         &.lyrics {
           grid-area: lyrics;
+          position: relative;
         }
         &.preview {
           grid-area: preview;
+        }
+        .list {
+          min-height: calc(100% - 20px);
+          width: calc(100% - 16px);
+          position: absolute;
+          & > button {
+            display: flex;
+            align-items: center;
+            &:hover {
+              color: #b4b4b4;
+            }
+            kbd {
+              color: gray;
+              position: relative;
+              margin-right: 8px;
+              top: 50%;
+            }
+          }
         }
         &.sidepanel {
           position: absolute;
