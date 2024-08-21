@@ -1,78 +1,134 @@
 <script lang="ts">
-  import { displayData, settings } from "$lib/localStorage.svelte"
-  import { onMount, tick } from "svelte"
+	import { displayData, settings, Transition, DisplayBGType } from "$lib/localStorage"
+	import { onMount, tick } from "svelte"
 
-  onMount(() => {
-    localStorage.setItem("aspectRatio", innerWidth / innerHeight)
-    displayData.set(JSON.parse(localStorage.getItem("displayData") ?? "null"))
-  })
+	onMount(() => {
+		localStorage.setItem("aspectRatio", `${innerWidth / innerHeight}`)
+		displayData.set(JSON.parse(localStorage.getItem("displayData") ?? "null"))
+	})
 </script>
 
 <svelte:window
-  onstorage={(evt) => {
-    if (evt.key === "displayData")
-      document.startViewTransition(async () => {
-        displayData.set(JSON.parse(evt.newValue ?? "null"))
-        await tick()
-      })
-  }}
-  onresize={() => {
-    if (window.top === window) localStorage.setItem("aspectRatio", innerWidth / innerHeight)
-  }}
+	onstorage={(evt) => {
+		if (evt.key === "displayData")
+			if ($settings?.display.transition !== Transition.none)
+				//@ts-expect-error
+				document.startViewTransition(async () => {
+					$displayData = JSON.parse(evt.newValue ?? "null")
+					await tick()
+				})
+			else $displayData = JSON.parse(evt.newValue ?? "null")
+	}}
+	onresize={() => {
+		if (window.top === window) localStorage.setItem("aspectRatio", `${innerWidth / innerHeight}`)
+	}}
 />
 
-<div class="main">
-  <div class="lyric-container">
-    <h1 class={$settings?.transition ?? ""}>
-      {$displayData?.lyric?.text}
-    </h1>
-  </div>
-  <div class="info-container">
-    <p>
-      {$displayData?.name ?? " "}<br />{$displayData?.artists.reduce((carry, artist) => carry + `, ${artist}`) ?? " "}
-    </p>
-    <p>{$displayData?.lyric?.type} {$displayData?.lyric?.number}</p>
-  </div>
+<div
+	style={`
+  color: ${$settings?.display.font.color};
+  background: ${
+		$settings?.display.bg.type === DisplayBGType.color
+			? $settings?.display.bg.value
+			: $settings?.display.bg.type === DisplayBGType.gradient
+				? `linear-gradient(${$settings?.display.bg.value[0]}, ${$settings?.display.bg.value[1]})`
+				: `url('${$settings?.display.bg.value}');`
+	};
+  font-family: ${$settings?.display.font.family};
+  `}
+	class="main"
+>
+	<div
+		class="lyric-container"
+		style={`view-transition-name: ${$settings?.display.transition !== Transition.morph && $settings?.display.transition !== Transition.fade ? $settings?.display.transition : ""};`}
+	>
+		<h1
+			style={`
+      font-weight: ${$settings?.display.font.weight};
+      view-transition-name: ${$settings?.display.transition === Transition.morph ? "Morph" : ""};
+      font-size: calc((2.7vw + 2.7vh) * ${$settings?.display.font.size});
+      `}
+		>
+			{$displayData?.lyric?.text}
+		</h1>
+	</div>
+	<div class="info-container">
+		<p>
+			{$displayData?.name ?? " "}<br />{$displayData?.artists.reduce((carry, artist) => carry + `, ${artist}`) ?? " "}
+		</p>
+		<p>{$displayData?.lyric?.type} {$displayData?.lyric?.number !== -1 ? $displayData?.lyric?.number : ""}</p>
+	</div>
 </div>
 
 <style>
-  div.main {
-    div.lyric-container {
-      position: fixed;
-      display: grid;
-      place-items: center;
-      height: 100dvh;
-      width: 100vw;
-      h1 {
-        font-size: calc(2.7vw + 2.7vh);
-        font-weight: normal;
-        width: fit-content;
-        white-space: pre-wrap;
-        text-align: center;
-        &.morph {
-          view-transition-name: lyric;
-        }
-      }
-    }
-    div.info-container {
-      position: fixed;
-      bottom: 0;
-      left: 4px;
-      width: calc(100vw - 8px);
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      p {
-        font-size: calc(0.7vw + 0.7vh);
-        /*font-weight: lighter;*/
-      }
-    }
-  }
+	div.main {
+		width: 100vw;
+		height: 100vh;
+		background-repeat: no-repeat !important;
+		background-size: cover !important;
+		div.lyric-container {
+			position: fixed;
+			display: grid;
+			place-items: center;
+			height: 100dvh;
+			width: 100vw;
+			h1 {
+				width: fit-content;
+				white-space: pre-wrap;
+				text-align: center;
+			}
+		}
+		div.info-container {
+			position: fixed;
+			bottom: 0;
+			left: 4px;
+			width: calc(100vw - 8px);
+			display: flex;
+			justify-content: space-between;
+			align-items: end;
+			p {
+				font-size: calc(0.7vw + 0.7vh);
+			}
+		}
+	}
 
-  ::view-transition-old(lyric),
-  ::view-transition-new(lyric) {
-    height: 100%;
-    width: 100%;
-    animation-duration: 300ms;
-  }
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation-duration: 500ms;
+	}
+
+	::view-transition-old(Morph),
+	::view-transition-new(Morph) {
+		height: 100%;
+		width: 100%;
+	}
+
+	::view-transition-old(Stack) {
+		animation-name: fade-out, scale-out;
+	}
+	::view-transition-new(Stack) {
+		animation-name: fade-in, scale-in;
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+	}
+	@keyframes fade-out {
+		to {
+			opacity: 0;
+		}
+	}
+
+	@keyframes scale-in {
+		from {
+			scale: 0.25;
+		}
+	}
+	@keyframes scale-out {
+		to {
+			scale: 4;
+		}
+	}
 </style>
