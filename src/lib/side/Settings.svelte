@@ -1,13 +1,14 @@
 <script lang="ts">
 	import type { HexString } from "../localStorage"
 	import { DisplayBGType, Font, Transition, settings } from "../localStorage"
-	import { menuBlur, send, recieve } from "../transitions"
+	import { menuBlur, menuFade, send, recieve } from "../transitions"
 
 	let route = $state("display")
-	let oldType = $state.snapshot($settings?.display.bg.type)
 
+	// Update new Display Background value after changing Type
+	let oldType = $state.snapshot($settings?.display.bg.type)
 	$effect.pre(() => {
-		if (!$state.is($settings?.display.bg.type, oldType) && $settings) {
+		if (!($settings?.display.bg.type === oldType) && $settings) {
 			switch ($settings.display.bg.type) {
 				case DisplayBGType.color:
 					$settings?.display.bg.value[0] ? ($settings.display.bg.value = $settings.display.bg.value[0] as HexString) : "#000000"
@@ -31,26 +32,26 @@
 	<div class="tabbar">
 		<button class={route === "display" ? "active" : ""} onclick={() => (route = "display")}>
 			{#if route === "display"}
-				<i transition:menuBlur class="bi bi-tv-fill"></i>
+				<i transition:menuFade class="bi bi-tv-fill"></i>
 				<div class="selector" in:recieve={{ key: "settings" }} out:send={{ key: "settings" }}></div>
 			{:else}
-				<i transition:menuBlur class="bi bi-tv"></i>
+				<i transition:menuFade class="bi bi-tv"></i>
 			{/if}
 			<p>Display</p>
 		</button>
 		<button class={route === "editor" ? "active" : ""} onclick={() => (route = "editor")}>
 			{#if route === "editor"}
-				<i transition:menuBlur class="bi bi-pencil-fill"></i>
+				<i transition:menuFade class="bi bi-pencil-fill"></i>
 				<div class="selector" in:recieve={{ key: "settings" }} out:send={{ key: "settings" }}></div>
 			{:else}
-				<i transition:menuBlur class="bi bi-pencil"></i>
+				<i transition:menuFade class="bi bi-pencil"></i>
 			{/if}
 			<p>Editor</p>
 		</button>
 	</div>
 	<div class="settings">
 		{#if route === "display"}
-			<div class="panel">
+			<div class="panel" transition:menuBlur>
 				<div class="list">
 					<div>
 						<div>
@@ -92,7 +93,14 @@
 								<h3>Background Image URL</h3>
 								<p>The URL of an image that will be displayed on the display</p>
 							</div>
-							<div><input bind:value={$settings.display.bg.value} placeholder="URL" type="text" /></div>
+							<div>
+								<input
+									onkeydowncapture={(evt) => evt.stopPropagation()}
+									bind:value={$settings.display.bg.value}
+									placeholder="URL"
+									type="text"
+								/>
+							</div>
 						</div>
 					{/if}
 				</div>
@@ -116,14 +124,18 @@
 							<p>The weight of the font on the display (boldness / thinness) (Only on some fonts)</p>
 						</div>
 						<div>
-							<input
-								title={`${$settings.display.font.weight}`}
-								bind:value={$settings.display.font.weight}
-								min="100"
-								max="900"
-								step="100"
-								type="range"
-							/>
+							<input bind:value={$settings.display.font.weight} min="100" max="900" step="100" type="range" />
+							<div class="tooltip left">{$settings.display.font.weight}</div>
+						</div>
+					</div>
+					<div>
+						<div>
+							<h3>Font Size Scale</h3>
+							<p>The size of the text on the display relative to the default</p>
+						</div>
+						<div>
+							<input bind:value={$settings.display.font.size} min="0.1" max="2" step="0.1" type="range" />
+							<div class="tooltip left">{$settings.display.font.size}</div>
 						</div>
 					</div>
 					<div>
@@ -152,6 +164,10 @@
 					</div>
 				</div>
 			</div>
+		{:else if route === "editor"}
+			<div class="panel" transition:menuBlur>
+				<h3>Hello</h3>
+			</div>
 		{/if}
 	</div>
 </div>
@@ -162,34 +178,11 @@
 			margin: 8px;
 		}
 		.tabbar {
-			display: flex;
 			justify-content: center;
 			button {
 				position: relative;
-				background: none;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				border: 1px solid var(--border-subtle);
-				border-right: none;
 				width: 50px;
 				height: 45px;
-				margin: 4px 0;
-				.selector {
-					width: 100%;
-					height: 100%;
-					background: var(--border);
-					border-radius: inherit;
-				}
-				&:first-child {
-					border-top-left-radius: 8px;
-					border-bottom-left-radius: 8px;
-				}
-				&:last-child {
-					border-top-right-radius: 8px;
-					border-bottom-right-radius: 8px;
-					border-right: 1px solid var(--border-subtle);
-				}
 				i {
 					position: absolute;
 					top: 4px;
@@ -204,31 +197,44 @@
 		}
 		.settings {
 			position: relative;
-			.panel .list > div {
-				display: flex;
-				justify-content: space-between;
-				& > div:first-child {
+			.panel {
+				position: absolute;
+				width: calc(100%);
+				.list > div {
 					display: flex;
-					flex-direction: column;
-					p {
-						color: lightgray;
+					justify-content: space-between;
+					& > div:first-child {
+						display: flex;
+						flex-direction: column;
+						p {
+							color: lightgray;
+						}
 					}
-				}
-				& > div:last-child {
-					display: flex;
-					gap: 8px;
-					input,
-					select {
-						height: 100%;
-						border-radius: 8px;
-					}
-					input[type="color"] {
-						border: 1px solid white;
-						padding: 0;
-					}
-					input[type="text"],
-					select {
-						width: 200px;
+					& > div:last-child {
+						display: flex;
+						position: relative;
+						gap: 8px;
+						input,
+						select {
+							height: 100%;
+							width: 75px;
+							border-radius: 8px;
+						}
+						input[type="color"] {
+							border: 1px solid white;
+							padding: 0;
+						}
+						input[type="text"],
+						input[type="range"],
+						select {
+							width: 200px;
+						}
+						input {
+							padding: 0 8px;
+						}
+						&:hover > div.tooltip {
+							scale: 1;
+						}
 					}
 				}
 			}

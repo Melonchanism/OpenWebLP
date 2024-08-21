@@ -1,15 +1,13 @@
 <script lang="ts">
   import { displayData, service } from "$lib/localStorage"
   import { onMount } from "svelte"
-  import { fly } from "svelte/transition"
   import { menuBlur, send, recieve } from "$lib/transitions"
-  import { cubicInOut } from "svelte/easing"
+  import { showMenu, menuPos, menuID } from "$lib/contextMenu"
   import Sortable from "sortablejs"
   import Preview from "$lib/Preview.svelte"
   import SideBar from "$lib/side/Bar.svelte"
-  import Settings from "$lib/side/Settings.svelte"
-  import Songs from "$lib/side/Songs.svelte"
-  import Editor from "$lib/side/Editor.svelte"
+	import Panel from "$lib/side/Panel.svelte"
+	import ContextMenu from "$lib/ContextMenu.svelte"
 
   const { data } = $props()
 
@@ -107,22 +105,20 @@
 <div class="main">
   <SideBar bind:sidePanel={sidePanel} bind:blank={blank} />
   <div class="console {sidePanel ? 'sidepanelactive' : ''}">
-    {#if sidePanel}
-      <div transition:fly={{ duration: 400, easing: cubicInOut, opacity: 1 }} class="sidepanel">
-        {#if sidePanel === "songs"}
-          <Songs songs={data.songs} />
-        {:else if sidePanel === "settings"}
-          <Settings />
-        {:else if sidePanel === "editor"}
-          <Editor />
-        {/if}
-      </div>
-    {/if}
+    <Panel {sidePanel} {data} />
     <div class="songs">
       <div class="list" bind:this={listElm}>
         {#if $service}
           {#each $service as idObj (idObj)}
-            <button data-id={idObj.id} onclick={() => (current.song = $service.indexOf(idObj))}>
+            <button
+              data-id={idObj.id}
+              onclick={() => (current.song = $service.indexOf(idObj))}
+              oncontextmenu={(evt) => {
+                evt.preventDefault()
+                $menuID = idObj.id
+                $showMenu = true
+                $menuPos = { x: evt.clientX, y: evt.clientY }
+              }}>
               <kbd>F{$service.indexOf(idObj) + 1}</kbd>
               <div>
                 <h3>{data.songs.find((song) => song.id === idObj.id)?.name}</h3>
@@ -160,6 +156,7 @@
       <Preview />
     </div>
   </div>
+  <ContextMenu {data} />
 </div>
 
 <style>
@@ -212,14 +209,6 @@
               top: 50%;
             }
           }
-        }
-        &.sidepanel {
-          position: absolute;
-          left: calc(-50% - 4px);
-          background: rgb(20, 20, 20);
-          backdrop-filter: blur(20px);
-          width: calc(50% - 6px);
-          height: calc(100% - 2px);
         }
       }
     }

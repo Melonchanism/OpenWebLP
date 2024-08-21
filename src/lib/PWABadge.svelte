@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { useRegisterSW } from "virtual:pwa-register/svelte"
 	import { page } from "$app/stores"
+	import { onMount } from "svelte"
 
 	// Check for updates
 	async function checkForUpdate(swUrl: string, r: ServiceWorkerRegistration) {
@@ -17,7 +18,7 @@
 		if (resp?.status === 200) await r.update()
 	}
 
-	const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW({
+	let { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW({
 		onRegisteredSW(swUrl, r) {
 			if (r?.active?.state === "activated" && navigator.onLine === true) {
 				checkForUpdate(swUrl, r)
@@ -29,52 +30,20 @@
 			}
 		},
 	})
-
-	let toast = $derived($offlineReady || $needRefresh)
+	$inspect($offlineReady, $needRefresh)
 </script>
 
-{#if toast && $page.route.id === "/"}
-	<div class="pwa-toast" role="alert" aria-labelledby="toast-message">
-		<p class="message">
-			{#if $offlineReady}
-				App ready to work offline
-			{:else if $needRefresh}
-				New content available, click on reload button to update.
-			{/if}
-		</p>
-		<div class="buttons">
-			{#if $needRefresh}
-				<button onclick={() => updateServiceWorker(true)}> Reload </button>
-			{/if}
-			<button onclick={() => ($offlineReady = $needRefresh = false)}> Close </button>
-		</div>
-	</div>
+{#if $page.route.id === "/"}
+	<button disabled={!$needRefresh}>
+		{#if $offlineReady}
+			<i class="bi bi-cloud-check"></i>
+			<div class="tooltip">App ready to work offline</div>
+		{:else if $needRefresh}
+			<i class="bi bi-cloud-download"></i>
+			<div class="tooltip">Update app</div>
+		{:else}
+			<i class="bi bi-cloud-minus"></i>
+			<div class="tooltip">Unknown state</div>
+		{/if}
+	</button>
 {/if}
-
-<style>
-	.pwa-toast {
-		position: fixed;
-		right: 0;
-		bottom: 0;
-		margin: 16px;
-		padding: 12px;
-		border: 1px solid var(--border);
-		border-radius: 4px;
-		z-index: 2;
-		text-align: left;
-		background: black;
-	}
-	.pwa-toast .message {
-		margin-bottom: 8px;
-	}
-	.pwa-toast .buttons {
-		display: flex;
-	}
-	.pwa-toast button {
-		border: 1px solid #8885;
-		outline: none;
-		margin-right: 5px;
-		border-radius: 2px;
-		padding: 3px 10px;
-	}
-</style>

@@ -10,15 +10,16 @@
   },
   "devDependencies": {
     "@neoconfetti/svelte": "^2.2.1",
+    "@svelte-put/clickoutside": "^4.0.0-next.4",
     "@sveltejs/adapter-auto": "^3.2.4",
     "@sveltejs/kit": "^2.5.24",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@vite-pwa/assets-generator": "^0.2.4",
     "@vite-pwa/sveltekit": "^0.6.0",
-    "svelte": "^5.0.0-next.225",
+    "svelte": "^5.0.0-next.232",
     "svelte-check": "^3.8.5",
     "typescript": "^5.5.4",
-    "vite": "^5.4.1",
+    "vite": "^5.4.2",
     "vite-plugin-pwa": "^0.20.1",
     "workbox-window": "^7.1.0"
   },

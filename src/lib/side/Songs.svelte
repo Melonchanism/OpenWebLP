@@ -5,6 +5,7 @@
 	import { menuBlur } from "$lib/transitions"
 	import type { Song } from "$lib/localStorage"
 	let { songs }: { songs: Song[] } = $props()
+	import { showMenu, menuPos, menuID } from "$lib/contextMenu"
 
 	let searchVal = $state("")
 
@@ -32,7 +33,7 @@
 <div transition:menuBlur class="sidepanelcontent">
 	<h2>Songs</h2>
 	<div>
-		<input bind:value={searchVal} onkeydown={(evt) => evt.stopPropagation()} type="text" placeholder="Search..." />
+		<input bind:value={searchVal} onkeydowncapture={(evt) => evt.stopPropagation()} type="text" placeholder="Search..." />
 	</div>
 	<div bind:this={listElm} class="list">
 		{#each sortedSongs as item (item.id)}
@@ -43,9 +44,9 @@
 				data-id={item.id}
 				oncontextmenu={(evt) => {
 					evt.preventDefault()
-				}}
-				onselect={(evt) => {
-					evt.preventDefault()
+					$menuID = item.id
+					$showMenu = true
+					$menuPos = { x: evt.clientX, y: evt.clientY }
 				}}
 			>
 				<h3>{item.name}</h3>
@@ -66,5 +67,8 @@
 			margin-left: 8px;
 			width: calc(100% - 24px);
 		}
+	}
+	:global(.dragging) {
+		opacity: 0.3;
 	}
 </style>

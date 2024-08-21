@@ -1,98 +1,194 @@
 :root {
-  --border: rgb(63, 63, 63);
-  --border-subtle: rgba(47, 47, 47);
-  --selector: rgba(180, 255, 220, 0.1);
-  --element: rgb(32, 32, 32);
-  --stacked-element: rgb(42, 42, 42);
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  color-scheme: light dark;
-  font-family: sans-serif;
-  color: white;
-  background: black;
-  @media (prefers-color-scheme: dark) {
-    /*stop dark reader from triggering*/
-    background: black;
-  }
+	--border: rgb(63, 63, 63);
+	--border-subtle: rgba(47, 47, 47);
+	--selector: rgba(180, 255, 220, 0.1);
+	--element: rgb(32, 32, 32);
+	--stacked-element: rgb(42, 42, 42);
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	color-scheme: light dark;
+	font-family: sans-serif;
+	color: white;
+	background: black;
+	@media (prefers-color-scheme: dark) {
+		/*stop dark reader from triggering*/
+		background: black;
+	}
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  border: none;
-  scroll-behavior: smooth;
+	margin: 0;
+	padding: 0;
+	border: none;
+	scroll-behavior: smooth;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 button,
 input,
 select {
-  font-size: 1rem;
-  background: var(--element);
+	font-size: 1rem;
+	background: var(--element);
+}
+button:disabled {
+	color: gray;
 }
 
 div.list {
-  position: relative;
-  margin: 8px;
-  border-radius: 8px;
-  & > * {
-    background: var(--element);
-    padding: 8px;
-    border: none;
-    white-space: pre-line;
-    position: relative;
-    transition:
-      opacity 300ms,
-      color 300ms,
-      background 300ms;
-    button,
-    input {
-      background: var(--stacked-element);
-    }
-    &:after {
-      content: "";
-      position: absolute;
-      width: calc(100% - 16px);
-      border-top: 1px solid var(--border-subtle);
-      z-index: 1;
-      top: 100%;
-    }
-    .selector {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: var(--selector);
-      top: 0;
-      left: 0;
-      z-index: 2;
-      border-radius: inherit;
-    }
-    div:has(.selector) {
-      border-radius: inherit;
-    }
-    &:first-child {
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
-    }
-    &:last-child {
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
-      &:after {
-        display: none;
-      }
-    }
-  }
-  & > button {
-    width: 100%;
-    text-align: left;
-  }
+	position: relative;
+	margin: 8px;
+	border-radius: 8px;
+	& > * {
+		background: var(--element);
+		padding: 8px;
+		border: none;
+		white-space: pre-line;
+		position: relative;
+		transition:
+			opacity 300ms,
+			color 300ms,
+			background 300ms;
+		button,
+		input {
+			background: var(--stacked-element);
+		}
+		&::after {
+			content: "";
+			position: absolute;
+			width: calc(100% - 16px);
+			border-top: 1px solid var(--border-subtle);
+			z-index: 1;
+			top: 100%;
+		}
+		.selector {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: var(--selector);
+			top: 0;
+			left: 0;
+			z-index: 2;
+			border-radius: inherit;
+		}
+		div:has(.selector) {
+			border-radius: inherit;
+		}
+		&:first-child {
+			border-top-left-radius: 8px;
+			border-top-right-radius: 8px;
+		}
+		&:last-child {
+			border-bottom-left-radius: 8px;
+			border-bottom-right-radius: 8px;
+			&:after {
+				display: none;
+			}
+		}
+	}
+	& > button {
+		width: 100%;
+		text-align: left;
+	}
 }
 
-div.sidepanelcontent {
-  position: absolute;
-  width: 100%;
+div.tooltip {
+	position: absolute;
+	background: rgba(20, 20, 20, 0.7);
+	width: max-content;
+	backdrop-filter: blur(20px);
+	border: 1px var(--border) solid;
+	border-radius: 8px;
+	z-index: 99;
+	padding: 4px;
+	scale: 0;
+	transition: scale 150ms;
+
+	&:not(.left) {
+		top: 50%;
+		translate: 0 -50%;
+		transform-origin: -8px 50%;
+		left: 100%;
+		margin-left: 8px;
+	}
+
+	&.left {
+		top: 50%;
+		translate: 0 -50%;
+		transform-origin: calc(100% + 8px) 50%;
+		right: 100%;
+		margin-right: 8px;
+	}
 }
 
-.dragging {
-  opacity: 0.3;
+div.tabbar {
+	display: flex;
+	&.bottom {
+		justify-content: end;
+	}
+	&.vertical {
+		flex-direction: column;
+		margin: 0 4px;
+		button {
+			border-bottom: none;
+			&:first-child {
+				margin-top: 4px;
+				border-top-left-radius: 8px;
+				border-top-right-radius: 8px;
+			}
+			&:last-child {
+				margin-bottom: 4px;
+				border-bottom: 1px solid var(--border-subtle);
+				border-bottom-left-radius: 8px;
+				border-bottom-right-radius: 8px;
+			}
+		}
+	}
+	&:not(.vertical) {
+		margin: 4px 0;
+		button {
+			border-right: none;
+			&:first-child {
+				margin-left: 4px;
+				border-top-left-radius: 8px;
+				border-bottom-left-radius: 8px;
+			}
+			&:last-child {
+				margin-right: 4px;
+				border-right: 1px solid var(--border-subtle);
+				border-top-right-radius: 8px;
+				border-bottom-right-radius: 8px;
+			}
+		}
+	}
+	button {
+		position: relative;
+		background: none;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid var(--border-subtle);
+		width: 40px;
+		height: 40px;
+		transition: background 300ms;
+		.selector {
+			width: 100%;
+			height: 100%;
+			background: var(--border);
+			border-radius: inherit;
+		}
+		&:hover > .tooltip {
+			scale: 1;
+		}
+		&:not(:has(.selector)).active {
+			background: var(--border);
+		}
+		i {
+			position: absolute;
+			z-index: 2;
+			font-size: 1.1em;
+		}
+	}
 }
