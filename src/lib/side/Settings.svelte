@@ -174,9 +174,6 @@
 
 <style>
 	.sidepanelcontent {
-		h2 {
-			margin: 8px;
-		}
 		.tabbar {
 			justify-content: center;
 			button {

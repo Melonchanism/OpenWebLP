@@ -58,9 +58,6 @@
 
 <style>
 	div.sidepanelcontent {
-		h2 {
-			margin: 8px;
-		}
 		input {
 			border-radius: 8px;
 			padding: 4px;

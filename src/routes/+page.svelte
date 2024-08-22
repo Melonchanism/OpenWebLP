@@ -9,7 +9,7 @@
 	import Panel from "$lib/side/Panel.svelte"
 	import ContextMenu from "$lib/ContextMenu.svelte"
 
-  const { data } = $props()
+  let { data } = $props()
 
   let listElm: HTMLDivElement
   let sortable: Sortable
@@ -105,7 +105,7 @@
 <div class="main">
   <SideBar bind:sidePanel={sidePanel} bind:blank={blank} />
   <div class="console {sidePanel ? 'sidepanelactive' : ''}">
-    <Panel {sidePanel} {data} />
+    <Panel bind:sidePanel={sidePanel} bind:data={data} />
     <div class="songs">
       <div class="list" bind:this={listElm}>
         {#if $service}

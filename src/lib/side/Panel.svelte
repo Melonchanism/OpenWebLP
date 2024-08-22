@@ -5,7 +5,8 @@
 	import Songs from "$lib/side/Songs.svelte"
 	import Editor from "$lib/side/Editor.svelte"
 	import type { Song } from "$lib/localStorage"
-	let { sidePanel, data = $bindable() }: { sidePanel: string | null; data: { songs: Song[] } } = $props()
+	let { sidePanel = $bindable(), data = $bindable() }: { sidePanel: string | null; data: { songs: Song[] } } = $props()
+	sidePanel = "editor"
 </script>
 
 {#if sidePanel}
@@ -36,6 +37,9 @@
 		:global(& > *) {
 			position: absolute;
 			width: 100%;
+			:global(h2) {
+				margin: 8px;
+			}
 		}
 	}
 </style>
