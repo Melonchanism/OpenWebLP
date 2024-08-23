@@ -1,10 +1,10 @@
-import { supabase } from "$lib/supabase";
-import type { Song } from "$lib/songs.js";
+import { supabase } from "$lib/supabase.server"
+import type { Song } from "$lib/localStorage"
 
 export async function load() {
-  const { data, error } = await supabase.from("songs").select();
+	const { data, error } = await supabase.from("songs").select()
 
-  return {
-    songs: (data as Song[]) ?? [],
-  };
+	return {
+		songs: (data as Song[]) ?? [],
+	}
 }

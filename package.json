@@ -15,8 +15,8 @@
 		"@sveltejs/kit": "^2.5.24",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
 		"@vite-pwa/assets-generator": "^0.2.4",
-		"@vite-pwa/sveltekit": "^0.6.0",
-		"svelte": "^5.0.0-next.201",
+		"@vite-pwa/sveltekit": "^0.6.1",
+		"svelte": "^5.0.0-next.236",
 		"svelte-check": "^3.8.6",
 		"typescript": "^5.5.4",
 		"vite": "^5.4.2",
@@ -29,7 +29,7 @@
 		"sharp-ico": "0.1.5"
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^2.45.1",
+		"@supabase/supabase-js": "^2.45.2",
 		"@types/sortablejs": "^1.15.8",
 		"fast-glob": "^3.3.2",
 		"sortablejs": "^1.15.2"

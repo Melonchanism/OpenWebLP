@@ -50,7 +50,6 @@
       //@ts-ignore
       document.querySelectorAll(".lyrics > div > button")?.item(current.lyric)?.scrollIntoViewIfNeeded()
       scrollTo(0, -1)
-      console.log("updated")
       if (!blank) {
         displayData.set({
           name: songs.find((song) => song.id === $service[current.song])?.name ?? "",
@@ -108,9 +107,9 @@
 <svelte:window onbeforeunload={() => displayData.set(null)} onkeydown={handleKey} />
 
 <div class="main">
-  <SideBar bind:blank={blank} />
+  <SideBar bind:blank />
   <div class="console {$sidePanel ? 'sidepanelactive' : ''}">
-    <Panel bind:songs={songs} />
+    <Panel bind:songs />
     <div class="songs">
       <div class="list" bind:this={listElm}>
         {#if $service}

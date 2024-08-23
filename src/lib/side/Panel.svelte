@@ -7,6 +7,10 @@
 	import type { Song } from "$lib/localStorage"
 	import { sidePanel } from "$lib/contextMenu"
 	let { songs = $bindable() }: { songs: Song[] } = $props()
+
+	$effect.pre(() => {
+		console.log(songs)
+	})
 </script>
 
 {#if sidePanel}
@@ -32,6 +36,7 @@
 		backdrop-filter: blur(20px);
 		width: calc(50% - 6px);
 		height: calc(100% - 2px);
+		max-height: calc(100% - 2px);
 		border: 1px solid var(--border);
 		border-radius: 8px;
 		:global(& > *) {

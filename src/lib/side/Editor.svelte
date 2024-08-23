@@ -2,8 +2,23 @@
 	import { menuBlur } from "../transitions"
 	import { menuID } from "$lib/contextMenu"
 	import { type Song, LyricType } from "$lib/localStorage"
+	import { onMount } from "svelte"
+	import Sortable from "sortablejs"
 
 	let { songs = $bindable() }: { songs: Song[] } = $props()
+
+	let editingSong = $state(structuredClone($state.snapshot(songs.find(song => song.id === $menuID))))
+	$effect(() => {
+		editingSong = structuredClone($state.snapshot(songs.find(song => song.id === $menuID)))
+	})
+
+	let listElm: HTMLDivElement
+	onMount(() => {
+		let sortable = new Sortable(listElm, {
+			animation: 300,
+			ghostClass: "dragging",
+		})
+	})
 </script>
 
 <div transition:menuBlur class="sidepanelcontent">
@@ -12,15 +27,15 @@
 	<div class="editor">
 	 <div class="inputgroup">
 		  <span>Title: </span>
-		  <input type="text" onkeydown={evt => evt.stopPropagation()} bind:value={songs[songs.findIndex((song) => song.id === $menuID)]!.name} />
+		  <input type="text" onkeydown={evt => evt.stopPropagation()} bind:value={editingSong!.name} />
 		</div>
 	   <div class="inputgroup">
-		  <span>Artists: </span>
-		  <input type="text" onkeydown={evt => evt.stopPropagation()} bind:value={songs[songs.findIndex((song) => song.id === $menuID)]!.artist} />
+		  <span>Artist(s): </span>
+		  <input type="text" onkeydown={evt => evt.stopPropagation()} bind:value={editingSong!.artist} />
 		</div>
-		<div class="list">
-		  {#each songs[songs.findIndex((song) => song.id === $menuID)]!.lyrics as lyric}
-				<div class="lyric">
+		<div class="list" bind:this={listElm}>
+		  {#each editingSong!.lyrics as lyric, idx}
+				<div class="lyric" data-id={idx}>
 				  <div class="metadata">
 					<select bind:value={lyric.type}>
 					  {#each Object.values(LyricType) as type}
@@ -38,18 +53,26 @@
 				</div>
 			{/each}
 		</div>
+		<div class="footer">
+		  <button
+				style="background-color: darkolivegreen;"
+				onclick={() => {
+				  songs[songs.findIndex(song => song.id === $menuID)] = editingSong!
+				}}><i class="bi bi-save2"></i> Save</button>
+		  <button style="background-color: brown;"><i class="bi bi-x-lg"></i> Cancel</button>
+		</div>
 	</div>
 	{/if}
 </div>
 
 <style>
   div.editor {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    height: calc(100vh - 28px - 16px - 24px + 6px);
     gap: 8px;
     div.inputgroup {
       border-radius: 8px;
-      border: 1px var(--element) solid;
       width: calc(100% - 16px);
       margin: 0 8px;
       display: grid;
@@ -69,17 +92,17 @@
       }
     }
     div.list {
-      margin-top: 0;
+      margin: 0;
+      padding: 0 8px;
       overflow: scroll;
-      max-height: calc(100vh - 136px);
       border-radius: 0;
       div.lyric {
         div.metadata {
           display: flex;
           margin-bottom: 4px;
+          gap: 8px;
           input {
             width: 50px;
-            margin-left: 4px;
           }
           * {
             padding: 4px;
@@ -94,6 +117,15 @@
           border: 1px var(--border-subtle) solid;
           padding: 4px;
         }
+      }
+    }
+    div.footer {
+      display: flex;
+      gap: 8px;
+      margin: 0 8px 8px;
+      button {
+        padding: 4px;
+        border-radius: 8px;
       }
     }
   }
