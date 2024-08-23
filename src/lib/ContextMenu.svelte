@@ -1,9 +1,14 @@
 <script lang="ts">
 	import { fade } from "svelte/transition"
-	import { showMenu, menuPos, menuID } from "./contextMenu"
+	import { showMenu, menuPos, menuID, sidePanel } from "./contextMenu"
 	import type { Song } from "./localStorage"
 	import { clickoutside } from "@svelte-put/clickoutside"
 	let { data }: { data: { songs: Song[] } } = $props()
+
+	function editSong() {
+		$showMenu = false
+		$sidePanel = "editor"
+	}
 </script>
 
 {#if $showMenu}
@@ -15,7 +20,7 @@
 		onclickoutside={() => ($showMenu = false)}
 	>
 		<p>{data.songs.find((song) => song.id === $menuID)?.name}</p>
-		<button onmouseup={() => ($showMenu = false)} onclick={() => ($showMenu = false)}>
+		<button onmouseup={editSong} onclick={editSong}>
 			<i class="bi bi-pencil"></i>
 			<p>Edit Song</p>
 		</button>

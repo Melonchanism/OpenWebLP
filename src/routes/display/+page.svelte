@@ -2,6 +2,8 @@
 	import { displayData, settings, Transition, DisplayBGType } from "$lib/localStorage"
 	import { onMount, tick } from "svelte"
 
+	const keyChannel = new BroadcastChannel("key")
+
 	onMount(() => {
 		localStorage.setItem("aspectRatio", `${innerWidth / innerHeight}`)
 		displayData.set(JSON.parse(localStorage.getItem("displayData") ?? "null"))
@@ -22,7 +24,20 @@
 	onresize={() => {
 		if (window.top === window) localStorage.setItem("aspectRatio", `${innerWidth / innerHeight}`)
 	}}
+	onkeydown={(evt) => {
+		console.log(evt.key)
+		if (evt.key !== "d") {
+			keyChannel.postMessage({
+				key: evt.key,
+				shiftKey: evt.shiftKey,
+			})
+		}
+	}}
 />
+
+<svelte:head>
+	<title>OpenWebLP v3.2 Display</title>
+</svelte:head>
 
 <div
 	style={`
@@ -54,7 +69,7 @@
 	</div>
 	<div class="info-container">
 		<p>
-			{$displayData?.name ?? " "}<br />{$displayData?.artists.reduce((carry, artist) => carry + `, ${artist}`) ?? " "}
+			{$displayData?.name ?? " "}<br />{$displayData?.artist ?? " "}
 		</p>
 		<p>{$displayData?.lyric?.type} {$displayData?.lyric?.number !== -1 ? $displayData?.lyric?.number : ""}</p>
 	</div>

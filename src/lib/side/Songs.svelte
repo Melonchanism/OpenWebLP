@@ -4,7 +4,7 @@
 	import { flip } from "svelte/animate"
 	import { menuBlur } from "$lib/transitions"
 	import type { Song } from "$lib/localStorage"
-	let { songs }: { songs: Song[] } = $props()
+	let { songs = $bindable() }: { songs: Song[] } = $props()
 	import { showMenu, menuPos, menuID } from "$lib/contextMenu"
 
 	let searchVal = $state("")
@@ -50,7 +50,7 @@
 				}}
 			>
 				<h3>{item.name}</h3>
-				<p>{item.artists.reduce((carry, artist) => `${carry}, ${artist}`)}</p>
+				<p>{item.artist}</p>
 			</button>
 		{/each}
 	</div>

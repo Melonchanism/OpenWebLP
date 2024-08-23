@@ -2,18 +2,27 @@ import { writable } from "svelte/store"
 
 export interface DisplayData {
 	name: string
-	artists: string[]
+	artist: string
 	lyric: Lyric
 }
+export enum LyricType {
+	inro = "Intro",
+	verse = "Verse",
+	preChorus = "Pre-Chorus",
+	chorus = "Chorus",
+	tag = "Tag",
+	bridge = "Bridge",
+	ending = "Ending",
+}
 export type Lyric = {
-	type: string
+	type: LyricType
 	number: number
 	text: string
 }
 export type Song = {
 	id: number
 	name: string
-	artists: string[]
+	artist: string
 	lyrics: Lyric[]
 }
 export let displayData = writable<DisplayData | null>(null)
@@ -76,8 +85,4 @@ export let settings = writable<Settings>(null!)
 
 export let aspectRatio = writable<number>(null!)
 
-export type Service = {
-	id: number
-}[]
-
-export let service = writable<Service>([])
+export let service = writable<number[]>([])

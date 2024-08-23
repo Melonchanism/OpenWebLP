@@ -2,7 +2,7 @@
   import { displayData, service } from "$lib/localStorage"
   import { onMount } from "svelte"
   import { menuBlur, send, recieve } from "$lib/transitions"
-  import { showMenu, menuPos, menuID } from "$lib/contextMenu"
+  import { showMenu, menuPos, menuID, sidePanel } from "$lib/contextMenu"
   import Sortable from "sortablejs"
   import Preview from "$lib/Preview.svelte"
   import SideBar from "$lib/side/Bar.svelte"
@@ -10,6 +10,10 @@
 	import ContextMenu from "$lib/ContextMenu.svelte"
 
   let { data } = $props()
+  let songs = $state(data.songs)
+
+  const keyChannel = new BroadcastChannel("key")
+  keyChannel.addEventListener("message", evt => handleKey(evt.data))
 
   let listElm: HTMLDivElement
   let sortable: Sortable
@@ -31,30 +35,31 @@
   })
 
   function recreateService() {
-    $service = sortable.toArray().map((itm: string) => { return { id: parseInt(itm) } })
+    $service = sortable.toArray().map((itm: string) => parseInt(itm))
     listElm.querySelector("button.added-song")?.remove()
-    console.log(service)
-    console.log(sortable.toArray())
+    console.log($service)
   }
 
   let current = $state({ song: 0, lyric: 0 })
   let blank = $state(false)
-  let sidePanel: string | null = $state(null)
 
   $effect(() => {
-  //@ts-ignore
-    document.querySelectorAll(".songs > div > button")?.item(current.song)?.scrollIntoViewIfNeeded()
-    //@ts-ignore
-    document.querySelectorAll(".lyrics > div > button")?.item(current.lyric)?.scrollIntoViewIfNeeded()
-    scrollTo(0, -1)
-    if (!blank) {
-      displayData.set({
-        name: data.songs.find((song) => song.id === $service[current.song].id)?.name ?? "",
-        artists: data.songs.find((song) => song.id === $service[current.song].id)?.artists ?? [""],
-        lyric: data.songs.find((song) => song.id === $service[current.song].id)?.lyrics[current.lyric],
-      })
-    } else {
-      displayData.set({name: "", artists: [""], lyric: { type: "", text: "", number: -1 }})
+    if ($service[0]) {
+      //@ts-ignore
+      document.querySelectorAll(".songs > div > button")?.item(current.song)?.scrollIntoViewIfNeeded()
+      //@ts-ignore
+      document.querySelectorAll(".lyrics > div > button")?.item(current.lyric)?.scrollIntoViewIfNeeded()
+      scrollTo(0, -1)
+      console.log("updated")
+      if (!blank) {
+        displayData.set({
+          name: songs.find((song) => song.id === $service[current.song])?.name ?? "",
+          artist: songs.find((song) => song.id === $service[current.song])?.artist ?? "",
+          lyric: songs.find((song) => song.id === $service[current.song])?.lyrics[current.lyric],
+        })
+      } else {
+        displayData.set({name: "", artist: "", lyric: { type: "", text: "", number: -1 }})
+      }
     }
   })
 
@@ -74,27 +79,27 @@
         blank = !blank
         break
       case "ArrowLeft":
-        evt.preventDefault()
+        if (evt.cancelable) evt.preventDefault()
         if ($service[current.song - 1 - (evt.shiftKey as unknown as number)])
           current.song -= 1 + (evt.shiftKey as unknown as number)
         break
       case "ArrowRight":
-        evt.preventDefault()
+        if (evt.cancelable) evt.preventDefault()
         if ($service[current.song + 1 + (evt.shiftKey as unknown as number)])
           current.song += 1 + (evt.shiftKey as unknown as number)
         break
       case "ArrowUp":
-        evt.preventDefault()
-        if (data.songs.find((song) => song.id === $service[current.song].id)?.lyrics[current.lyric - 1 - (evt.shiftKey as unknown as number)])
+        if (evt.cancelable) evt.preventDefault()
+        if (songs.find((song) => song.id === $service[current.song])?.lyrics[current.lyric - 1 - (evt.shiftKey as unknown as number)])
           current.lyric -= 1 + (evt.shiftKey as unknown as number)
         break
       case "ArrowDown":
-        evt.preventDefault()
-        if (data.songs.find((song) => song.id === $service[current.song].id)?.lyrics[current.lyric + 1 + (evt.shiftKey as unknown as number)])
+        if (evt.cancelable) evt.preventDefault()
+        if (songs.find((song) => song.id === $service[current.song])?.lyrics[current.lyric + 1 + (evt.shiftKey as unknown as number)])
           current.lyric += 1 + (evt.shiftKey as unknown as number)
         break
       default:
-        if (parseInt(evt.key) > 0 && data.songs.find((song) => song.id === $service[current.song].id)?.lyrics[parseInt(evt.key) - 1]) current.lyric = parseInt(evt.key) - 1
+        if (parseInt(evt.key) > 0 && songs.find((song) => song.id === $service[current.song])?.lyrics[parseInt(evt.key) - 1]) current.lyric = parseInt(evt.key) - 1
         else if ($service[parseInt(evt.key.substring(1)) - 1]) current.song = parseInt(evt.key.substring(1)) - 1
     }
   }
@@ -103,27 +108,28 @@
 <svelte:window onbeforeunload={() => displayData.set(null)} onkeydown={handleKey} />
 
 <div class="main">
-  <SideBar bind:sidePanel={sidePanel} bind:blank={blank} />
-  <div class="console {sidePanel ? 'sidepanelactive' : ''}">
-    <Panel bind:sidePanel={sidePanel} bind:data={data} />
+  <SideBar bind:blank={blank} />
+  <div class="console {$sidePanel ? 'sidepanelactive' : ''}">
+    <Panel bind:songs={songs} />
     <div class="songs">
       <div class="list" bind:this={listElm}>
         {#if $service}
-          {#each $service as idObj (idObj)}
+          <!-- I have no idea how Math.random() works but I think that all the elements just get refreshed -->
+          {#each $service as id, idx (Math.random())}
             <button
-              data-id={idObj.id}
-              onclick={() => (current.song = $service.indexOf(idObj))}
+              data-id={id}
+              onclick={() => (current.song = idx)}
               oncontextmenu={(evt) => {
                 evt.preventDefault()
-                $menuID = idObj.id
+                $menuID = id
                 $showMenu = true
                 $menuPos = { x: evt.clientX, y: evt.clientY }
               }}>
-              <kbd>F{$service.indexOf(idObj) + 1}</kbd>
+              <kbd>F{idx + 1}</kbd>
               <div>
-                <h3>{data.songs.find((song) => song.id === idObj.id)?.name}</h3>
-                <p>{data.songs.find((song) => song.id === idObj.id)?.artists.reduce((carry: string, artist: string) => carry + `, ${artist}`)}</p>
-                {#if $service[current.song] === idObj}
+                <h3>{songs.find((song) => song.id === id)?.name}</h3>
+                <p>{songs.find((song) => song.id === id)?.artist}</p>
+                {#if current.song === idx}
                   <div class="selector" in:recieve={{ key: "song" }} out:send={{ key: "song" }}></div>
                 {/if}
               </div>
@@ -136,13 +142,13 @@
       {#if $service[0]}
       {#key current.song}
         <div class="list" transition:menuBlur>
-          {#each data.songs.find((song) => song.id === $service[current.song].id)!.lyrics as lyric}
-            <button onclick={() => (current.lyric = data.songs.find((song) => song.id === $service[current.song].id)!.lyrics.indexOf(lyric))}>
-              <kbd>{data.songs.find((song) => song.id === $service[current.song].id)!.lyrics.indexOf(lyric) + 1}</kbd>
+          {#each songs.find((song) => song.id === $service[current.song])!.lyrics as lyric, idx}
+            <button onclick={() => (current.lyric = idx)}>
+              <kbd>{idx + 1}</kbd>
                 <div>
                   <h3>{lyric.type} {lyric.number}</h3>
                   <p>{lyric.text}</p>
-                  {#if current.lyric === data.songs.find((song) => song.id === $service[current.song].id)!.lyrics.indexOf(lyric)}
+                  {#if current.lyric === idx}
                     <div class="selector" in:recieve={{ key: "lyric" }} out:send={{ key: "lyric" }}></div>
                   {/if}
                 </div>

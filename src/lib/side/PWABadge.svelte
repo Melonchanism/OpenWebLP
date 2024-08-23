@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { useRegisterSW } from "virtual:pwa-register/svelte"
 	import { page } from "$app/stores"
-	import { onMount } from "svelte"
 
 	// Check for updates
 	async function checkForUpdate(swUrl: string, r: ServiceWorkerRegistration) {
@@ -30,7 +29,6 @@
 			}
 		},
 	})
-	$inspect($offlineReady, $needRefresh)
 </script>
 
 {#if $page.route.id === "/"}

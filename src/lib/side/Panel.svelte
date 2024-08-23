@@ -5,19 +5,19 @@
 	import Songs from "$lib/side/Songs.svelte"
 	import Editor from "$lib/side/Editor.svelte"
 	import type { Song } from "$lib/localStorage"
-	let { sidePanel = $bindable(), data = $bindable() }: { sidePanel: string | null; data: { songs: Song[] } } = $props()
-	sidePanel = "editor"
+	import { sidePanel } from "$lib/contextMenu"
+	let { songs = $bindable() }: { songs: Song[] } = $props()
 </script>
 
 {#if sidePanel}
 	<!-- Let the panel stay for a bit after it disappears -->
 	<div transition:fly={{ duration: 400, easing: cubicInOut, opacity: 1 }} class="sidepanel">
-		{#if sidePanel === "songs"}
-			<Songs songs={data.songs} />
-		{:else if sidePanel === "settings"}
+		{#if $sidePanel === "songs"}
+			<Songs bind:songs />
+		{:else if $sidePanel === "settings"}
 			<Settings />
-		{:else if sidePanel === "editor"}
-			<Editor />
+		{:else if $sidePanel === "editor"}
+			<Editor bind:songs />
 		{/if}
 	</div>
 {/if}

@@ -28,7 +28,8 @@
 
 button,
 input,
-select {
+select,
+textarea {
 	font-size: 1rem;
 	background: var(--element);
 }
@@ -51,7 +52,9 @@ div.list {
 			color 300ms,
 			background 300ms;
 		button,
-		input {
+		input,
+		textarea,
+		select {
 			background: var(--stacked-element);
 		}
 		&::after {
@@ -61,6 +64,7 @@ div.list {
 			border-top: 1px solid var(--border-subtle);
 			z-index: 1;
 			top: 100%;
+			left: 8px;
 		}
 		.selector {
 			position: absolute;

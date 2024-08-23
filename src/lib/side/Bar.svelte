@@ -1,33 +1,42 @@
 <script>
-	import PwaBadge from "$lib/PWABadge.svelte"
-	import { menuFade, recieve, send } from "$lib/transitions"
-	let { sidePanel = $bindable(), blank = $bindable() } = $props()
+	import { menuBlur, menuFade, recieve, send } from "$lib/transitions"
+	import { sidePanel } from "$lib/contextMenu"
+	let { blank = $bindable() } = $props()
 </script>
 
 <div class="sidebar">
 	<div class="tabbar vertical top">
-		<button onclick={() => (sidePanel !== "songs" ? (sidePanel = "songs") : (sidePanel = null))}>
+		<button onclick={() => ($sidePanel !== "songs" ? ($sidePanel = "songs") : ($sidePanel = null))}>
 			<div class="tooltip">Songs</div>
-			{#if sidePanel === "songs"}
+			{#if $sidePanel === "songs"}
 				<i transition:menuFade class="bi bi-file-earmark-music-fill"></i>
-				<div class="selector" in:recieve={{ key: "sidepanel" }} out:send={{ key: "sidepanel" }}></div>
+				<div class="selector" in:recieve|global={{ key: "sidepanel" }} out:send|global={{ key: "sidepanel" }}></div>
 			{:else}
 				<i transition:menuFade class="bi bi-file-earmark-music"></i>
 			{/if}
 		</button>
-		<button onclick={() => (sidePanel !== "settings" ? (sidePanel = "settings") : (sidePanel = null))}>
+		<button onclick={() => ($sidePanel !== "settings" ? ($sidePanel = "settings") : ($sidePanel = null))}>
 			<div class="tooltip">Settings</div>
-			{#if sidePanel === "settings"}
+			{#if $sidePanel === "settings"}
 				<i transition:menuFade class="bi bi-gear-fill"></i>
-				<div class="selector" in:recieve={{ key: "sidepanel" }} out:send={{ key: "sidepanel" }}></div>
+				<div class="selector" in:recieve|global={{ key: "sidepanel" }} out:send|global={{ key: "sidepanel" }}></div>
 			{:else}
 				<i transition:menuFade class="bi bi-gear"></i>
 			{/if}
 		</button>
+		{#if $sidePanel === "editor"}
+			<button transition:menuBlur onclick={() => ($sidePanel = null)}>
+				<div class="tooltip">Editor</div>
+				<i class="bi bi-pencil-fill"></i>
+				{#if $sidePanel === "editor"}
+					<div class="selector" in:recieve|global={{ key: "sidepanel" }} out:send|global={{ key: "sidepanel" }}></div>
+				{/if}
+			</button>
+		{/if}
 	</div>
 	<div class="tabbar vertical bottom">
 		<!-- We have to wait for the app to be on the client before loading this -->
-		{#await import("$lib/PWABadge.svelte") then { default: PWABadge }}
+		{#await import("$lib/side/PWABadge.svelte") then { default: PWABadge }}
 			<PWABadge />
 		{/await}
 		<button class={blank ? "active" : ""} onclick={() => (blank = !blank)}>
