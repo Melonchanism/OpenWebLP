@@ -5,7 +5,7 @@
 	import Songs from "$lib/side/Songs.svelte"
 	import Editor from "$lib/side/Editor.svelte"
 	import type { Song } from "$lib/localStorage"
-	import { sidePanel } from "$lib/contextMenu"
+	import { sidePanel } from "$lib/sharedState"
 	let { songs = $bindable() }: { songs: Song[] } = $props()
 
 	$effect.pre(() => {
@@ -42,6 +42,7 @@
 		:global(& > *) {
 			position: absolute;
 			width: 100%;
+			height: calc(100% - 2px);
 			:global(h2) {
 				margin: 8px;
 			}

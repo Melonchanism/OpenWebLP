@@ -89,7 +89,9 @@
 			width: 100vw;
 			h1 {
 				width: fit-content;
+				max-width: 100vw;
 				white-space: pre-wrap;
+				word-wrap: break-word;
 				text-align: center;
 			}
 		}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fade } from "svelte/transition"
-	import { showMenu, menuPos, menuID, sidePanel } from "./contextMenu"
+	import { showMenu, menuPos, menuID, sidePanel } from "$lib/sharedState"
 	import type { Song } from "./localStorage"
 	import { clickoutside } from "@svelte-put/clickoutside"
 	let { data }: { data: { songs: Song[] } } = $props()

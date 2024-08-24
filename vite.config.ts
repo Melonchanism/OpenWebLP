@@ -15,9 +15,8 @@ export default defineConfig({
 			},
 
 			manifest: {
-				name: "openweblp4",
-				short_name: "openweblp",
-				description: "openweblp4",
+				name: "OpenWebLP v3.2",
+				short_name: "OpenWebLP",
 				theme_color: "#000000",
 			},
 
@@ -28,18 +27,6 @@ export default defineConfig({
 				clientsClaim: true,
 
 				runtimeCaching: [
-					{
-						urlPattern: ({ url }) => {
-							return url.pathname.startsWith("/")
-						},
-						handler: "NetworkFirst",
-						options: {
-							cacheName: "build-cache",
-							cacheableResponse: {
-								statuses: [0, 200],
-							},
-						},
-					},
 					{
 						urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/.*/i,
 						handler: "CacheFirst",
@@ -58,7 +45,7 @@ export default defineConfig({
 			},
 
 			devOptions: {
-				enabled: true,
+				enabled: false,
 				suppressWarnings: true,
 				type: "module",
 			},

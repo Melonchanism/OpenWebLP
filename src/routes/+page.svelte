@@ -2,7 +2,7 @@
   import { displayData, service } from "$lib/localStorage"
   import { onMount } from "svelte"
   import { menuBlur, send, recieve } from "$lib/transitions"
-  import { showMenu, menuPos, menuID, sidePanel } from "$lib/contextMenu"
+  import { showMenu, menuPos, menuID, sidePanel } from "$lib/sharedState"
   import Sortable from "sortablejs"
   import Preview from "$lib/Preview.svelte"
   import SideBar from "$lib/side/Bar.svelte"

@@ -5,13 +5,13 @@
 	import { menuBlur } from "$lib/transitions"
 	import type { Song } from "$lib/localStorage"
 	let { songs = $bindable() }: { songs: Song[] } = $props()
-	import { showMenu, menuPos, menuID } from "$lib/contextMenu"
+	import { showMenu, menuPos, menuID, sidePanel } from "$lib/sharedState"
 
 	let searchVal = $state("")
 
 	let sortedSongs = $derived(
 		songs
-			.toSorted((itm1, itm2) => (itm1.name > itm2.name ? 1 : -1))
+			.toSorted((itm1, itm2) => (itm1.name.toLowerCase() > itm2.name.toLowerCase() ? 1 : -1))
 			.filter((itm) => itm.name.toLowerCase().startsWith(searchVal.toLowerCase())),
 	)
 
@@ -35,7 +35,7 @@
 	<div>
 		<input bind:value={searchVal} onkeydowncapture={(evt) => evt.stopPropagation()} type="text" placeholder="Search..." />
 	</div>
-	<div bind:this={listElm} class="list">
+	<div bind:this={listElm} class="list" style="overflow: scroll">
 		{#each sortedSongs as item (item.id)}
 			<button
 				class="added-song"
@@ -54,10 +54,30 @@
 			</button>
 		{/each}
 	</div>
+	<div class="list" style="margin-top: 0;">
+		<button
+			onclick={() => {
+				songs.push({
+					id: -1,
+					artist: "",
+					name: "",
+					lyrics: [],
+				})
+				$menuID = -1
+				$sidePanel = "editor"
+			}}
+			style="position: sticky; bottom: 0; z-index: 1;"
+		>
+			<h3><i class="bi bi-plus-square"></i> New Song</h3>
+		</button>
+	</div>
 </div>
 
 <style>
 	div.sidepanelcontent {
+		height: 100%;
+		display: grid;
+		grid-template-rows: auto auto 1fr auto;
 		input {
 			border-radius: 8px;
 			padding: 4px;

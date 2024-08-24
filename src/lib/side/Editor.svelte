@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { menuBlur } from "../transitions"
-	import { menuID } from "$lib/contextMenu"
+	import { menuID } from "$lib/sharedState"
 	import { type Song, LyricType } from "$lib/localStorage"
 	import { onMount } from "svelte"
 	import Sortable from "sortablejs"
@@ -20,15 +20,15 @@
 			ghostClass: "dragging",
 			handle: ".grip",
 			onEnd: reorderLyrics,
+			removeOnSpill: true,
 		})
 	})
 
 	function reorderLyrics() {
-		editingSong.lyrics = sortable.toArray().map((idx) => editingSong.lyrics[parseInt(idx)])
+		editingSong.lyrics = sortable.toArray().map((idx) => structuredClone($state.snapshot(editingSong.lyrics[parseInt(idx)])))
 	}
 
 	async function save() {
-		songs[songs.findIndex((song) => song.id === $menuID)] = editingSong
 		const response = await fetch("edit", {
 			method: "POST",
 			body: JSON.stringify($state.snapshot(editingSong)),
@@ -36,15 +36,20 @@
 				"Content-Type": "application/json",
 			},
 		})
+		if (editingSong.id !== -1) songs[songs.findIndex((song) => song.id === $menuID)] = editingSong
+		else {
+		  editingSong.id = await response.json()
+			console.log(editingSong.id)
+		  songs[songs.findIndex((song) => song.id === -1)] = editingSong
+		}
 	}
 </script>
 
 <div transition:menuBlur class="sidepanelcontent">
 	<h2>Edit Song</h2>
-	{#if $menuID !== -1}
-		<div class="editor">
+	{#if $menuID !== null}
 			<div class="inputgroup">
-				<span>Title: </span>
+				<span>Song Name: </span>
 				<input type="text" onkeydown={(evt) => evt.stopPropagation()} bind:value={editingSong.name} />
 			</div>
 			<div class="inputgroup">
@@ -63,37 +68,43 @@
 									{/each}
 								</select>
 								<input bind:value={lyric.number} type="number" />
+								<button style="color: rgb(150, 50, 20); border: 1px solid currentColor;" onclick={() => editingSong.lyrics.splice(idx, 1)}>
+									<i class="bi bi-trash3"></i> Remove
+								</button>
 							</div>
-							<div class="grow-wrap">
-								<textarea
-									oninput={function () {
-										this.parentNode.dataset.replicatedValue = this.value
-									}}
-									onclick={function () {
-										this.parentNode.dataset.replicatedValue = this.value
-									}}
-									onkeydown={(evt) => evt.stopPropagation()}
-									bind:value={lyric.text}
-								></textarea>
+							<div class="grow-wrap" data-replicated-value={lyric.text}>
+								<textarea onkeydown={(evt) => evt.stopPropagation()} bind:value={lyric.text}></textarea>
 							</div>
 						</div>
 					</div>
 				{/each}
+				<button
+					onclick={() => {
+						editingSong.lyrics.push({
+							type: LyricType.verse,
+							number: 1,
+							text: "",
+						})
+					}}
+				>
+					<h3><i class="bi bi-plus-square"></i> Add Lyric</h3>
+				</button>
 			</div>
 			<div class="footer">
 				<button style="background-color: darkolivegreen;" onclick={save}><i class="bi bi-save2"></i> Save</button>
-				<button style="background-color: brown;"><i class="bi bi-x-lg"></i> Cancel</button>
+				<button style="background-color: peru;" onclick={() => editingSong = structuredClone($state.snapshot(songs.find((song) => song.id === $menuID)))!}><i class="bi bi-arrow-counterclockwise"></i> Revert</button>
 			</div>
-		</div>
 	{/if}
 </div>
 
 <style>
-	div.editor {
+	div.sidepanelcontent {
 		display: grid;
-		grid-template-rows: auto auto 1fr auto;
-		height: calc(100vh - 28px - 16px - 24px + 6px);
+		grid-template-rows: auto auto auto 1fr auto;
 		gap: 8px;
+		h2 {
+		margin-bottom: 0 !important;
+		}
 		div.inputgroup {
 			border-radius: 8px;
 			width: calc(100% - 16px);
@@ -161,7 +172,7 @@
 						textarea {
 							width: calc(100% - 8px - 2px);
 							border: 1px var(--border-subtle) solid;
-							min-height: 100px;
+							min-height: 70px;
 							padding: 4px;
 							font: inherit;
 							grid-area: 1 / 1 / 2 / 2;

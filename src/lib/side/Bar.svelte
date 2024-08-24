@@ -1,6 +1,6 @@
 <script>
 	import { menuBlur, menuFade, recieve, send } from "$lib/transitions"
-	import { sidePanel } from "$lib/contextMenu"
+	import { sidePanel } from "$lib/sharedState"
 	let { blank = $bindable() } = $props()
 </script>
 

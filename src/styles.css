@@ -40,7 +40,6 @@ button:disabled {
 div.list {
 	position: relative;
 	margin: 8px;
-	border-radius: 8px;
 	& > * {
 		background: var(--element);
 		padding: 8px;
