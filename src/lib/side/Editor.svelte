@@ -28,6 +28,10 @@
 		editingSong.lyrics = sortable.toArray().map((idx) => structuredClone($state.snapshot(editingSong.lyrics[parseInt(idx)])))
 	}
 
+	function handleKeyOnInput(evt: KeyboardEvent) {
+	if (!evt.ctrlKey && !evt.metaKey) evt.stopPropagation()
+	}
+
 	async function save() {
 		const response = await fetch("edit", {
 			method: "POST",
@@ -45,16 +49,26 @@
 	}
 </script>
 
+<svelte:window
+ onkeydowncapture={(evt: KeyboardEvent) => {
+   if ((evt.ctrlKey || evt.metaKey) && evt.key === "s") {
+     evt.stopImmediatePropagation()
+     evt.preventDefault()
+     save()
+   }
+ }}
+  />
+
 <div transition:menuBlur class="sidepanelcontent">
 	<h2>Edit Song</h2>
 	{#if $menuID !== null}
 			<div class="inputgroup">
 				<span>Song Name: </span>
-				<input type="text" onkeydown={(evt) => evt.stopPropagation()} bind:value={editingSong.name} />
+				<input type="text" onkeydown={handleKeyOnInput} bind:value={editingSong.name} />
 			</div>
 			<div class="inputgroup">
 				<span>Artist(s): </span>
-				<input type="text" onkeydown={(evt) => evt.stopPropagation()} bind:value={editingSong.artist} />
+				<input type="text" onkeydown={handleKeyOnInput} bind:value={editingSong.artist} />
 			</div>
 			<div class="list" bind:this={listElm}>
 				{#each editingSong.lyrics as lyric, idx (Math.random())}
@@ -73,7 +87,7 @@
 								</button>
 							</div>
 							<div class="grow-wrap" data-replicated-value={lyric.text}>
-								<textarea onkeydown={(evt) => evt.stopPropagation()} bind:value={lyric.text}></textarea>
+								<textarea onkeydown={handleKeyOnInput} bind:value={lyric.text}></textarea>
 							</div>
 						</div>
 					</div>
