@@ -15,8 +15,7 @@
 ## Other:
 
 - Still not complete yet, but it's usable.<br>
-- ~Remote avaliable at /remote & remote under the menu~
-- Works offline with caching
+- ~Remote avaliable at /remote & remote under the menu~<br>
 - Format:
 
 ```ts
@@ -33,4 +32,5 @@ type song = {
 
 ## To Do:
 
-- create a cloud storage api
+- ~Use cloud storage~ Done with supabase <br>
+- Use a service worker for offline support <br>

@@ -2,7 +2,8 @@
 	import { menuBlur } from "../transitions"
 	import { menuID } from "$lib/sharedState"
 	import { type Song, LyricType } from "$lib/localStorage"
-	import { onMount } from "svelte"
+	import { onDestroy, onMount } from "svelte"
+	import _ from "lodash"
 	import Sortable from "sortablejs"
 
 	let { songs = $bindable() }: { songs: Song[] } = $props()
@@ -23,13 +24,19 @@
 			removeOnSpill: true,
 		})
 	})
-
+	onDestroy(() => {
+	onbeforeunload = null
+	})
+	$effect(() => {
+		if (_.isEqual($state.snapshot(editingSong), $state.snapshot(songs.find((song) => song.id === $menuID)))) onbeforeunload = null
+		else onbeforeunload = evt => evt.preventDefault()
+	})
 	function reorderLyrics() {
-		editingSong.lyrics = sortable.toArray().map((idx) => structuredClone($state.snapshot(editingSong.lyrics[parseInt(idx)])))
+		editingSong.lyrics = sortable.toArray().filter(itm => !/[A-Za-z]/.test(itm)).map((idx) => structuredClone($state.snapshot(editingSong.lyrics[parseInt(idx)])))
 	}
 
 	function handleKeyOnInput(evt: KeyboardEvent) {
-	if (!evt.ctrlKey && !evt.metaKey) evt.stopPropagation()
+		if (!evt.ctrlKey && !evt.metaKey) evt.stopPropagation()
 	}
 
 	async function save() {
@@ -62,14 +69,13 @@
 <div transition:menuBlur class="sidepanelcontent">
 	<h2>Edit Song</h2>
 	{#if $menuID !== null}
-			<div class="inputgroup">
-				<span>Song Name: </span>
-				<input type="text" onkeydown={handleKeyOnInput} bind:value={editingSong.name} />
-			</div>
-			<div class="inputgroup">
-				<span>Artist(s): </span>
-				<input type="text" onkeydown={handleKeyOnInput} bind:value={editingSong.artist} />
-			</div>
+			<input onkeydown={handleKeyOnInput} bind:value={editingSong.name} placeholder="Song Title" />
+			<input onkeydown={handleKeyOnInput} bind:value={editingSong.artist} placeholder="Artists" list="artists" />
+			<datalist id="artists">
+				{#each [...new Set(songs.map(song => song.artist))].toSorted() as artist}
+				  <option value={artist}>{artist}</option>
+				{/each}
+			</datalist>
 			<div class="list" bind:this={listElm}>
 				{#each editingSong.lyrics as lyric, idx (Math.random())}
 					<div class="lyric" data-id={idx}>
@@ -82,12 +88,12 @@
 									{/each}
 								</select>
 								<input bind:value={lyric.number} type="number" />
-								<button style="color: rgb(150, 50, 20); border: 1px solid currentColor;" onclick={() => editingSong.lyrics.splice(idx, 1)}>
+								<button style="color: rgb(150, 70, 90); border: 1px solid currentColor;" onclick={() => editingSong.lyrics.splice(idx, 1)}>
 									<i class="bi bi-trash3"></i> Remove
 								</button>
 							</div>
 							<div class="grow-wrap" data-replicated-value={lyric.text}>
-								<textarea onkeydown={handleKeyOnInput} bind:value={lyric.text}></textarea>
+								<textarea placeholder="Lyric Content" onkeydown={handleKeyOnInput} bind:value={lyric.text}></textarea>
 							</div>
 						</div>
 					</div>
@@ -119,25 +125,14 @@
 		h2 {
 		margin-bottom: 0 !important;
 		}
-		div.inputgroup {
+		& > input {
 			border-radius: 8px;
 			width: calc(100% - 16px);
 			margin: 0 8px;
-			display: grid;
-			grid-template-columns: auto 1fr;
 			overflow: hidden;
-			font-size: 20px;
-			span {
-				color: gray;
-				background: var(--stacked-element);
-			}
-			input {
-				font-size: 1em;
-				width: calc(100% - 4px);
-			}
-			* {
-				padding: 2px;
-			}
+			background: var(--element);
+			font-size: 1.2em;
+			padding: 2px;
 		}
 		div.list {
 			margin: 0;

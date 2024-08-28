@@ -30,6 +30,7 @@
 <style>
 	div.list {
 		border: 1px var(--border) solid;
+		border-radius: 8px;
 		background: rgba(32, 32, 32, 0.7);
 		backdrop-filter: blur(20px);
 		position: fixed;

@@ -2,11 +2,17 @@
 	import { menuBlur, menuFade, recieve, send } from "$lib/transitions"
 	import { sidePanel } from "$lib/sharedState"
 	let { blank = $bindable() } = $props()
+
+	function discardChanges() {
+		let result = true
+		if (onbeforeunload != null) result = confirm("Revert unsaved changes?")
+		return result
+	}
 </script>
 
 <div class="sidebar">
 	<div class="tabbar vertical top">
-		<button onclick={() => ($sidePanel !== "songs" ? ($sidePanel = "songs") : ($sidePanel = null))}>
+		<button onclick={() => (discardChanges() ? ($sidePanel !== "songs" ? ($sidePanel = "songs") : ($sidePanel = null)) : null)}>
 			<div class="tooltip">Songs</div>
 			{#if $sidePanel === "songs"}
 				<i transition:menuFade class="bi bi-file-earmark-music-fill"></i>
@@ -15,7 +21,7 @@
 				<i transition:menuFade class="bi bi-file-earmark-music"></i>
 			{/if}
 		</button>
-		<button onclick={() => ($sidePanel !== "settings" ? ($sidePanel = "settings") : ($sidePanel = null))}>
+		<button onclick={() => (discardChanges() ? ($sidePanel !== "settings" ? ($sidePanel = "settings") : ($sidePanel = null)) : null)}>
 			<div class="tooltip">Settings</div>
 			{#if $sidePanel === "settings"}
 				<i transition:menuFade class="bi bi-gear-fill"></i>
@@ -25,7 +31,12 @@
 			{/if}
 		</button>
 		{#if $sidePanel === "editor"}
-			<button transition:menuBlur onclick={() => ($sidePanel = null)}>
+			<button
+				transition:menuBlur
+				onclick={async () => {
+					discardChanges() ? ($sidePanel = null) : null
+				}}
+			>
 				<div class="tooltip">Editor</div>
 				<i class="bi bi-pencil-fill"></i>
 				{#if $sidePanel === "editor"}
@@ -36,9 +47,9 @@
 	</div>
 	<div class="tabbar vertical bottom">
 		<!-- We have to wait for the app to be on the client before loading this -->
-		{#await import("$lib/side/PWABadge.svelte") then { default: PWABadge }}
+		<!-- {#await import("$lib/side/PWABadge.svelte") then { default: PWABadge }}
 			<PWABadge />
-		{/await}
+		{/await} -->
 		<button class={blank ? "active" : ""} onclick={() => (blank = !blank)}>
 			<div class="tooltip">Blank Screen</div>
 			{#if blank}
