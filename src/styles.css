@@ -42,6 +42,7 @@ div.list {
 	margin: 8px;
 	& > * {
 		background: var(--element);
+	 color: white;
 		padding: 8px;
 		border: none;
 		white-space: pre-line;
@@ -55,7 +56,6 @@ div.list {
 		textarea,
 		select {
 			background: var(--stacked-element);
-			color: white;
 		}
 		&::after {
 			content: "";
