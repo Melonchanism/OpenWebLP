@@ -55,6 +55,7 @@ div.list {
 		textarea,
 		select {
 			background: var(--stacked-element);
+			color: white;
 		}
 		&::after {
 			content: "";
