@@ -15,7 +15,7 @@
 
 {#if sidePanel}
 	<!-- Let the panel stay for a bit after it disappears -->
-	<div transition:fly={{ duration: 400, easing: cubicInOut, opacity: 1 }} class="sidepanel">
+	<div transition:fly={{ duration: 300, easing: cubicInOut, opacity: 1 }} class="sidepanel">
 		{#if $sidePanel === "songs"}
 			<Songs bind:songs />
 		{:else if $sidePanel === "settings"}
@@ -32,7 +32,7 @@
 		margin: 8px;
 		left: calc(-50% - 12px);
 		top: -8px;
-		background: rgb(20, 20, 20, 0.7);
+		background: rgb(14, 14, 14);
 		backdrop-filter: blur(20px);
 		width: calc(50% - 6px);
 		height: calc(100% - 2px);

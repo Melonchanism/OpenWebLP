@@ -121,7 +121,7 @@
 					<div>
 						<div>
 							<h3>Font Weight</h3>
-							<p>The weight of the font on the display (boldness / thinness) (Only on some fonts)</p>
+							<p>The boldness / thinness of the displayed font (YMMV)</p>
 						</div>
 						<div>
 							<input bind:value={$settings.display.font.weight} min="100" max="900" step="100" type="range" />
@@ -204,7 +204,8 @@
 						display: flex;
 						flex-direction: column;
 						p {
-							color: lightgray;
+							color: gray;
+							font-size: 0.9em;
 						}
 					}
 					& > div:last-child {

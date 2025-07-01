@@ -1,39 +1,30 @@
 {
-	"name": "openweblp",
-	"version": "3.2.0",
+	"name": "openweblp3.3",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
 	"scripts": {
-		"dev": "bun run --bun vite",
+		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
-		"@neoconfetti/svelte": "^2.2.1",
-		"@svelte-put/clickoutside": "^4.0.0-next.4",
-		"@sveltejs/adapter-auto": "^3.2.4",
-		"@sveltejs/kit": "^2.5.25",
-		"@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
-		"@vite-pwa/assets-generator": "^0.2.4",
-		"@vite-pwa/sveltekit": "^0.6.1",
-		"svelte": "^5.0.0-next.240",
-		"svelte-check": "^3.8.6",
-		"typescript": "^5.5.4",
-		"vite": "^5.4.2",
-		"vite-plugin-pwa": "^0.20.1",
-		"workbox-window": "^7.1.0"
-	},
-	"type": "module",
-	"resolutions": {
-		"sharp": "0.32.6",
-		"sharp-ico": "0.1.5"
+		"@sveltejs/adapter-auto": "^6.0.0",
+		"@sveltejs/kit": "^2.16.0",
+		"@sveltejs/vite-plugin-svelte": "^5.0.0",
+		"svelte": "^5.0.0",
+		"svelte-check": "^4.0.0",
+		"typescript": "^5.0.0",
+		"vite": "^6.2.6"
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^2.45.2",
-		"@types/lodash": "^4.17.7",
-		"@types/sortablejs": "^1.15.8",
-		"fast-glob": "^3.3.2",
+		"@supabase/supabase-js": "^2.50.2",
+		"@svelte-put/clickoutside": "^4.0.0",
+		"bootstrap-icons": "^1.13.1",
 		"lodash": "^4.17.21",
-		"sortablejs": "^1.15.2"
+		"sortablejs": "^1.15.6"
 	}
 }

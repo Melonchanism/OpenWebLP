@@ -1,3 +1,4 @@
+@import "bootstrap-icons";
 :root {
 	--border: rgb(63, 63, 63);
 	--border-subtle: rgba(47, 47, 47);
@@ -42,13 +43,11 @@ div.list {
 	margin: 8px;
 	& > * {
 		background: var(--element);
-	 color: white;
 		padding: 8px;
 		border: none;
 		white-space: pre-line;
 		position: relative;
 		transition:
-			opacity 300ms,
 			color 300ms,
 			background 300ms;
 		button,
@@ -79,6 +78,9 @@ div.list {
 		div:has(.selector) {
 			border-radius: inherit;
 		}
+		&.dragging {
+			opacity: 0;
+		}
 		&:first-child {
 			border-top-left-radius: 8px;
 			border-top-right-radius: 8px;
@@ -86,7 +88,7 @@ div.list {
 		&:last-child {
 			border-bottom-left-radius: 8px;
 			border-bottom-right-radius: 8px;
-			&:after {
+			&::after {
 				display: none;
 			}
 		}
@@ -106,8 +108,11 @@ div.tooltip {
 	border-radius: 8px;
 	z-index: 99;
 	padding: 4px;
-	scale: 0;
-	transition: scale 150ms;
+	scale: 0.8;
+	opacity: 0;
+	transition:
+		scale 150ms,
+		opacity 150ms;
 
 	&:not(.left) {
 		top: 50%;
@@ -185,6 +190,7 @@ div.tabbar {
 		}
 		&:hover > .tooltip {
 			scale: 1;
+			opacity: 1;
 		}
 		&:not(:has(.selector)).active {
 			background: var(--border);

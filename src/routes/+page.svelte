@@ -24,7 +24,6 @@
       group: {
         name: "songs",
       },
-      removeOnSpill: true,
       onEnd: recreateService,
       onAdd: recreateService,
     })
@@ -54,7 +53,7 @@
         displayData.set({
           name: songs.find((song) => song.id === $service[current.song])?.name ?? "",
           artist: songs.find((song) => song.id === $service[current.song])?.artist ?? "",
-          lyric: songs.find((song) => song.id === $service[current.song])?.lyrics[current.lyric],
+          lyric: songs.find((song) => song.id === $service[current.song])?.lyrics[current.lyric]!,
         })
       } else {
         displayData.set({name: "", artist: "", lyric: { type: "", text: "", number: -1 }})
@@ -78,22 +77,22 @@
         blank = !blank
         break
       case "ArrowLeft":
-        if (evt.cancelable) evt.preventDefault()
+        evt.preventDefault()
         if ($service[current.song - 1 - (evt.shiftKey as unknown as number)])
           current.song -= 1 + (evt.shiftKey as unknown as number)
         break
       case "ArrowRight":
-        if (evt.cancelable) evt.preventDefault()
+        evt.preventDefault()
         if ($service[current.song + 1 + (evt.shiftKey as unknown as number)])
           current.song += 1 + (evt.shiftKey as unknown as number)
         break
       case "ArrowUp":
-        if (evt.cancelable) evt.preventDefault()
+        evt.preventDefault()
         if (songs.find((song) => song.id === $service[current.song])?.lyrics[current.lyric - 1 - (evt.shiftKey as unknown as number)])
           current.lyric -= 1 + (evt.shiftKey as unknown as number)
         break
       case "ArrowDown":
-        if (evt.cancelable) evt.preventDefault()
+        evt.preventDefault()
         if (songs.find((song) => song.id === $service[current.song])?.lyrics[current.lyric + 1 + (evt.shiftKey as unknown as number)])
           current.lyric += 1 + (evt.shiftKey as unknown as number)
         break

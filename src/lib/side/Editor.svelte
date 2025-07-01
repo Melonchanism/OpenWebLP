@@ -4,7 +4,7 @@
 	import { type Song, LyricType } from "$lib/localStorage"
 	import { onDestroy, onMount } from "svelte"
 	import _ from "lodash"
-	import Sortable from "sortablejs"
+	import Sortable from "sortablejs";
 
 	let { songs = $bindable() }: { songs: Song[] } = $props()
 
@@ -13,6 +13,7 @@
 		editingSong = structuredClone($state.snapshot(songs.find((song) => song.id === $menuID)))!
 	})
 
+	// To-do: use svelte-dnd-action while preserving ids somehow with 0% chance of failiure
 	let listElm: HTMLDivElement
 	let sortable: Sortable
 	onMount(() => {
@@ -21,18 +22,28 @@
 			ghostClass: "dragging",
 			handle: ".grip",
 			onEnd: reorderLyrics,
-			removeOnSpill: true,
 		})
 	})
+	// try {overrideItemIdKeyNameBeforeInitialisingDndZones("text")} catch(e) {}
+	// const flipDurationMs = 300;
+	// function handleDndConsider(evt) {
+	// 	editingSong.lyrics = evt.detail.items;
+	// }
+	// function handleDndFinalize(evt) {
+	// 	editingSong.lyrics = evt.detail.items;
+ //  }
 	onDestroy(() => {
-	onbeforeunload = null
+		onbeforeunload = null
 	})
 	$effect(() => {
 		if (_.isEqual($state.snapshot(editingSong), $state.snapshot(songs.find((song) => song.id === $menuID)))) onbeforeunload = null
 		else onbeforeunload = evt => evt.preventDefault()
 	})
 	function reorderLyrics() {
-		editingSong.lyrics = sortable.toArray().filter(itm => !/[A-Za-z]/.test(itm)).map((idx) => structuredClone($state.snapshot(editingSong.lyrics[parseInt(idx)])))
+		editingSong.lyrics = sortable
+		.toArray()
+		.filter(itm => !/[A-Za-z]/.test(itm))
+		.map((idx) => structuredClone($state.snapshot(editingSong.lyrics[parseInt(idx)])))
 	}
 
 	function handleKeyOnInput(evt: KeyboardEvent) {
@@ -53,6 +64,7 @@
 			console.log(editingSong.id)
 		  songs[songs.findIndex((song) => song.id === -1)] = editingSong
 		}
+		alert("Saved")
 	}
 </script>
 
@@ -76,9 +88,10 @@
 				  <option value={artist}>{artist}</option>
 				{/each}
 			</datalist>
+			<div class="lyrics">
 			<div class="list" bind:this={listElm}>
 				{#each editingSong.lyrics as lyric, idx (Math.random())}
-					<div class="lyric" data-id={idx}>
+					<div class="lyric" data-id={idx} >
 						<div class="grip"><i class="bi bi-grip-vertical"></i></div>
 						<div class="contents">
 							<div class="metadata">
@@ -98,6 +111,8 @@
 						</div>
 					</div>
 				{/each}
+			</div>
+			<div class="list">
 				<button
 					onclick={() => {
 						editingSong.lyrics.push({
@@ -110,9 +125,10 @@
 					<h3><i class="bi bi-plus-square"></i> Add Lyric</h3>
 				</button>
 			</div>
+			</div>
 			<div class="footer">
 				<button style="background-color: darkolivegreen;" onclick={save}><i class="bi bi-save2"></i> Save</button>
-				<button style="background-color: peru;" onclick={() => editingSong = structuredClone($state.snapshot(songs.find((song) => song.id === $menuID)))!}><i class="bi bi-arrow-counterclockwise"></i> Revert</button>
+				<button style="background-color: peru;" onclick={() => editingSong = structuredClone($state.snapshot(songs.find((song) => song.id === $menuID)))}><i class="bi bi-arrow-counterclockwise"></i> Revert</button>
 			</div>
 	{/if}
 </div>
@@ -123,7 +139,7 @@
 		grid-template-rows: auto auto auto 1fr auto;
 		gap: 8px;
 		h2 {
-		margin-bottom: 0 !important;
+		  margin-bottom: 0 !important;
 		}
 		& > input {
 			border-radius: 8px;
@@ -134,60 +150,21 @@
 			font-size: 1.2em;
 			padding: 2px;
 		}
-		div.list {
+		div.lyrics {
+			overflow: scroll;
+			div.list {
 			margin: 0;
 			padding: 0 8px;
-			overflow: scroll;
-			border-radius: 0;
-			div.lyric {
-				display: grid;
-				grid-template-columns: auto 1fr;
-				position: relative;
-				div.grip {
-					display: flex;
-					align-items: center;
-					height: 100%;
-					cursor: grab;
-					i.bi-grip-vertical {
-						font-size: 1.5em;
-					}
+			&:nth-child(2) {
+				padding-top: 8px;
+				position: sticky;
+				bottom: 0;
+				background: rgb(14, 14, 14);
+				z-index: 2;
+				button {
+					border-radius: 8px;
 				}
-				div.contents {
-					div.metadata {
-						display: flex;
-						margin-bottom: 4px;
-						gap: 8px;
-						input {
-							width: 50px;
-						}
-						* {
-							padding: 4px;
-							border-radius: 8px;
-						}
-					}
-					.grow-wrap {
-						display: grid;
-						&::after {
-							content: attr(data-replicated-value) " ";
-							white-space: pre-wrap;
-							visibility: hidden;
-						}
-						textarea {
-							resize: none;
-							border-radius: 8px;
-							overflow: hidden;
-						}
-						&::after,
-						textarea {
-							width: calc(100% - 8px - 2px);
-							border: 1px var(--border-subtle) solid;
-							min-height: 70px;
-							padding: 4px;
-							font: inherit;
-							grid-area: 1 / 1 / 2 / 2;
-						}
-					}
-				}
+			}
 			}
 		}
 		div.footer {
@@ -197,6 +174,56 @@
 			button {
 				padding: 4px;
 				border-radius: 8px;
+			}
+		}
+	}
+	:global(div.lyric) {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		position: relative;
+		div.grip {
+			display: flex;
+			align-items: center;
+			height: 100%;
+			cursor: grab;
+			i.bi-grip-vertical {
+				font-size: 1.5em;
+			}
+		}
+		div.contents {
+			div.metadata {
+				display: flex;
+				margin-bottom: 4px;
+				gap: 8px;
+				input {
+					width: 50px;
+				}
+				* {
+					padding: 4px;
+					border-radius: 8px;
+				}
+			}
+			.grow-wrap {
+				display: grid;
+				&::after {
+					content: attr(data-replicated-value) " ";
+					white-space: pre-wrap;
+					visibility: hidden;
+				}
+				textarea {
+					resize: none;
+					border-radius: 8px;
+					overflow: hidden;
+				}
+				&::after,
+				textarea {
+					width: calc(100% - 8px - 2px);
+					border: 1px var(--border-subtle) solid;
+					min-height: 70px;
+					padding: 4px;
+					font: inherit;
+					grid-area: 1 / 1 / 2 / 2;
+				}
 			}
 		}
 	}

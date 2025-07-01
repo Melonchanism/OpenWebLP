@@ -14,7 +14,6 @@
 	onstorage={(evt) => {
 		if (evt.key === "displayData")
 			if ($settings?.display.transition !== Transition.none)
-				//@ts-expect-error
 				document.startViewTransition(async () => {
 					$displayData = JSON.parse(evt.newValue ?? "null")
 					await tick()
