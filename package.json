@@ -1,7 +1,7 @@
 {
-	"name": "openweblp3.3",
+	"name": "openweblp",
 	"private": true,
-	"version": "0.0.1",
+	"version": "3.3.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -15,6 +15,7 @@
 		"@sveltejs/adapter-auto": "^6.0.0",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
+		"@types/sortablejs": "^1.15.8",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
 		"typescript": "^5.0.0",
@@ -23,8 +24,10 @@
 	"dependencies": {
 		"@supabase/supabase-js": "^2.50.2",
 		"@svelte-put/clickoutside": "^4.0.0",
+		"autoprefixer": "^10.4.21",
 		"bootstrap-icons": "^1.13.1",
 		"lodash": "^4.17.21",
+		"postcss": "^8.5.6",
 		"sortablejs": "^1.15.6"
 	}
 }
