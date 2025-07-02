@@ -1,4 +1,4 @@
-import { writable } from "svelte/store"
+import { storedWritable } from "./storedWritable"
 
 export interface DisplayData {
 	name: string
@@ -25,7 +25,7 @@ export type Song = {
 	artist: string
 	lyrics: Lyric[]
 }
-export let displayData = writable<DisplayData | null>(null)
+export let displayData = storedWritable<DisplayData | null>(null, "displayData")
 
 export interface Settings {
 	display: {
@@ -81,8 +81,9 @@ export const defaultSettings: Settings = {
 		transition: Transition.fade,
 	},
 }
-export let settings = writable<Settings>(null!)
 
-export let aspectRatio = writable<number>(null!)
+export let settings = storedWritable<Settings>(defaultSettings, "settings")
 
-export let service = writable<number[]>([])
+export let aspectRatio = storedWritable<number>(16 / 9, "aspectRatio")
+
+export let service = storedWritable<number[]>([], "service")

@@ -1,27 +1,17 @@
 <script lang="ts">
-	import { displayData, settings, Transition, DisplayBGType } from "$lib/localStorage"
-	import { onMount, tick } from "svelte"
+	import { displayData, settings, aspectRatio, Transition, DisplayBGType } from "$lib/localStorage"
+	import { onMount } from "svelte"
 
 	const keyChannel = new BroadcastChannel("key")
 
 	onMount(() => {
-		localStorage.setItem("aspectRatio", `${innerWidth / innerHeight}`)
-		displayData.set(JSON.parse(localStorage.getItem("displayData") ?? "null"))
+		$aspectRatio = innerWidth / innerHeight
 	})
 </script>
 
 <svelte:window
-	onstorage={(evt) => {
-		if (evt.key === "displayData")
-			if ($settings?.display.transition !== Transition.none)
-				document.startViewTransition(async () => {
-					$displayData = JSON.parse(evt.newValue ?? "null")
-					await tick()
-				})
-			else $displayData = JSON.parse(evt.newValue ?? "null")
-	}}
 	onresize={() => {
-		if (window.top === window) localStorage.setItem("aspectRatio", `${innerWidth / innerHeight}`)
+		if (window.top === window) $aspectRatio = innerWidth / innerHeight
 	}}
 	onkeydown={(evt) => {
 		console.log(evt.key)
@@ -35,7 +25,7 @@
 />
 
 <svelte:head>
-	<title>OpenWebLP v3.2 Display</title>
+	<title>OpenWebLP Display</title>
 </svelte:head>
 
 <div
@@ -70,7 +60,10 @@
 		<p>
 			{$displayData?.name ?? " "}<br />{$displayData?.artist ?? " "}
 		</p>
-		<p>{$displayData?.lyric?.type} {$displayData?.lyric?.number !== -1 ? $displayData?.lyric?.number : ""}</p>
+		<p>
+			{$displayData?.lyric?.type}
+			{$displayData?.lyric?.number !== -1 ? $displayData?.lyric?.number : ""}
+		</p>
 	</div>
 </div>
 
