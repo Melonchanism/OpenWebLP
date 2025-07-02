@@ -1,11 +1,23 @@
 <script lang="ts">
 	import { displayData, settings, aspectRatio, Transition, DisplayBGType } from "$lib/localStorage"
-	import { onMount } from "svelte"
+	import { onMount, tick } from "svelte"
 
 	const keyChannel = new BroadcastChannel("key")
 
+	let displayDataState = $state($displayData)
+
 	onMount(() => {
 		$aspectRatio = innerWidth / innerHeight
+	})
+
+	$effect.pre(() => {
+		$displayData
+		if ($settings?.display.transition !== Transition.none)
+			document.startViewTransition(async () => {
+				displayDataState = $displayData
+				await tick()
+			})
+		else displayDataState = $displayData
 	})
 </script>
 
@@ -53,16 +65,16 @@
       font-size: calc((2.7vw + 2.7vh) * ${$settings?.display.font.size});
       `}
 		>
-			{$displayData?.lyric?.text}
+			{displayDataState?.lyric?.text}
 		</h1>
 	</div>
 	<div class="info-container">
 		<p>
-			{$displayData?.name ?? " "}<br />{$displayData?.artist ?? " "}
+			{displayDataState?.name ?? " "}<br />{displayDataState?.artist ?? " "}
 		</p>
 		<p>
-			{$displayData?.lyric?.type}
-			{$displayData?.lyric?.number !== -1 ? $displayData?.lyric?.number : ""}
+			{displayDataState?.lyric?.type}
+			{displayDataState?.lyric?.number}
 		</p>
 	</div>
 </div>
