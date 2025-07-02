@@ -27,8 +27,8 @@ export function storedWritable<T>(defaultValue: T, key: string): StoredWrtiable<
 		if (browser && !store.browserLoaded) {
 			addEventListener("storage", (evt) => {
 				if (evt.key == key) store.set(JSON.parse(evt.newValue!))
-				store.browserLoaded = true
 			})
+			store.browserLoaded = true
 		}
 	})
 
