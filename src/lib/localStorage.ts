@@ -82,8 +82,8 @@ export const defaultSettings: Settings = {
 	},
 }
 
-export let settings = storedWritable<Settings>(defaultSettings, "settings")
+export let settings = storedWritable(defaultSettings, "settings")
 
-export let aspectRatio = storedWritable<number>(16 / 9, "aspectRatio")
+export let aspectRatio = storedWritable(16 / 9, "aspectRatio")
 
 export let service = storedWritable<number[]>([], "service")
