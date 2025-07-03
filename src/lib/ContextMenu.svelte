@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { fade } from "svelte/transition"
-	import { showMenu, menuPos, menuID, sidePanel } from "$lib/sharedState"
+	import { showMenu, menuPos, menuID, sidePanel, SidePanel } from "$lib/sharedState"
 	import type { Song } from "./localStorage"
 	import { clickoutside } from "@svelte-put/clickoutside"
 	let { data }: { data: { songs: Song[] } } = $props()
 
 	function editSong() {
 		$showMenu = false
-		$sidePanel = "editor"
+		$sidePanel = SidePanel.Editor
 	}
 </script>
 

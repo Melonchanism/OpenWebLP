@@ -5,7 +5,7 @@
 	import type { Song } from "$lib/localStorage"
 	import Sortable from "sortablejs"
 	let { songs = $bindable() }: { songs: Song[] } = $props()
-	import { showMenu, menuPos, menuID, sidePanel } from "$lib/sharedState"
+	import { showMenu, menuPos, menuID, sidePanel, SidePanel } from "$lib/sharedState"
 
 	let searchVal = $state("")
 
@@ -65,7 +65,7 @@
 						lyrics: [],
 					})
 					$menuID = -1
-					$sidePanel = "editor"
+					$sidePanel = SidePanel.Editor
 				}}
 			>
 				<h3><i class="bi bi-plus-square"></i> New Song</h3>

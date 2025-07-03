@@ -2,7 +2,7 @@
 	import { displayData, service } from "$lib/localStorage"
 	import { onMount } from "svelte"
 	import { menuBlur, send, recieve } from "$lib/transitions"
-	import { showMenu, menuPos, menuID, sidePanel } from "$lib/sharedState"
+	import { showMenu, menuPos, menuID, sidePanel, SidePanel } from "$lib/sharedState"
 	import Sortable from "sortablejs"
 	import Preview from "$lib/Preview.svelte"
 	import SideBar from "$lib/side/Bar.svelte"
@@ -122,7 +122,7 @@
 
 <div class="main">
 	<SideBar bind:blank />
-	<div class="console {$sidePanel ? 'sidepanelactive' : ''}">
+	<div class="console {$sidePanel !== SidePanel.None ? 'sidepanelactive' : ''}">
 		<Panel bind:songs />
 		<div class="songs">
 			<div class="list" bind:this={listElm}>

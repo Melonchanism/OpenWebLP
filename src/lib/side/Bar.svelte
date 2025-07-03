@@ -1,6 +1,6 @@
 <script>
 	import { menuBlur, menuFade, recieve, send } from "$lib/transitions"
-	import { sidePanel } from "$lib/sharedState"
+	import { SidePanel, sidePanel } from "$lib/sharedState"
 	let { blank = $bindable() } = $props()
 
 	function discardChanges() {
@@ -12,35 +12,53 @@
 
 <div class="sidebar">
 	<div class="tabbar vertical top">
-		<button onclick={() => (discardChanges() ? ($sidePanel !== "songs" ? ($sidePanel = "songs") : ($sidePanel = null)) : null)}>
+		<button
+			onclick={() =>
+				discardChanges()
+					? $sidePanel !== SidePanel.Songs
+						? ($sidePanel = SidePanel.Songs)
+						: ($sidePanel = SidePanel.None)
+					: null}
+		>
 			<div class="tooltip">Songs</div>
-			{#if $sidePanel === "songs"}
+			{#if $sidePanel === SidePanel.Songs}
 				<i transition:menuFade class="bi bi-file-earmark-music-fill"></i>
 				<div class="selector" in:recieve|global={{ key: "sidepanel" }} out:send|global={{ key: "sidepanel" }}></div>
 			{:else}
 				<i transition:menuFade class="bi bi-file-earmark-music"></i>
 			{/if}
 		</button>
-		<button onclick={() => (discardChanges() ? ($sidePanel !== "settings" ? ($sidePanel = "settings") : ($sidePanel = null)) : null)}>
+		<button
+			onclick={() =>
+				discardChanges()
+					? $sidePanel !== SidePanel.Settings
+						? ($sidePanel = SidePanel.Settings)
+						: ($sidePanel = SidePanel.None)
+					: null}
+		>
 			<div class="tooltip">Settings</div>
-			{#if $sidePanel === "settings"}
+			{#if $sidePanel === SidePanel.Settings}
 				<i transition:menuFade class="bi bi-gear-fill"></i>
 				<div class="selector" in:recieve|global={{ key: "sidepanel" }} out:send|global={{ key: "sidepanel" }}></div>
 			{:else}
 				<i transition:menuFade class="bi bi-gear"></i>
 			{/if}
 		</button>
-		{#if $sidePanel === "editor"}
+		{#if $sidePanel === SidePanel.Editor}
 			<button
 				transition:menuBlur
 				onclick={async () => {
-					discardChanges() ? ($sidePanel = null) : null
+					if (discardChanges()) $sidePanel = SidePanel.None
 				}}
 			>
 				<div class="tooltip">Editor</div>
 				<i class="bi bi-pencil-fill"></i>
-				{#if $sidePanel === "editor"}
-					<div class="selector" in:recieve|global={{ key: "sidepanel" }} out:send|global={{ key: "sidepanel" }}></div>
+				{#if $sidePanel === SidePanel.Editor}
+					<div
+						class="selector"
+						in:recieve|global={{ key: "sidepanel" }}
+						out:send|global={{ key: "sidepanel" }}
+					></div>
 				{/if}
 			</button>
 		{/if}

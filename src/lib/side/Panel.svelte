@@ -5,7 +5,7 @@
 	import Songs from "$lib/side/Songs.svelte"
 	import Editor from "$lib/side/Editor.svelte"
 	import type { Song } from "$lib/localStorage"
-	import { sidePanel } from "$lib/sharedState"
+	import { SidePanel, sidePanel } from "$lib/sharedState"
 	let { songs = $bindable() }: { songs: Song[] } = $props()
 
 	$effect.pre(() => {
@@ -16,11 +16,11 @@
 {#if sidePanel}
 	<!-- Let the panel stay for a bit after it disappears -->
 	<div transition:fly={{ duration: 300, easing: cubicInOut, opacity: 1 }} class="sidepanel">
-		{#if $sidePanel === "songs"}
+		{#if $sidePanel === SidePanel.Songs}
 			<Songs bind:songs />
-		{:else if $sidePanel === "settings"}
+		{:else if $sidePanel === SidePanel.Settings}
 			<Settings />
-		{:else if $sidePanel === "editor"}
+		{:else if $sidePanel === SidePanel.Editor}
 			<Editor bind:songs />
 		{/if}
 	</div>
