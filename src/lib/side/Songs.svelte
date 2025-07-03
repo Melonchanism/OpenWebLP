@@ -12,7 +12,7 @@
 	let sortedSongs = $derived(
 		songs
 			.toSorted((itm1, itm2) => (itm1.name.toLowerCase() > itm2.name.toLowerCase() ? 1 : -1))
-			.filter((itm) => itm.name.toLowerCase().startsWith(searchVal.toLowerCase())),
+			.filter((itm) => itm.name.toLowerCase().startsWith(searchVal.toLowerCase()))
 	)
 
 	let listElm: HTMLDivElement
@@ -33,7 +33,12 @@
 <div transition:menuBlur class="sidepanelcontent">
 	<h2>Songs</h2>
 	<div>
-		<input bind:value={searchVal} onkeydowncapture={(evt) => evt.stopPropagation()} type="text" placeholder="Search..." />
+		<input
+			bind:value={searchVal}
+			onkeydowncapture={(evt) => evt.stopPropagation()}
+			type="text"
+			placeholder="Search..."
+		/>
 	</div>
 	<div class="songs">
 		<div bind:this={listElm} class="list" style="overflow: scroll">

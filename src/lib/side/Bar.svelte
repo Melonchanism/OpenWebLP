@@ -23,7 +23,11 @@
 			<div class="tooltip">Songs</div>
 			{#if $sidePanel === SidePanel.Songs}
 				<i transition:menuFade class="bi bi-file-earmark-music-fill"></i>
-				<div class="selector" in:recieve|global={{ key: "sidepanel" }} out:send|global={{ key: "sidepanel" }}></div>
+				<div
+					class="selector"
+					in:recieve|global={{ key: "sidepanel" }}
+					out:send|global={{ key: "sidepanel" }}
+				></div>
 			{:else}
 				<i transition:menuFade class="bi bi-file-earmark-music"></i>
 			{/if}
@@ -39,7 +43,11 @@
 			<div class="tooltip">Settings</div>
 			{#if $sidePanel === SidePanel.Settings}
 				<i transition:menuFade class="bi bi-gear-fill"></i>
-				<div class="selector" in:recieve|global={{ key: "sidepanel" }} out:send|global={{ key: "sidepanel" }}></div>
+				<div
+					class="selector"
+					in:recieve|global={{ key: "sidepanel" }}
+					out:send|global={{ key: "sidepanel" }}
+				></div>
 			{:else}
 				<i transition:menuFade class="bi bi-gear"></i>
 			{/if}

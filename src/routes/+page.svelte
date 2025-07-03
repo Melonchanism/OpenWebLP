@@ -58,7 +58,7 @@
 					lyric: songs.find((song) => song.id === $service[current.song])?.lyrics[current.lyric]!,
 				})
 			} else {
-				displayData.set({ name: "", artist: "", lyric: { type: "", text: "", number: -1 } })
+				displayData.set(null)
 			}
 		}
 	})
@@ -127,7 +127,7 @@
 		<div class="songs">
 			<div class="list" bind:this={listElm}>
 				{#if $service}
-					<!-- I have no idea how Math.random() works but I think that all the elements just get refreshed -->
+					<!-- Use `Math.random()` to force elements to refresh everytime list is rearranged -->
 					{#each $service as id, idx (Math.random())}
 						<button
 							data-id={id}
