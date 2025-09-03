@@ -29,6 +29,7 @@
 		"@vite-pwa/sveltekit": "^1.0.0",
 		"autoprefixer": "^10.4.21",
 		"bootstrap-icons": "^1.13.1",
+		"glob": "^11.0.3",
 		"lodash": "^4.17.21",
 		"scss": "^0.2.4",
 		"sortablejs": "^1.15.6",
