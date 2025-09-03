@@ -1,0 +1,280 @@
+:root {
+	--border: rgb(63, 63, 63);
+	--border-subtle: rgb(47, 47, 47);
+	--selector: rgba(180, 255, 220, 0.1);
+	--highlight: rgb(70, 100, 94);
+	--element: rgb(32, 32, 32);
+	--stacked-element: rgb(42, 42, 42);
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	color-scheme: light dark;
+	font-family: sans-serif;
+	color: white;
+	background: black;
+	@media (prefers-color-scheme: dark) {
+		/*stop dark reader from triggering*/
+		background: black;
+	}
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	border: none;
+	scroll-behavior: smooth;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+button,
+input,
+select,
+textarea {
+	font-size: 1rem;
+	background: var(--element);
+	min-width: 0;
+}
+button:disabled {
+	color: gray;
+}
+
+select {
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22white%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M6%209%2012%2015%2018%209%22/%3E%3C/svg%3E") !important;
+	background-size: 18px;
+	background-position: calc(100% - 3px) 50% !important;
+	background-repeat: no-repeat !important;
+	background-color: var(--input-background);
+	padding-right: 24px !important;
+	padding-left: 4px;
+}
+
+@mixin elementcontainer {
+	& > * {
+		background: var(--element);
+		padding: 8px;
+		border: none;
+		white-space: pre-line;
+		position: relative;
+		transition:
+			color 300ms,
+			background 300ms;
+		button,
+		input,
+		textarea,
+		select {
+			background: var(--stacked-element);
+		}
+	}
+}
+
+@mixin rounded-vertical {
+	&:first-child {
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
+	}
+	&:last-child {
+		border-bottom-left-radius: 8px;
+		border-bottom-right-radius: 8px;
+		&::after {
+			display: none;
+		}
+	}
+}
+
+@mixin rounded-horizontal {
+	&:first-child {
+		border-top-left-radius: 8px;
+		border-bottom-left-radius: 8px;
+	}
+	&:last-child {
+		border-top-right-radius: 8px;
+		border-bottom-right-radius: 8px;
+		&::after {
+			display: none;
+		}
+	}
+}
+
+.list {
+	@include elementcontainer;
+	position: relative;
+	margin: 8px;
+	& > button {
+		width: 100%;
+		text-align: left;
+	}
+	& > * {
+		@include rounded-vertical;
+		&::after {
+			content: "";
+			position: absolute;
+			width: calc(100% - 16px);
+			border-top: 1px solid var(--border-subtle);
+			z-index: 1;
+			top: 100%;
+			left: 8px;
+		}
+		.selector {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: var(--selector);
+			top: 0;
+			left: 0;
+			z-index: 2;
+			border-radius: inherit;
+		}
+		div:has(.selector) {
+			border-radius: inherit;
+		}
+		&.dragging {
+			opacity: 0;
+		}
+	}
+}
+
+.tooltip {
+	position: absolute;
+	background: rgba(20, 20, 20, 0.7);
+	backdrop-filter: blur(20px);
+	border: 1px var(--border) solid;
+	border-radius: 8px;
+	z-index: 99;
+	padding: 4px;
+	scale: 0;
+	opacity: 0;
+	width: max-content;
+	transition:
+		scale 150ms,
+		opacity 150ms;
+	&.right {
+		top: 50%;
+		translate: 0 -50%;
+		transform-origin: -8px 50%;
+		left: 100%;
+		margin-left: 8px;
+	}
+
+	&.left {
+		top: 50%;
+		translate: 0 -50%;
+		transform-origin: calc(100% + 8px) 50%;
+		right: 100%;
+		margin-right: 8px;
+	}
+}
+
+.tabbar {
+	display: flex;
+	&.bottom {
+		justify-content: end;
+	}
+	&.vertical {
+		flex-direction: column;
+		margin: 0 4px;
+		button {
+			@include rounded-vertical;
+			border-bottom: none;
+			&:first-child {
+				margin-top: 4px;
+			}
+			&:last-child {
+				margin-bottom: 4px;
+				border-bottom: 1px solid var(--border-subtle);
+			}
+		}
+	}
+	&:not(.vertical) {
+		margin: 4px 0;
+		button {
+			@include rounded-horizontal;
+			border-right: none;
+			&:first-child {
+				margin-left: 4px;
+			}
+			&:last-child {
+				margin-right: 4px;
+				border-right: 1px solid var(--border-subtle);
+			}
+		}
+	}
+	button {
+		position: relative;
+		background: none;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid var(--border-subtle);
+		width: 40px;
+		height: 40px;
+		transition: background 300ms;
+		.selector {
+			width: 100%;
+			height: 100%;
+			background: var(--border);
+			border-radius: inherit;
+		}
+		&:hover > .tooltip {
+			scale: 1;
+			opacity: 1;
+		}
+		&:not(:has(.selector)).active {
+			background: var(--border);
+		}
+		i {
+			position: absolute;
+			z-index: 2;
+			font-size: 1.1em;
+		}
+	}
+}
+
+.actionbar {
+	@include elementcontainer;
+	position: sticky;
+	z-index: 3;
+	padding: 8px;
+	display: grid;
+	&.top {
+		top: 0;
+		background: linear-gradient(rgb(14, 14, 14), 70%, rgb(14, 14, 14, 0.1)) !important;
+	}
+	&.bottom {
+		bottom: 0;
+		background: linear-gradient(rgb(14, 14, 14, 0.1), 30%, rgb(14, 14, 14)) !important;
+	}
+	& > * {
+		@include rounded-horizontal;
+		border-radius: 0;
+		background: var(--element);
+		padding: 8px;
+		border: none;
+		white-space: pre-line;
+		position: relative;
+		button,
+		input,
+		textarea,
+		select {
+			background: var(--stacked-element);
+		}
+		border-right: 1px solid var(--border-subtle);
+		&:last-child {
+			border-right: none;
+		}
+	}
+}
+
+*.highlighted::before {
+	content: "";
+	position: absolute;
+	width: calc(100% + 4px);
+	height: calc(100% + 4px);
+	top: -6px;
+	left: -6px;
+	border-radius: 12px;
+	border: 4px solid var(--highlight);
+	z-index: 4;
+}

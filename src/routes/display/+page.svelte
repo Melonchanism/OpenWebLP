@@ -26,7 +26,6 @@
 		if (window.top === window) $aspectRatio = innerWidth / innerHeight
 	}}
 	onkeydown={(evt) => {
-		console.log(evt.key)
 		if (evt.key !== "d") {
 			keyChannel.postMessage({
 				key: evt.key,
@@ -43,13 +42,7 @@
 <div
 	style={`
   color: ${$settings?.display.font.color};
-  background: ${
-		$settings?.display.bg.type === DisplayBGType.color
-			? $settings?.display.bg.value
-			: $settings?.display.bg.type === DisplayBGType.gradient
-				? `linear-gradient(${$settings?.display.bg.value[0]}, ${$settings?.display.bg.value[1]})`
-				: `url('${$settings?.display.bg.value}');`
-	};
+  background: ${$settings?.display.bg.value};
   font-family: ${$settings?.display.font.family};
   `}
 	class="main"
@@ -79,7 +72,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="scss">
 	div.main {
 		width: 100vw;
 		height: 100vh;

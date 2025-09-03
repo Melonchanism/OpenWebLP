@@ -2,7 +2,7 @@
 	import { displayData, service } from "$lib/localStorage"
 	import { onMount } from "svelte"
 	import { menuBlur, send, recieve } from "$lib/transitions"
-	import { showMenu, menuPos, menuID, sidePanel, SidePanel } from "$lib/sharedState"
+	import { blank, sidePanel, SidePanel, songs, showMenu } from "$lib/sharedState"
 	import Sortable from "sortablejs"
 	import Preview from "$lib/Preview.svelte"
 	import SideBar from "$lib/side/Bar.svelte"
@@ -10,10 +10,13 @@
 	import ContextMenu from "$lib/ContextMenu.svelte"
 
 	let { data } = $props()
-	let songs = $state(data.songs)
+	$songs = data.songs
 
 	const keyChannel = new BroadcastChannel("key")
-	keyChannel.addEventListener("message", (evt) => handleKey(evt.data))
+	keyChannel.addEventListener("message", (evt) => {
+		evt.data.preventDefault = () => {}
+		handleKey(evt.data)
+	})
 
 	let listElm: HTMLDivElement
 	let sortable: Sortable
@@ -36,7 +39,6 @@
 	}
 
 	let current = $state({ song: 0, lyric: 0 })
-	let blank = $state(false)
 
 	$effect(() => {
 		if ($service[0]) {
@@ -51,11 +53,11 @@
 				?.item(current.lyric)
 				?.scrollIntoView({ block: "center" })
 			scrollTo(0, -1)
-			if (!blank) {
+			if (!$blank) {
 				displayData.set({
-					name: songs.find((song) => song.id === $service[current.song])?.name ?? "",
-					artist: songs.find((song) => song.id === $service[current.song])?.artist ?? "",
-					lyric: songs.find((song) => song.id === $service[current.song])?.lyrics[current.lyric]!,
+					name: $songs.find((song) => song.id === $service[current.song])?.name ?? "",
+					artist: $songs.find((song) => song.id === $service[current.song])?.artist ?? "",
+					lyric: $songs.find((song) => song.id === $service[current.song])?.lyrics[current.lyric]!,
 				})
 			} else {
 				displayData.set(null)
@@ -76,7 +78,7 @@
 				open("/display", "_blank", "popup")
 				break
 			case "b":
-				blank = !blank
+				$blank = !$blank
 				break
 			case "ArrowLeft":
 				evt.preventDefault()
@@ -91,7 +93,7 @@
 			case "ArrowUp":
 				evt.preventDefault()
 				if (
-					songs.find((song) => song.id === $service[current.song])?.lyrics[
+					$songs.find((song) => song.id === $service[current.song])?.lyrics[
 						current.lyric - 1 - (evt.shiftKey ? 1 : 0)
 					]
 				)
@@ -100,7 +102,7 @@
 			case "ArrowDown":
 				evt.preventDefault()
 				if (
-					songs.find((song) => song.id === $service[current.song])?.lyrics[
+					$songs.find((song) => song.id === $service[current.song])?.lyrics[
 						current.lyric + 1 + (evt.shiftKey ? 1 : 0)
 					]
 				)
@@ -109,7 +111,7 @@
 			default:
 				if (
 					parseInt(evt.key) > 0 &&
-					songs.find((song) => song.id === $service[current.song])?.lyrics[parseInt(evt.key) - 1]
+					$songs.find((song) => song.id === $service[current.song])?.lyrics[parseInt(evt.key) - 1]
 				)
 					current.lyric = parseInt(evt.key) - 1
 				else if ($service[parseInt(evt.key.substring(1)) - 1])
@@ -121,9 +123,9 @@
 <svelte:window onbeforeunload={() => ($displayData = null)} onkeydown={handleKey} />
 
 <div class="main">
-	<SideBar bind:blank />
+	<SideBar />
 	<div class="console {$sidePanel !== SidePanel.None ? 'sidepanelactive' : ''}">
-		<Panel bind:songs />
+		<Panel />
 		<div class="songs">
 			<div class="list" bind:this={listElm}>
 				{#if $service}
@@ -132,17 +134,12 @@
 						<button
 							data-id={id}
 							onclick={() => (current.song = idx)}
-							oncontextmenu={(evt) => {
-								evt.preventDefault()
-								$menuID = id
-								$showMenu = true
-								$menuPos = { x: evt.clientX, y: evt.clientY }
-							}}
+							oncontextmenu={(evt) => showMenu(evt, id, idx)}
 						>
 							<kbd>F{idx + 1}</kbd>
 							<div>
-								<h3>{songs.find((song) => song.id === id)?.name}</h3>
-								<p>{songs.find((song) => song.id === id)?.artist}</p>
+								<h3>{$songs.find((song) => song.id === id)?.name}</h3>
+								<p>{$songs.find((song) => song.id === id)?.artist}</p>
 								{#if current.song === idx}
 									<div
 										class="selector"
@@ -160,7 +157,7 @@
 			{#if $service[0]}
 				{#key current.song}
 					<div class="list" transition:menuBlur>
-						{#each songs.find((song) => song.id === $service[current.song])!.lyrics as lyric, idx}
+						{#each $songs.find((song) => song.id === $service[current.song])!.lyrics as lyric, idx}
 							<button onclick={() => (current.lyric = idx)}>
 								<kbd>{idx + 1}</kbd>
 								<div>
@@ -184,10 +181,10 @@
 			<Preview />
 		</div>
 	</div>
-	<ContextMenu {data} />
+	<ContextMenu />
 </div>
 
-<style>
+<style lang="scss">
 	div.main {
 		display: grid;
 		grid-template-columns: 48px 1fr;

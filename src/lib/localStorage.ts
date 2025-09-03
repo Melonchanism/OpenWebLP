@@ -24,8 +24,9 @@ export type Song = {
 	name: string
 	artist: string
 	lyrics: Lyric[]
+	lastUpdated: string | null
 }
-export let displayData = storedWritable<DisplayData | null>(null, "displayData")
+export let displayData = storedWritable<DisplayData | null>(null, "displayData", "/")
 
 export interface Settings {
 	display: {
@@ -37,7 +38,7 @@ export interface Settings {
 		}
 		bg: {
 			type: DisplayBGType
-			value: HexString | [HexString, HexString] | URLString | ""
+			value: string
 		}
 		transition: Transition
 	}
@@ -50,11 +51,8 @@ export enum Transition {
 }
 export enum DisplayBGType {
 	color = "Color",
-	image = "Image",
-	gradient = "Gradient",
+	css = "CSS",
 }
-export type HexString = `#${string}`
-export type URLString = `http${string}://${string}`
 export enum Font {
 	arial = "Arial",
 	verdana = "Verdana",
@@ -82,8 +80,8 @@ export const defaultSettings: Settings = {
 	},
 }
 
-export let settings = storedWritable(defaultSettings, "settings")
+export let settings = storedWritable(defaultSettings, "settings", "/")
 
-export let aspectRatio = storedWritable(16 / 9, "aspectRatio")
+export let aspectRatio = storedWritable(16 / 9, "aspectRatio", "/display")
 
-export let service = storedWritable<number[]>([], "service")
+export let service = storedWritable<number[]>([1], "service", "/")

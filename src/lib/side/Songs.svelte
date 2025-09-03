@@ -2,17 +2,42 @@
 	import { onMount } from "svelte"
 	import { flip } from "svelte/animate"
 	import { menuBlur } from "$lib/transitions"
-	import type { Song } from "$lib/localStorage"
 	import Sortable from "sortablejs"
-	let { songs = $bindable() }: { songs: Song[] } = $props()
-	import { showMenu, menuPos, menuID, sidePanel, SidePanel } from "$lib/sharedState"
+	import { menuID, sidePanel, SidePanel, songs, showMenu } from "$lib/sharedState"
+
+	enum SearchType {
+		Name = "Name",
+		Artist = "Artist",
+		Lyrics = "Lyrics",
+	}
 
 	let searchVal = $state("")
+	let processedVal = $derived(cleanString(searchVal))
+	let searchType = $state(SearchType.Name)
+
+	function cleanString(string: string) {
+		return string.toLowerCase().replace(/\W/g, "")
+	}
 
 	let sortedSongs = $derived(
-		songs
+		$songs
 			.toSorted((itm1, itm2) => (itm1.name.toLowerCase() > itm2.name.toLowerCase() ? 1 : -1))
-			.filter((itm) => itm.name.toLowerCase().startsWith(searchVal.toLowerCase()))
+			.filter((itm) => {
+				switch (searchType) {
+					case SearchType.Name:
+						return cleanString(itm.name).startsWith(processedVal)
+						break
+					case SearchType.Artist:
+						return cleanString(itm.artist).toLowerCase().startsWith(processedVal)
+						break
+					case SearchType.Lyrics:
+						for (const lyric of itm.lyrics) {
+							if (cleanString(lyric.text).includes(processedVal)) return true
+						}
+						return false
+						break
+				}
+			})
 	)
 
 	let listElm: HTMLDivElement
@@ -32,78 +57,70 @@
 
 <div transition:menuBlur class="sidepanelcontent">
 	<h2>Songs</h2>
-	<div>
-		<input
-			bind:value={searchVal}
-			onkeydowncapture={(evt) => evt.stopPropagation()}
-			type="text"
-			placeholder="Search..."
-		/>
-	</div>
 	<div class="songs">
-		<div bind:this={listElm} class="list" style="overflow: scroll">
+		<div class="actionbar top">
+			<input
+				bind:value={searchVal}
+				onkeydowncapture={(evt) => evt.stopPropagation()}
+				type="text"
+				placeholder="Search..."
+			/>
+			<select bind:value={searchType}>
+				{#each Object.values(SearchType) as type}
+					<option value={type}>{type}</option>
+				{/each}
+			</select>
+			<button
+				style="width: auto !important"
+				aria-label="New Song"
+				onclick={() => {
+					$songs.push({
+						id: -1,
+						artist: "",
+						name: "",
+						lyrics: [],
+						lastUpdated: null,
+					})
+					$menuID = -1
+					$sidePanel = SidePanel.Editor
+				}}
+			>
+				<h3><i class="bi bi-file-earmark-plus"></i></h3>
+			</button>
+		</div>
+		<div bind:this={listElm} class="list">
 			{#each sortedSongs as item (item.id)}
 				<button
 					class="added-song"
 					animate:flip={{ duration: 300 }}
 					transition:menuBlur
 					data-id={item.id}
-					oncontextmenu={(evt) => {
-						evt.preventDefault()
-						$menuID = item.id
-						$showMenu = true
-						$menuPos = { x: evt.clientX, y: evt.clientY }
-					}}
+					oncontextmenu={(evt) => showMenu(evt, item.id)}
 				>
 					<h3>{item.name}</h3>
 					<p>{item.artist}</p>
 				</button>
 			{/each}
 		</div>
-		<div class="list" style="margin-top: 0;">
-			<button
-				onclick={() => {
-					songs.push({
-						id: -1,
-						artist: "",
-						name: "",
-						lyrics: [],
-					})
-					$menuID = -1
-					$sidePanel = SidePanel.Editor
-				}}
-			>
-				<h3><i class="bi bi-plus-square"></i> New Song</h3>
-			</button>
-		</div>
 	</div>
 </div>
 
-<style>
+<style lang="scss">
 	div.sidepanelcontent {
 		height: 100%;
-		display: grid;
-		grid-template-rows: auto auto 1fr auto;
-		input {
-			border-radius: 8px;
-			padding: 4px;
-			margin: 0 8px 8px;
-			width: calc(100% - 24px);
+		display: flex;
+		flex-direction: column;
+		div.actionbar {
+			display: grid;
+			grid-template-columns: 1fr auto auto;
 		}
 		div.songs {
+			height: 100%;
 			overflow: scroll;
 			div.list {
 				margin: 0;
-				padding: 0 8px;
-				&:nth-child(2) {
-					position: sticky;
-					z-index: 2;
-					padding: 8px 0;
-					margin: 0 8px;
-					position: sticky;
-					bottom: 0;
-					background: rgb(14, 14, 14);
-				}
+				height: 100%;
+				padding: 0 8px 8px 8px;
 			}
 		}
 	}

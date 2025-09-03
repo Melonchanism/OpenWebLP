@@ -1,7 +1,6 @@
 <script>
 	import { menuBlur, menuFade, recieve, send } from "$lib/transitions"
-	import { SidePanel, sidePanel } from "$lib/sharedState"
-	let { blank = $bindable() } = $props()
+	import { SidePanel, sidePanel, blank } from "$lib/sharedState"
 
 	function discardChanges() {
 		let result = true
@@ -20,7 +19,7 @@
 						: ($sidePanel = SidePanel.None)
 					: null}
 		>
-			<div class="tooltip">Songs</div>
+			<div class="tooltip right">Songs</div>
 			{#if $sidePanel === SidePanel.Songs}
 				<i transition:menuFade class="bi bi-file-earmark-music-fill"></i>
 				<div
@@ -40,7 +39,7 @@
 						: ($sidePanel = SidePanel.None)
 					: null}
 		>
-			<div class="tooltip">Settings</div>
+			<div class="tooltip right">Settings</div>
 			{#if $sidePanel === SidePanel.Settings}
 				<i transition:menuFade class="bi bi-gear-fill"></i>
 				<div
@@ -59,7 +58,7 @@
 					if (discardChanges()) $sidePanel = SidePanel.None
 				}}
 			>
-				<div class="tooltip">Editor</div>
+				<div class="tooltip right">Editor</div>
 				<i class="bi bi-pencil-fill"></i>
 				{#if $sidePanel === SidePanel.Editor}
 					<div
@@ -72,13 +71,9 @@
 		{/if}
 	</div>
 	<div class="tabbar vertical bottom">
-		<!-- We have to wait for the app to be on the client before loading this -->
-		<!-- {#await import("$lib/side/PWABadge.svelte") then { default: PWABadge }}
-			<PWABadge />
-		{/await} -->
-		<button class={blank ? "active" : ""} onclick={() => (blank = !blank)}>
-			<div class="tooltip">Blank Screen</div>
-			{#if blank}
+		<button class={$blank ? "active" : ""} onclick={() => ($blank = !$blank)}>
+			<div class="tooltip right">Blank Screen</div>
+			{#if $blank}
 				<i transition:menuFade class="bi bi-aspect-ratio-fill"></i>
 			{:else}
 				<i transition:menuFade class="bi bi-aspect-ratio"></i>
@@ -87,7 +82,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="scss">
 	div.sidebar {
 		background-color: rgb(20, 20, 20, 0.7);
 		backdrop-filter: blur(20px);

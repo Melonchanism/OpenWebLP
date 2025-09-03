@@ -4,13 +4,14 @@
 	import { type Song, LyricType } from "$lib/localStorage"
 	import { onDestroy, onMount } from "svelte"
 	import _ from "lodash"
-	import Sortable from "sortablejs";
+	import { songs } from "$lib/sharedState"
+	import Sortable from "sortablejs"
 
-	let { songs = $bindable() }: { songs: Song[] } = $props()
-
-	let editingSong = $state(structuredClone($state.snapshot(songs.find((song) => song.id === $menuID))))!
+	let editingSong = $state(
+		structuredClone($state.snapshot($songs.find((song) => song.id === $menuID)))
+	)!
 	$effect(() => {
-		editingSong = structuredClone($state.snapshot(songs.find((song) => song.id === $menuID)))!
+		editingSong = structuredClone($state.snapshot($songs.find((song) => song.id === $menuID)))!
 	})
 
 	// To-do: use svelte-dnd-action while preserving ids somehow with 0% chance of failiure
@@ -24,26 +25,24 @@
 			onEnd: reorderLyrics,
 		})
 	})
-	// try {overrideItemIdKeyNameBeforeInitialisingDndZones("text")} catch(e) {}
-	// const flipDurationMs = 300;
-	// function handleDndConsider(evt) {
-	// 	editingSong.lyrics = evt.detail.items;
-	// }
-	// function handleDndFinalize(evt) {
-	// 	editingSong.lyrics = evt.detail.items;
- //  }
 	onDestroy(() => {
 		onbeforeunload = null
 	})
 	$effect(() => {
-		if (_.isEqual($state.snapshot(editingSong), $state.snapshot(songs.find((song) => song.id === $menuID)))) onbeforeunload = null
-		else onbeforeunload = evt => evt.preventDefault()
+		if (
+			_.isEqual(
+				$state.snapshot(editingSong),
+				$state.snapshot($songs.find((song) => song.id === $menuID))
+			)
+		)
+			onbeforeunload = null
+		else onbeforeunload = (evt) => evt.preventDefault()
 	})
 	function reorderLyrics() {
 		editingSong.lyrics = sortable
-		.toArray()
-		.filter(itm => !/[A-Za-z]/.test(itm))
-		.map((idx) => structuredClone($state.snapshot(editingSong.lyrics[parseInt(idx)])))
+			.toArray()
+			.filter((itm) => !/[A-Za-z]/.test(itm))
+			.map((idx) => structuredClone($state.snapshot(editingSong.lyrics[parseInt(idx)])))
 	}
 
 	function handleKeyOnInput(evt: KeyboardEvent) {
@@ -58,119 +57,147 @@
 				"Content-Type": "application/json",
 			},
 		})
-		if (editingSong.id !== -1) songs[songs.findIndex((song) => song.id === $menuID)] = editingSong
+		if (editingSong.id !== -1) $songs[$songs.findIndex((song) => song.id === $menuID)] = editingSong
 		else {
-		  editingSong.id = await response.json()
+			editingSong.id = await response.json()
 			console.log(editingSong.id)
-		  songs[songs.findIndex((song) => song.id === -1)] = editingSong
+			$songs[$songs.findIndex((song) => song.id === -1)] = editingSong
 		}
 		alert("Saved")
 	}
 </script>
 
 <svelte:window
- onkeydowncapture={(evt: KeyboardEvent) => {
-   if ((evt.ctrlKey || evt.metaKey) && evt.key === "s") {
-     evt.stopImmediatePropagation()
-     evt.preventDefault()
-     save()
-   }
- }}
-  />
+	onkeydowncapture={(evt: KeyboardEvent) => {
+		if ((evt.ctrlKey || evt.metaKey) && evt.key === "s") {
+			evt.stopImmediatePropagation()
+			evt.preventDefault()
+			save()
+		}
+	}}
+/>
 
 <div transition:menuBlur class="sidepanelcontent">
 	<h2>Edit Song</h2>
-	{#if $menuID !== null}
-			<input onkeydown={handleKeyOnInput} bind:value={editingSong.name} placeholder="Song Title" />
-			<input onkeydown={handleKeyOnInput} bind:value={editingSong.artist} placeholder="Artists" list="artists" />
+	<div class="lyrics">
+		<div
+			class="header"
+			style:background="linear-gradient(rgb(14, 14, 14), 90%, rgb(14, 14, 14, 0.1))"
+		>
+			<div class="actionbar" style:grid-template-columns="60px 1fr">
+				<p>Name:</p>
+				<input
+					onkeydown={handleKeyOnInput}
+					bind:value={editingSong.name}
+					placeholder="Song Title"
+				/>
+			</div>
+			<div class="actionbar" style:grid-template-columns="60px 1fr">
+				<p>Artist:</p>
+				<input
+					onkeydown={handleKeyOnInput}
+					bind:value={editingSong.artist}
+					placeholder="Writer"
+					list="artists"
+				/>
+			</div>
 			<datalist id="artists">
-				{#each [...new Set(songs.map(song => song.artist))].toSorted() as artist}
-				  <option value={artist}>{artist}</option>
+				{#each [...new Set($songs.map((song) => song.artist))].toSorted() as artist}
+					<option value={artist}>{artist}</option>
 				{/each}
 			</datalist>
-			<div class="lyrics">
-			<div class="list" bind:this={listElm}>
-				{#each editingSong.lyrics as lyric, idx (Math.random())}
-					<div class="lyric" data-id={idx} >
-						<div class="grip"><i class="bi bi-grip-vertical"></i></div>
-						<div class="contents">
-							<div class="metadata">
-								<select bind:value={lyric.type}>
-									{#each Object.values(LyricType) as type}
-										<option value={type}>{type}</option>
-									{/each}
-								</select>
-								<input bind:value={lyric.number} type="number" />
-								<button style="color: rgb(150, 70, 90); border: 1px solid currentColor;" onclick={() => editingSong.lyrics.splice(idx, 1)}>
-									<i class="bi bi-trash3"></i> Remove
-								</button>
-							</div>
-							<div class="grow-wrap" data-replicated-value={lyric.text}>
-								<textarea placeholder="Lyric Content" onkeydown={handleKeyOnInput} bind:value={lyric.text}></textarea>
-							</div>
+		</div>
+		<div class="list" bind:this={listElm}>
+			{#each editingSong.lyrics as lyric, idx (Math.random())}
+				<div class="lyric" data-id={idx}>
+					<div class="grip"><i class="bi bi-grip-vertical"></i></div>
+					<div class="contents">
+						<div class="actionbar" style:grid-template-columns="auto auto auto 1fr">
+							<select bind:value={lyric.type}>
+								{#each Object.values(LyricType) as type}
+									<option value={type}>{type}</option>
+								{/each}
+							</select>
+							<input bind:value={lyric.number} type="number" />
+							<button
+								aria-label="Remove"
+								style="color: rgb(150, 70, 90); border: 1px solid currentColor;"
+								onclick={() => editingSong.lyrics.splice(idx, 1)}
+							>
+								<i class="bi bi-trash2"></i>
+							</button>
+						</div>
+						<div class="grow-wrap" data-replicated-value={lyric.text}>
+							<textarea
+								placeholder="Lyric Content"
+								onkeydown={handleKeyOnInput}
+								bind:value={lyric.text}
+							></textarea>
 						</div>
 					</div>
-				{/each}
-			</div>
-			<div class="list">
-				<button
-					onclick={() => {
-						editingSong.lyrics.push({
-							type: LyricType.verse,
-							number: 1,
-							text: "",
-						})
-					}}
-				>
-					<h3><i class="bi bi-plus-square"></i> Add Lyric</h3>
-				</button>
-			</div>
-			</div>
-			<div class="footer">
-				<button style="background-color: darkolivegreen;" onclick={save}><i class="bi bi-save2"></i> Save</button>
-				<button style="background-color: peru;" onclick={() => editingSong = structuredClone($state.snapshot(songs.find((song) => song.id === $menuID)))}><i class="bi bi-arrow-counterclockwise"></i> Revert</button>
-			</div>
-	{/if}
+				</div>
+			{/each}
+		</div>
+		<div class="actionbar bottom">
+			<button
+				onclick={() => {
+					editingSong.lyrics.push({
+						type: LyricType.verse,
+						number: 1,
+						text: "",
+					})
+				}}
+			>
+				<h3><i class="bi bi-plus-square"></i> Add Lyric</h3>
+			</button>
+		</div>
+	</div>
+	<div class="footer">
+		<button style="border: 1px solid currentColor; color: darkolivegreen" onclick={save}
+			><i class="bi bi-save2"></i> Save</button
+		>
+		<button
+			style="border: 1px solid currentColor; color: peru;"
+			onclick={() =>
+				(editingSong = structuredClone(
+					$state.snapshot($songs.find((song) => song.id === $menuID)!)
+				))}><i class="bi bi-arrow-counterclockwise"></i> Revert</button
+		>
+	</div>
 </div>
 
-<style>
+<style lang="scss">
 	div.sidepanelcontent {
 		display: grid;
-		grid-template-rows: auto auto auto 1fr auto;
+		grid-template-rows: auto 1fr auto;
 		gap: 8px;
 		h2 {
-		  margin-bottom: 0 !important;
+			margin-bottom: 0 !important;
 		}
-		& > input {
-			border-radius: 8px;
-			width: calc(100% - 16px);
-			margin: 0 8px;
-			overflow: hidden;
-			background: var(--element);
-			font-size: 1.2em;
-			padding: 2px;
+		div.header {
+			position: sticky;
+			top: 0;
+			z-index: 3;
+			display: flex;
+			flex-direction: column;
 		}
 		div.lyrics {
+			display: flex;
+			flex-direction: column;
 			overflow: scroll;
-			div.list {
-			margin: 0;
-			padding: 0 8px;
-			&:nth-child(2) {
-				padding-top: 8px;
-				position: sticky;
-				bottom: 0;
-				background: rgb(14, 14, 14);
-				z-index: 2;
-				button {
-					border-radius: 8px;
+			div.list,
+			div.actionbar {
+				margin: -4px 0;
+				padding: 8px;
+				p {
+					color: gray;
 				}
-			}
 			}
 		}
 		div.footer {
 			display: flex;
 			gap: 8px;
-			margin: 0 8px 8px;
+			margin: 0 8px;
 			button {
 				padding: 4px;
 				border-radius: 8px;
@@ -180,40 +207,27 @@
 	:global(div.lyric) {
 		display: grid;
 		grid-template-columns: auto 1fr;
-		position: relative;
 		div.grip {
 			display: flex;
 			align-items: center;
-			height: 100%;
 			cursor: grab;
-			i.bi-grip-vertical {
-				font-size: 1.5em;
-			}
+			font-size: 1.5em;
 		}
 		div.contents {
-			div.metadata {
-				display: flex;
-				margin-bottom: 4px;
-				gap: 8px;
-				input {
-					width: 50px;
-				}
-				* {
-					padding: 4px;
-					border-radius: 8px;
-				}
+			div.actionbar {
+				z-index: 1;
+				padding-left: 0;
 			}
 			.grow-wrap {
 				display: grid;
 				&::after {
 					content: attr(data-replicated-value) " ";
-					white-space: pre-wrap;
 					visibility: hidden;
+					white-space: pre-wrap;
 				}
 				textarea {
 					resize: none;
 					border-radius: 8px;
-					overflow: hidden;
 				}
 				&::after,
 				textarea {

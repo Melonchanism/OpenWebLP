@@ -27,7 +27,7 @@ function containPreview() {
   <iframe src="/display" title="Preview"></iframe>
 </div>
 
-<style>
+<style lang="scss">
 div.container {
   display: grid;
   place-items: center;
