@@ -10,6 +10,7 @@ export async function POST({ request }) {
 	} else {
 		delete requestData.id
 		const { data, error } = await supabase.from("songs").insert(requestData).select("id")
+		if (error) throw error
 		return json(data[0].id ?? -1, { status: 201 })
 	}
 }

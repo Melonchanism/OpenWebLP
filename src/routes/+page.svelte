@@ -35,19 +35,16 @@
 	function recreateService() {
 		$service = sortable.toArray().map((itm: string) => parseInt(itm))
 		listElm.querySelector("button.added-song")?.remove()
-		console.log($service)
 	}
 
 	let current = $state({ song: 0, lyric: 0 })
 
 	$effect(() => {
-		if ($service[0]) {
-			//@ts-ignore
+		if ($service[current.song]) {
 			document
 				.querySelectorAll(".songs > div > button")
 				?.item(current.song)
 				?.scrollIntoView({ block: "center" })
-			//@ts-ignore
 			document
 				.querySelectorAll(".lyrics > div > button")
 				?.item(current.lyric)
@@ -65,6 +62,7 @@
 		}
 	})
 
+	// Yes this is a very good check
 	$effect.pre(() => {
 		$service
 		current.song
@@ -72,7 +70,6 @@
 	})
 
 	function handleKey(evt: KeyboardEvent) {
-		console.log(evt.key)
 		switch (evt.key) {
 			case "d":
 				open("/display", "_blank", "popup")
@@ -154,8 +151,9 @@
 			</div>
 		</div>
 		<div class="lyrics">
-			{#if $service[0]}
-				{#key current.song}
+			<!-- Goofy ahh double nesting -->
+			{#if $songs.find((song) => song.id === $service[current.song])?.lyrics != null}
+				{#key $service[current.song]}
 					<div class="list" transition:menuBlur>
 						{#each $songs.find((song) => song.id === $service[current.song])!.lyrics as lyric, idx}
 							<button onclick={() => (current.lyric = idx)}>
@@ -181,8 +179,9 @@
 			<Preview />
 		</div>
 	</div>
-	<ContextMenu />
 </div>
+
+<ContextMenu />
 
 <style lang="scss">
 	div.main {

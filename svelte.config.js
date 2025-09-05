@@ -11,7 +11,9 @@ const config = {
 			prependData: `@use "src/styles.scss" as *;`,
 		},
 	}),
-	kit: { adapter: adapter() },
+	kit: {
+		adapter: adapter(),
+	},
 }
 
 export default config

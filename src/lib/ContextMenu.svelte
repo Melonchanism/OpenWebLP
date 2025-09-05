@@ -32,9 +32,6 @@
 		$menuServiceIndex = null
 		$menuElement?.classList.remove("highlighted")
 	}
-	$effect(() => {
-		console.log($menuServiceIndex)
-	})
 </script>
 
 {#if $menuShown}

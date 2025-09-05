@@ -4,17 +4,12 @@
 	import Settings from "$lib/side/Settings.svelte"
 	import Songs from "$lib/side/Songs.svelte"
 	import Editor from "$lib/side/Editor.svelte"
-	import type { Song } from "$lib/localStorage"
-	import { SidePanel, sidePanel, songs } from "$lib/sharedState"
-
-	$effect.pre(() => {
-		console.log($songs)
-	})
+	import { SidePanel, sidePanel } from "$lib/sharedState"
 </script>
 
-{#if sidePanel}
+{#if $sidePanel}
 	<!-- Let the panel stay for a bit after it disappears -->
-	<div transition:fly={{ duration: 300, easing: cubicInOut, opacity: 1 }} class="sidepanel">
+	<div transition:fly={{ duration: 300, easing: cubicInOut }} class="sidepanel">
 		{#if $sidePanel === SidePanel.Songs}
 			<Songs />
 		{:else if $sidePanel === SidePanel.Settings}
@@ -44,7 +39,7 @@
 		width: 100%;
 		height: calc(100% - 2px);
 		:global(h2) {
-		margin: 8px 8px 0;
+			margin: 8px 8px 0;
 		}
 	}
 </style>
