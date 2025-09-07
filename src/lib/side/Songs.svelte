@@ -4,6 +4,7 @@
 	import { menuBlur } from "$lib/transitions"
 	import Sortable from "sortablejs"
 	import { menuID, sidePanel, SidePanel, songs, showMenu } from "$lib/sharedState"
+	import { blur } from "svelte/transition"
 
 	enum SearchType {
 		Name = "Name",
@@ -92,8 +93,8 @@
 			{#each sortedSongs as item (item.id)}
 				<button
 					class="added-song"
-					animate:flip={{ duration: 300 }}
-					transition:menuBlur
+					animate:flip={{ duration: 200 }}
+					transition:blur={{ duration: 100 }}
 					data-id={item.id}
 					oncontextmenu={(evt) => showMenu(evt, item.id)}
 				>
@@ -108,18 +109,16 @@
 <style lang="scss">
 	div.sidepanelcontent {
 		height: 100%;
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		grid-template-rows: auto 1fr;
 		div.actionbar {
 			display: grid;
 			grid-template-columns: 1fr auto auto;
 		}
 		div.songs {
-			height: 100%;
 			overflow: scroll;
 			div.list {
 				margin: 0;
-				height: 100%;
 				padding: 0 8px 8px 8px;
 			}
 		}
