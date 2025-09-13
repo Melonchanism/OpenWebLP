@@ -65,6 +65,7 @@ select {
 		textarea,
 		select {
 			background: var(--stacked-element);
+			border-color: var(--border);
 		}
 	}
 }
