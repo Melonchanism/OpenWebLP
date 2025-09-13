@@ -59,7 +59,9 @@
 		})
 		if (editingSong.id !== -1) $songs[$songs.findIndex((song) => song.id === $menuID)] = editingSong
 		else {
-			editingSong.id = await response.json()
+			const id = await response.json()
+			editingSong.id = id
+			$menuID = id
 			console.log(editingSong.id)
 			$songs[$songs.findIndex((song) => song.id === -1)] = editingSong
 		}
