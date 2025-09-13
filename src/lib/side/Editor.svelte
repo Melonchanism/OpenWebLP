@@ -2,7 +2,7 @@
 	import { menuBlur } from "../transitions"
 	import { menuID } from "$lib/sharedState"
 	import { type Song, LyricType } from "$lib/localStorage"
-	import { onDestroy, onMount } from "svelte"
+	import { onDestroy, onMount, tick } from "svelte"
 	import _ from "lodash"
 	import { songs } from "$lib/sharedState"
 	import Sortable from "sortablejs"
@@ -14,7 +14,6 @@
 		editingSong = structuredClone($state.snapshot($songs.find((song) => song.id === $menuID)))!
 	})
 
-	// To-do: use svelte-dnd-action while preserving ids somehow with 0% chance of failiure
 	let listElm: HTMLDivElement
 	let sortable: Sortable
 	onMount(() => {
@@ -142,12 +141,14 @@
 		</div>
 		<div class="actionbar bottom">
 			<button
-				onclick={() => {
+				onclick={async () => {
 					editingSong.lyrics.push({
 						type: LyricType.verse,
 						number: 1,
 						text: "",
 					})
+					await tick()
+					listElm.lastElementChild?.scrollIntoView()
 				}}
 			>
 				<h3><i class="bi bi-plus-square"></i> Add Lyric</h3>
