@@ -1,18 +1,11 @@
 <script lang="ts">
 	import { fade } from "svelte/transition"
-	import {
-		menuShown,
-		menuElement,
-		menuPos,
-		menuServiceIndex,
-		sidePanel,
-		SidePanel,
-	} from "$lib/sharedState"
+	import { menuShown, menuElement, menuPos, menuServiceIndex, menuID, edit } from "$lib/sharedState"
 	import { service } from "./localStorage"
 	import { clickoutside } from "@svelte-put/clickoutside"
 
 	function editSong() {
-		$sidePanel = SidePanel.Editor
+		edit($menuID!)
 		close()
 	}
 
@@ -55,7 +48,7 @@
 	</div>
 {/if}
 
-<style lang="scss">
+<style>
 	div.menu {
 		border: 1px var(--border) solid;
 		border-radius: 8px;

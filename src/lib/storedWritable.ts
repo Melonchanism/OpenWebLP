@@ -15,11 +15,7 @@ export interface StoredWrtiable<T> extends Writable<T> {
  * @param masterPath - the value that `location.pathname` must equal for the value to be set. Helps prevent "feedback" in multi window apps
  * @returns `StoredWrtiable<T>` extends `Writable<T>`
  */
-export function storedWritable<T>(
-	defaultValue: T,
-	key: string,
-	masterPath?: string
-): StoredWrtiable<T> {
+export function storedWritable<T>(defaultValue: T, key: string, masterPath?: string): StoredWrtiable<T> {
 	let store: StoredWrtiable<T>
 	if (browser && localStorage?.getItem(key) != null) {
 		store = writable<T>(JSON.parse(localStorage.getItem(key)!))

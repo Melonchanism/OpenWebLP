@@ -1,5 +1,5 @@
 import { cubicOut, quadOut } from "svelte/easing"
-import { crossfade, blur, fade } from "svelte/transition"
+import { crossfade, blur, fade, fly, slide, scale } from "svelte/transition"
 
 export const menuBlur = (node: Element) => blur(node, { duration: 300 })
 export const menuFade = (node: Element) => fade(node, { duration: 300 })

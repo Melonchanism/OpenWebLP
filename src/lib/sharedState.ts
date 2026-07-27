@@ -1,4 +1,4 @@
-import { writable } from "svelte/store"
+import { writable, get } from "svelte/store"
 import { type Song } from "./localStorage"
 
 export let menuShown = writable(false)
@@ -31,8 +31,33 @@ export enum SidePanel {
 	None,
 	Songs,
 	Settings,
-	Editor,
 }
 export let sidePanel = writable<SidePanel>(SidePanel.None)
+export let animating = writable(false)
+sidePanel.subscribe(() => {
+	animating.set(true)
+	setTimeout(() => animating.set(false), 301)
+})
 
-export let songs = writable<Song[]>([])
+export let editing = writable(false)
+export let editingRevert = writable<Song>()
+export let editingSong = writable<number | undefined>()
+
+export function edit(songID: number) {
+	editingSong.set(songID)
+	window.onbeforeunload = (evt) => evt.preventDefault()
+	editing.set(true)
+}
+
+export async function save(song: Song) {
+	editing.set(false)
+	await fetch("edit", {
+			method: "POST",
+			body: JSON.stringify(song),
+			headers: {
+				"Content-Type": "application/json",
+			},
+	})
+	window.onbeforeunload = null
+	editingSong.set(undefined)
+}

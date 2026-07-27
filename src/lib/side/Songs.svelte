@@ -3,8 +3,11 @@
 	import { flip } from "svelte/animate"
 	import { menuBlur } from "$lib/transitions"
 	import Sortable from "sortablejs"
-	import { menuID, sidePanel, SidePanel, songs, showMenu } from "$lib/sharedState"
+	import { showMenu, editing, editingSong } from "$lib/sharedState"
+	import { service, type Song } from "$lib/localStorage"
 	import { blur } from "svelte/transition"
+
+	let { songs }: { songs: Song[] } = $props()
 
 	enum SearchType {
 		Name = "Name",
@@ -21,22 +24,18 @@
 	}
 
 	let sortedSongs = $derived(
-		$songs
+		songs
+			.filter((itm) => itm)
 			.toSorted((itm1, itm2) => (itm1.name.toLowerCase() > itm2.name.toLowerCase() ? 1 : -1))
 			.filter((itm) => {
 				switch (searchType) {
 					case SearchType.Name:
 						return cleanString(itm.name).startsWith(processedVal)
-						break
 					case SearchType.Artist:
 						return cleanString(itm.artist).toLowerCase().startsWith(processedVal)
-						break
 					case SearchType.Lyrics:
-						for (const lyric of itm.lyrics) {
-							if (cleanString(lyric.text).includes(processedVal)) return true
-						}
+						for (const lyric of itm.lyrics) if (cleanString(lyric.text).includes(processedVal)) return true
 						return false
-						break
 				}
 			})
 	)
@@ -75,38 +74,40 @@
 				style="width: auto !important"
 				aria-label="New Song"
 				onclick={() => {
-					$songs.push({
+					songs.push({
 						id: -1,
 						artist: "",
 						name: "",
 						lyrics: [],
 						lastUpdated: null,
 					})
-					$menuID = -1
-					$sidePanel = SidePanel.Editor
+					$editing = true
+					$editingSong = -1
 				}}
 			>
 				<h3><i class="bi bi-file-earmark-plus"></i></h3>
 			</button>
 		</div>
 		<div bind:this={listElm} class="list">
-			{#each sortedSongs as item (item.id)}
-				<button
-					class="added-song"
-					animate:flip={{ duration: 200 }}
-					transition:blur={{ duration: 100 }}
-					data-id={item.id}
-					oncontextmenu={(evt) => showMenu(evt, item.id)}
-				>
-					<h3>{item.name}</h3>
-					<p>{item.artist}</p>
-				</button>
-			{/each}
+			{#key $service}
+				{#each sortedSongs as item (item.id)}
+					<button
+						class="added-song"
+						animate:flip={{ duration: 300 }}
+						transition:blur={{ duration: 200 }}
+						data-id={item.id}
+						oncontextmenu={(evt) => showMenu(evt, item.id)}
+					>
+						<h3>{item.name}</h3>
+						<p>{item.artist}</p>
+					</button>
+				{/each}
+			{/key}
 		</div>
 	</div>
 </div>
 
-<style lang="scss">
+<style>
 	div.sidepanelcontent {
 		height: 100%;
 		display: grid;

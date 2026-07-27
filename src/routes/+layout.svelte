@@ -1,5 +1,5 @@
 <script>
-	import "../styles.scss"
+	// import "../styles.scss"
 	import "../styles.css"
 	let { children } = $props()
 </script>

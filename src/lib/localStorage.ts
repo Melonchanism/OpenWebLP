@@ -41,6 +41,7 @@ export interface Settings {
 			value: string
 		}
 		transition: Transition
+		showInfo: boolean
 	}
 }
 export enum Transition {
@@ -54,6 +55,7 @@ export enum DisplayBGType {
 	css = "CSS",
 }
 export enum Font {
+	inter = '"Inter"',
 	arial = "Arial",
 	verdana = "Verdana",
 	tahoma = "Tahoma",
@@ -77,11 +79,13 @@ export const defaultSettings: Settings = {
 			value: "#000000",
 		},
 		transition: Transition.fade,
+		showInfo: true,
 	},
 }
 
 export let settings = storedWritable(defaultSettings, "settings", "/")
 
 export let aspectRatio = storedWritable(16 / 9, "aspectRatio", "/display")
+export let resolution = storedWritable({ width: 1920, height: 1080 }, "resolution", "/display")
 
 export let service = storedWritable<number[]>([1], "service", "/")

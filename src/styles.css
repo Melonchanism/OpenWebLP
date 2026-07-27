@@ -1,1 +1,308 @@
-@import "bootstrap-icons"
+@import "bootstrap-icons";
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+:root {
+	--border: hsl(0, 0%, 14%);
+	--border-subtle: hsl(0, 0%, 16%);
+	--selector: hsla(154, 200%, 90%, 10%);
+	--highlight: hsl(154, 20%, 30%);
+	--container: hsl(0, 0%, 4%);
+	--container-solid: rgb(9, 11, 11);
+	--element: hsl(0, 0%, 10%);
+	--stacked-element: hsl(0, 0%, 20%);
+	--stacked-element2: hsl(0, 0%, 35%);
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	color-scheme: light dark;
+	font-family: sans-serif;
+	color: white;
+	background: black;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		/* stop dark reader from triggering */
+		background: black;
+	}
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	border: none;
+	scroll-behavior: smooth;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+button,
+input,
+select,
+textarea {
+	font-size: 1rem;
+	border: 1px var(--border-subtle) solid;
+	min-width: 0;
+	background: none;
+}
+
+select {
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22white%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M6%209%2012%2015%2018%209%22/%3E%3C/svg%3E") !important;
+	background-size: 18px;
+	background-position: calc(100% - 3px) 50% !important;
+	background-repeat: no-repeat !important;
+	border: 1px var(--border-subtle) solid;
+	padding-right: 24px !important;
+	padding-left: 4px;
+}
+
+/* list */
+
+.list {
+	position: relative;
+	margin: 8px;
+}
+
+.list > * {
+	background: var(--element);
+	padding: 8px;
+	border: none;
+	white-space: pre-line;
+	position: relative;
+	transition:
+		color 300ms,
+		background 300ms;
+}
+
+.list > button {
+	width: 100%;
+	text-align: left;
+}
+
+.list > *:first-child {
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+
+.list > *:last-child {
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+}
+
+.list > *:last-child::after {
+	display: none;
+}
+
+.list > *::after {
+	content: "";
+	position: absolute;
+	width: calc(100% - 16px);
+	border-top: 1px solid var(--border-subtle);
+	z-index: 1;
+	top: 100%;
+	left: 8px;
+}
+
+.list > * .selector {
+	position: absolute;
+	pointer-events: none;
+	width: 100%;
+	height: 100%;
+	background: var(--selector);
+	top: 0;
+	left: 0;
+	z-index: 1;
+	border-radius: inherit;
+}
+
+.list > * div:has(.selector) {
+	border-radius: inherit;
+}
+
+.list > *.dragging {
+	opacity: 0.1;
+}
+
+/* tooltip */
+
+.tooltip {
+	position: absolute;
+	width: max-content;
+	background: rgba(20, 20, 20, 0.7);
+	backdrop-filter: blur(5px);
+	border: 1px var(--border) solid;
+	border-radius: 8px;
+	padding: 4px;
+	opacity: 0;
+	transition: opacity 150ms;
+	pointer-events: none;
+}
+
+.tooltip.right {
+	top: 50%;
+	translate: 0 -50%;
+	transform-origin: -8px 50%;
+	left: 100%;
+	margin-left: 8px;
+}
+
+.tooltip.left {
+	top: 50%;
+	translate: 0 -50%;
+	transform-origin: calc(100% + 8px) 50%;
+	right: 100%;
+	margin-right: 8px;
+}
+
+button:has(> .tooltip) {
+	position: relative !important;
+}
+
+button:has(> .tooltip):hover > .tooltip {
+	opacity: 1;
+}
+
+/* tabbar */
+
+.tabbar {
+	display: flex;
+}
+
+.tabbar.bottom {
+	justify-content: end;
+}
+
+.tabbar.vertical {
+	flex-direction: column;
+	margin: 0 4px;
+}
+
+.tabbar.vertical button {
+	border-bottom: none;
+}
+
+.tabbar.vertical button:first-child {
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	margin-top: 4px;
+}
+
+.tabbar.vertical button:last-child {
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+	margin-bottom: 4px;
+	border-bottom: 1px solid var(--border-subtle);
+}
+
+.tabbar.vertical button:last-child::after {
+	display: none;
+}
+
+.tabbar:not(.vertical) {
+	margin: 4px 0;
+}
+
+.tabbar:not(.vertical) button {
+	border-right: none;
+}
+
+.tabbar:not(.vertical) button:first-child {
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+	margin-left: 4px;
+}
+
+.tabbar:not(.vertical) button:last-child {
+	border-top-right-radius: 8px;
+	border-bottom-right-radius: 8px;
+	margin-right: 4px;
+	border-right: 1px solid var(--border-subtle);
+}
+
+.tabbar:not(.vertical) button:last-child::after {
+	display: none;
+}
+
+.tabbar button {
+	position: relative;
+	background: none;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid var(--border-subtle);
+	width: 40px;
+	height: 40px;
+	transition: background 300ms;
+}
+
+.tabbar button .selector {
+	width: 100%;
+	height: 100%;
+	background: var(--border);
+	border-radius: inherit;
+}
+
+.tabbar button:not(:has(.selector)).active {
+	background: var(--border);
+}
+
+.tabbar button i {
+	position: absolute;
+	z-index: 2;
+	font-size: 1.1em;
+}
+
+/* actionbar */
+
+.actionbar {
+	position: sticky;
+	z-index: 3;
+	padding: 8px;
+	display: grid;
+}
+
+.actionbar.top {
+	top: 0;
+	background: linear-gradient(var(--container-solid), 70%, transparent) !important;
+}
+
+.actionbar.bottom {
+	bottom: 0;
+	background: linear-gradient(transparent, 30%, var(--container-solid)) !important;
+}
+
+.actionbar > * {
+	background: var(--element);
+	padding: 8px;
+	border: none;
+	white-space: pre-line;
+	position: relative;
+	border-right: 1px solid var(--border-subtle);
+}
+
+.actionbar > *:first-child {
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+}
+
+.actionbar > *:last-child {
+	border-top-right-radius: 8px;
+	border-bottom-right-radius: 8px;
+	border-right: none;
+}
+
+/* highlighted */
+
+*.highlighted::before {
+	content: "";
+	position: absolute;
+	width: calc(100% + 4px);
+	height: calc(100% + 4px);
+	top: -6px;
+	left: -6px;
+	border-radius: 12px;
+	border: 4px solid var(--highlight);
+	z-index: 4;
+}

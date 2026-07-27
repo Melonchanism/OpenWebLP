@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { displayData, settings, aspectRatio, Transition, DisplayBGType } from "$lib/localStorage"
+	import { displayData, settings, aspectRatio, resolution, Transition, DisplayBGType } from "$lib/localStorage"
 	import { onMount, tick } from "svelte"
 
 	const keyChannel = new BroadcastChannel("key")
@@ -8,6 +8,7 @@
 
 	onMount(() => {
 		$aspectRatio = innerWidth / innerHeight
+		$resolution = { width: innerWidth, height: innerHeight }
 	})
 
 	$effect.pre(() => {
@@ -23,7 +24,10 @@
 
 <svelte:window
 	onresize={() => {
-		if (window.top === window) $aspectRatio = innerWidth / innerHeight
+		if (window.top === window) {
+			$aspectRatio = innerWidth / innerHeight
+			$resolution = { width: innerWidth, height: innerHeight }
+		}
 	}}
 	onkeydown={(evt) => {
 		if (evt.key !== "d") {
@@ -72,7 +76,7 @@
 	</div>
 </div>
 
-<style lang="scss">
+<style>
 	div.main {
 		width: 100vw;
 		height: 100vh;
