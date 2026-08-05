@@ -16,7 +16,6 @@
 		"@sveltejs/kit": "^2.70.1",
 		"@sveltejs/vite-plugin-svelte": "^5.1.1",
 		"@types/sortablejs": "^1.15.9",
-		"sass-embedded": "^1.100.0",
 		"svelte": "^5.56.8",
 		"svelte-check": "^4.7.3",
 		"typescript": "^5.9.3",
@@ -27,13 +26,10 @@
 		"@svelte-put/clickoutside": "^4.0.0",
 		"@types/lodash": "^4.17.24",
 		"@vite-pwa/sveltekit": "^1.1.0",
-		"autoprefixer": "^10.5.4",
 		"bootstrap-icons": "^1.13.1",
 		"glob": "^11.1.0",
 		"lodash": "^4.18.1",
-		"scss": "^0.2.4",
 		"sortablejs": "^1.15.7",
-		"svelte-preprocess": "^6.0.5",
 		"svelte-range-slider-pips": "^4.1.1"
 	},
 	"engines": {
