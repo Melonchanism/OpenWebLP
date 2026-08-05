@@ -59,12 +59,12 @@
 			} else {
 				displayData.set(null)
 			}
-		}
+		} else {
+				displayData.set(null)
+			}
 	})
 
-	// Yes this is a very good check
 	$effect.pre(() => {
-		$service
 		current.song
 		current.lyric = 0
 	})
