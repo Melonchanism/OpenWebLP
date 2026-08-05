@@ -1,5 +1,5 @@
 import type { Song } from "$lib/localStorage.js"
-import { supabase } from "$lib/supabase.server"
+import { supabase } from "$lib/supabase"
 import { json } from "@sveltejs/kit"
 
 export async function POST({ request }) {
