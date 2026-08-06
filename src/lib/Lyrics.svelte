@@ -3,6 +3,9 @@
 	import { LyricType, type Song } from "./localStorage"
 	import { edit, editing, editingSong, save } from "./sharedState"
 	import { slide } from "svelte/transition"
+	import { onMount, tick } from "svelte";
+	import Sortable from "sortablejs";
+
 	let {
 		current = $bindable(),
 		songs = $bindable(),
@@ -10,8 +13,29 @@
 		currentSongID = $bindable(),
 	}: { current: { song: number; lyric: number }; songs: Song[]; currentSong: Song; currentSongID: number } = $props()
 
+	let lyricsList: HTMLDivElement
+	let sortable: Sortable
+	onMount(() => {
+		sortable = new Sortable(lyricsList, {
+			animation: 300,
+			ghostClass: "dragging",
+			handle: ".grip",
+			onEnd: reorderLyrics,
+		})
+	})
+	async function reorderLyrics() {
+		songs[$editingSong!].lyrics = sortable
+			.toArray()
+			.filter((itm) => !/[A-Za-z]/.test(itm))
+			.map((idx) => structuredClone($state.snapshot(songs[$editingSong!].lyrics[parseInt(idx)])))
+		await tick()
+		document.querySelectorAll(".lyricinnertext").forEach((elem) => {
+			elem.setAttribute("contenteditable", $editing ? "true" : "false")
+		})
+	}
+
 	function handleKeyOnInput(evt: Event) {
-	if ($editing) evt.stopPropagation()
+		if ($editing) evt.stopPropagation()
 	}
 
 	$effect(() => {
@@ -46,15 +70,15 @@
 					{#each [...new Set(songs
 								.filter((itm) => itm !== currentSong)
 								.map((song) => song.artist))].toSorted() as artist}
-						<option value={artist}>{artist}</option>
+						<option value={artist}></option>
 					{/each}
 				</datalist>
 			</div>
 		{/if}
 		{#key $editing ? songs[$editingSong ?? 0] : currentSong}
-			<div class="list" transition:menuBlur>
-				{#each $editingSong ? songs[$editingSong].lyrics : currentSong.lyrics as lyric, idx}
-					<button onclick={() => (current.lyric = idx)}>
+			<div class="list" bind:this={lyricsList} transition:menuBlur>
+				{#each $editingSong ? songs[$editingSong].lyrics : currentSong.lyrics as lyric, idx (lyric.text + idx)}
+					<button onclick={() => (current.lyric = idx)} data-id={idx}>
 						<div class="sideindicator">
 							{#if $editing}
 								<kbd class="grip" transition:menuFade><i class="bi bi-grip-vertical"></i></kbd>
