@@ -52,17 +52,8 @@ export function edit(songID: number) {
 
 export async function save(song: Song) {
 	editing.set(false)
-
-	if (song.id !== -1) {
-		const { error } = await supabase.from("songs").update(song).eq("id", song.id)
-		if (error) throw error
-	} else {
-		//@ts-expect-error
-		delete song.id
-		const { data, error } = await supabase.from("songs").insert(song).select("id")
-		song.id = data[0].id ?? -1;
-		if (error) throw error
-	}
+	const { error } = await supabase.from("songs").update(song).eq("id", song.id)
+	if (error) throw error
 	window.onbeforeunload = null
 	editingSong.set(undefined)
 }

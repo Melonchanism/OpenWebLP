@@ -3,9 +3,10 @@
 	import { flip } from "svelte/animate"
 	import { menuBlur } from "$lib/transitions"
 	import Sortable from "sortablejs"
-	import { showMenu, editing, editingSong } from "$lib/sharedState"
+	import { showMenu, edit } from "$lib/sharedState"
 	import { service, type Song } from "$lib/localStorage"
 	import { blur } from "svelte/transition"
+	import { supabase } from "$lib/supabase"
 
 	let { songs }: { songs: Song[] } = $props()
 
@@ -73,16 +74,22 @@
 			<button
 				style="width: auto !important"
 				aria-label="New Song"
-				onclick={() => {
-					songs.push({
-						id: -1,
+				onclick={async () => {
+				const { data, error } = await supabase.from("songs").insert({
 						artist: "",
 						name: "",
 						lyrics: [],
 						lastUpdated: null,
-					})
-					$editing = true
-					$editingSong = -1
+					}).select("id")
+				if (error) throw error
+				songs[data[0].id] = {
+						id: data[0].id,
+						artist: "",
+						name: "",
+						lyrics: [],
+						lastUpdated: null,
+					}
+				edit(data[0].id)
 				}}
 			>
 				<h3><i class="bi bi-file-earmark-plus"></i></h3>

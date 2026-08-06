@@ -175,8 +175,8 @@
 					&.songs {
 						grid-area: songs;
 						position: relative;
-						& > .list {
-						height: calc(100% - 16px)
+						& > .list:first-of-type {
+						min-height: calc(100% - 105px)
 						}
 					}
 					&.lyrics {
@@ -187,9 +187,7 @@
 						grid-area: preview;
 					}
 					.list {
-						/*min-height: calc(100% - 20px);*/
 						width: calc(100% - 16px);
-						/*position: absolute;*/
 						& > button {
 							display: flex;
 							align-items: center;
