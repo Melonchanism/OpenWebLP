@@ -77,7 +77,7 @@
 		{/if}
 		{#key $editing ? songs[$editingSong ?? 0] : currentSong}
 			<div class="list" bind:this={lyricsList} transition:menuBlur>
-				{#each $editingSong ? songs[$editingSong].lyrics : currentSong.lyrics as lyric, idx (lyric.text + idx)}
+				{#each $editingSong ? songs[$editingSong].lyrics : currentSong.lyrics as lyric, idx (idx)}
 					<button onclick={() => (current.lyric = idx)} data-id={idx}>
 						<div class="sideindicator">
 							{#if $editing}
@@ -136,10 +136,28 @@
 			</div>
 		{/key}
 	{/if}
+	{#if $editing}
+		<button
+			class="addbutton"
+			onclick={async () => {
+				songs[$editingSong!].lyrics.push({
+					type: LyricType.verse,
+					number: 1,
+					text: "",
+					})
+				await tick()
+				document.querySelectorAll(".lyricinnertext").forEach((elem) => {
+					elem.setAttribute("contenteditable", $editing ? "true" : "false")
+				})
+			}}
+			>
+			<span>Add Lyric</span>
+		</button>
+	{/if}
 	<button
 		class="editbutton"
 		onclick={() => {
-			!$editing ? edit(currentSongID) : save(songs[currentSongID])
+			!$editing ? edit(currentSongID) : save(songs[$editingSong!])
 		}}>{$editing ? "Done" : "Edit"}</button
 	>
 </div>
@@ -156,6 +174,7 @@
 	.list {
 		width: calc(100% - 16px);
 		position: absolute;
+		padding-bottom: 60px;
 		& > button {
 			display: grid;
 			grid-template-columns: 20px auto;
@@ -195,6 +214,7 @@
 				border-radius: 8px;
 				z-index: 99;
 				:global(&[contenteditable="true"]) {
+					min-height: 10px;
 					padding: 8px;
 					color: white;
 					border: 1px var(--border-subtle) solid;
@@ -214,14 +234,23 @@
 			padding-bottom: 4px;
 		}
 	}
-	.editbutton {
+
+	.editbutton, .addbutton {
 		position: fixed;
 		bottom: 24px;
-		right: 24px;
 		padding: 8px;
 		border: 1px solid var(--border);
 		background: var(--element);
 		border-radius: 8px;
+		box-shadow: 0 4px 24px var(--container);
+	}
+
+	.editbutton {
+		right: 24px;
+	}
+
+	.addbutton {
+		left: calc(50vw + 16px + 24px);
 	}
 
 	div.numberinput {
