@@ -30,7 +30,7 @@
 			.map((idx) => structuredClone($state.snapshot(songs[$editingSong!].lyrics[parseInt(idx)])))
 		await tick()
 		document.querySelectorAll(".lyricinnertext").forEach((elem) => {
-			elem.setAttribute("contenteditable", $editing ? "true" : "false")
+			elem.setAttribute("contenteditable", $editing ? "plaintext-only" : "false")
 		})
 	}
 
@@ -42,7 +42,7 @@
 		$editing
 		current.song
 		document.querySelectorAll(".lyricinnertext").forEach((elem) => {
-			elem.setAttribute("contenteditable", $editing ? "true" : "false")
+			elem.setAttribute("contenteditable", $editing ? "plaintext-only" : "false")
 		})
 	})
 </script>
@@ -147,7 +147,7 @@
 					})
 				await tick()
 				document.querySelectorAll(".lyricinnertext").forEach((elem) => {
-					elem.setAttribute("contenteditable", $editing ? "true" : "false")
+					elem.setAttribute("contenteditable", $editing ? "plaintext-only" : "false")
 				})
 			}}
 			>
@@ -213,7 +213,7 @@
 					background 300ms;
 				border-radius: 8px;
 				z-index: 99;
-				:global(&[contenteditable="true"]) {
+				:global(&[contenteditable="plaintext-only"]) {
 					min-height: 10px;
 					padding: 8px;
 					color: white;
