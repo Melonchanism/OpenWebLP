@@ -6,6 +6,10 @@
 	import { onMount, tick } from "svelte";
 	import Sortable from "sortablejs";
 
+	// Force an id update when sortable list changes
+	let reorderSeed = $state(0)
+	let reordering = $state(false)
+
 	let {
 		current = $bindable(),
 		songs = $bindable(),
@@ -15,20 +19,27 @@
 
 	let lyricsList: HTMLDivElement
 	let sortable: Sortable
-	onMount(() => {
-		sortable = new Sortable(lyricsList, {
-			animation: 300,
-			ghostClass: "dragging",
-			handle: ".grip",
-			onEnd: reorderLyrics,
-		})
+	$effect(() => {
+		if ($editingSong) {
+			sortable = new Sortable(lyricsList, {
+				animation: 300,
+				ghostClass: "dragging",
+				handle: ".grip",
+				onEnd: reorderLyrics,
+			})
+		} else {
+			sortable.destroy()
+		}
 	})
 	async function reorderLyrics() {
+		reordering = true
 		songs[$editingSong!].lyrics = sortable
 			.toArray()
 			.filter((itm) => !/[A-Za-z]/.test(itm))
 			.map((idx) => structuredClone($state.snapshot(songs[$editingSong!].lyrics[parseInt(idx)])))
+		reorderSeed = Math.random()
 		await tick()
+		setTimeout(() => reordering = false, 50)
 		document.querySelectorAll(".lyricinnertext").forEach((elem) => {
 			elem.setAttribute("contenteditable", $editing ? "plaintext-only" : "false")
 		})
@@ -77,7 +88,7 @@
 		{/if}
 		{#key $editing ? songs[$editingSong ?? 0] : currentSong}
 			<div class="list" bind:this={lyricsList} transition:menuBlur>
-				{#each $editingSong ? songs[$editingSong].lyrics : currentSong.lyrics as lyric, idx (idx)}
+				{#each $editingSong ? songs[$editingSong].lyrics : currentSong.lyrics as lyric, idx (idx + reorderSeed)}
 					<button onclick={() => (current.lyric = idx)} data-id={idx}>
 						<div class="sideindicator">
 							{#if $editing}
@@ -124,7 +135,7 @@
 							{/if}
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<p
-								class="lyricinnertext {$editing ? 'editing' : ''}"
+								class="lyricinnertext {reordering ? 'animationdisabled' : ''}"
 								contenteditable="false"
 								onclick={handleKeyOnInput}
 								onkeydown={handleKeyOnInput}
@@ -211,6 +222,9 @@
 				transition:
 					padding 300ms,
 					background 300ms;
+				&.animationdisabled {
+					transition: none !important;
+				}
 				border-radius: 8px;
 				z-index: 99;
 				:global(&[contenteditable="plaintext-only"]) {
