@@ -203,6 +203,10 @@
 					left: 0;
 					color: gray;
 				}
+				kbd:has(i) {
+					scale: 1.5;
+					translate: -4px;
+				}
 			}
 
 			h3,
