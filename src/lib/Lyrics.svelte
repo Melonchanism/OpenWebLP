@@ -41,7 +41,7 @@
 		await tick()
 		setTimeout(() => reordering = false, 50)
 		document.querySelectorAll(".lyricinnertext").forEach((elem) => {
-			elem.setAttribute("contenteditable", $editing ? "plaintext-only" : "false")
+			elem.setAttribute("contenteditable", $editing ? "true" : "false")
 		})
 	}
 
@@ -53,7 +53,7 @@
 		$editing
 		current.song
 		document.querySelectorAll(".lyricinnertext").forEach((elem) => {
-			elem.setAttribute("contenteditable", $editing ? "plaintext-only" : "false")
+			elem.setAttribute("contenteditable", $editing ? "true" : "false")
 		})
 	})
 </script>
@@ -140,6 +140,11 @@
 								onclick={handleKeyOnInput}
 								onkeydown={handleKeyOnInput}
 								bind:innerText={lyric.text}
+								onpaste={(evt) => {
+									evt.preventDefault();
+									var text = evt.clipboardData!.getData("text/plain");
+									document.execCommand("insertHTML", false, text);
+								}}
 							></p>
 						</div>
 					</button>
@@ -158,7 +163,7 @@
 					})
 				await tick()
 				document.querySelectorAll(".lyricinnertext").forEach((elem) => {
-					elem.setAttribute("contenteditable", $editing ? "plaintext-only" : "false")
+					elem.setAttribute("contenteditable", $editing ? "true" : "false")
 				})
 			}}
 			>
@@ -231,7 +236,7 @@
 				}
 				border-radius: 8px;
 				z-index: 99;
-				:global(&[contenteditable="plaintext-only"]) {
+				:global(&[contenteditable="true"]) {
 					min-height: 10px;
 					padding: 8px;
 					color: white;
